@@ -3,7 +3,9 @@ package auth
 import (
 	"context"
 	"errors"
-	"log"
+
+	"github.com/RainingComputers/Meiki/log"
+	"go.uber.org/zap"
 
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -17,15 +19,12 @@ type Auth struct {
 
 type User struct {
 	Username     string `bson:"username"`
-	PasswordHash string `bson:"password"`
+	PasswordHash []byte `bson:"password"`
 }
 
-func (a Auth) CreateToken(username string) (string, error) {
-	return "random", errors.New("Test errors")
-}
-
-func (a Auth) DeleteToken(username string, token string) error {
-	return errors.New("Test errors")
+type UserTokens struct {
+	Username string `bson:"username"`
+	Tokens   []string
 }
 
 func getToken() string {
@@ -37,25 +36,20 @@ func (a Auth) storeCredentialsInDB(ctx context.Context, user User) error {
 	_, err := a.User_coll.InsertOne(ctx, user)
 
 	if err != nil {
-		panic(err)
+		log.Error("Could not store credentials in DB", zap.Error(err))
 	}
 
-	// _, err = coll.DeleteMany(ctx, bson.M{})
-
-	// if err != nil {
-	// 	panic(err)
-	return nil
+	return err
 }
 
 func (a Auth) Create(ctx context.Context, username string, password string) error {
 
-	passwordHashByte, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 
 	if err != nil {
-		log.Panic("could not create passwordHash")
+		log.Error("Could not create password hash for user", zap.Error(err))
+		return err
 	}
-
-	passwordHash := string(passwordHashByte)
 
 	user := User{
 		username,
@@ -65,12 +59,39 @@ func (a Auth) Create(ctx context.Context, username string, password string) erro
 	err = a.storeCredentialsInDB(ctx, user)
 
 	if err != nil {
-		log.Panic("could not save credentials")
+		log.Error("Could not store credentials while creating user", zap.Error(err))
+		return err
 	}
 
 	return errors.New("Test errors")
 }
 
+func (a Auth) CreateToken(username string) (string, error) {
+	// check if usertoken struct exists in mongo
+
+	// if not create one
+
+	// insert this token into token array
+
+	return "random", errors.New("Test errors")
+}
+
 func (a Auth) Authenticate(username string, token string) (bool, error) {
+	// get tokens struct with usernmae
+
+	// check if token exists in token array
+
+	// if yes return true else false
+
 	return false, errors.New("Test errors")
+}
+
+func (a Auth) Logout(username string, token string) error {
+	// delete particular token from array by username
+
+	return errors.New("Test errors")
+}
+
+func TestLog() {
+	log.Error("something", zap.Error(errors.New("some error")))
 }

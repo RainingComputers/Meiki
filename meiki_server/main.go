@@ -1,7 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"github.com/RainingComputers/Meiki/auth"
+	"github.com/RainingComputers/Meiki/log"
+)
 
 func main() {
-	fmt.Println("こんにちは")
+	log.Initialize()
+	auth.TestLog()
 }
