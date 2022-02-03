@@ -77,7 +77,7 @@ func (a Auth) CreateToken(username string) (string, error) {
 }
 
 func (a Auth) Authenticate(username string, token string) (bool, error) {
-	// get tokens struct with usernmae
+	// get tokens struct with username
 
 	// check if token exists in token array
 
