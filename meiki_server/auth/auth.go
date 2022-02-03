@@ -8,13 +8,14 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/google/uuid"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type Auth struct {
-	Token_coll *mongo.Collection
-	User_coll  *mongo.Collection
+	token_coll *mongo.Collection
+	user_coll  *mongo.Collection
 }
 
 type User struct {
@@ -23,17 +24,21 @@ type User struct {
 }
 
 type UserTokens struct {
-	Username string `bson:"username"`
-	Tokens   []string
+	Username string   `bson:"username"`
+	Tokens   [][]byte `bson:"tokens"`
 }
 
-func getToken() string {
-	return uuid.NewString()
+func getToken() []byte {
+	return []byte(uuid.NewString())
+}
+
+func CreateAuth(token_coll *mongo.Collection, user_coll *mongo.Collection) Auth {
+	return Auth{token_coll, user_coll}
 }
 
 func (a Auth) storeCredentialsInDB(ctx context.Context, user User) error {
 
-	_, err := a.User_coll.InsertOne(ctx, user)
+	_, err := a.user_coll.InsertOne(ctx, user)
 
 	if err != nil {
 		log.Error("Could not store credentials in DB", zap.Error(err))
@@ -66,14 +71,31 @@ func (a Auth) Create(ctx context.Context, username string, password string) erro
 	return errors.New("Test errors")
 }
 
-func (a Auth) CreateToken(username string) (string, error) {
-	// check if usertoken struct exists in mongo
+func (a Auth) CreateToken(ctx context.Context, username string) ([]byte, error) {
+	newToken := getToken()
 
-	// if not create one
+	result, err := a.token_coll.UpdateOne(ctx, bson.M{"username": username}, bson.M{"$push": bson.M{"tokens": newToken}})
 
-	// insert this token into token array
+	if err != nil {
+		log.Error("Unable to update token into DB", zap.Error(err))
+		return nil, err
+	}
 
-	return "random", errors.New("Test errors")
+	if result.MatchedCount == 0 {
+		newUserTokens := UserTokens{
+			Username: username,
+			Tokens:   [][]byte{newToken},
+		}
+
+		_, err := a.token_coll.InsertOne(ctx, newUserTokens)
+
+		if err != nil {
+			log.Error("Unable to insert token into DB", zap.Error(err))
+			return nil, err
+		}
+	}
+
+	return newToken, nil
 }
 
 func (a Auth) Authenticate(username string, token string) (bool, error) {

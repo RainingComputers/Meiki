@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/RainingComputers/Meiki/auth"
+	"github.com/RainingComputers/Meiki/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 	"go.mongodb.org/mongo-driver/bson"
@@ -21,7 +22,13 @@ type AuthTestSuite struct {
 	user_coll  *mongo.Collection
 }
 
+func (s *AuthTestSuite) clean() {
+	s.token_coll.DeleteMany(s.ctx, bson.M{})
+	s.user_coll.DeleteMany(s.ctx, bson.M{})
+}
+
 func (s *AuthTestSuite) SetupTest() {
+	log.Initialize()
 	s.ctx = context.Background()
 
 	client, err := mongo.Connect(s.ctx, options.Client().ApplyURI("mongodb://root:example@localhost:27017"))
@@ -34,14 +41,12 @@ func (s *AuthTestSuite) SetupTest() {
 	s.user_coll = auth_db.Collection("users")
 	s.token_coll = auth_db.Collection("tokens")
 
-	s.auth = auth.Auth{
-		User_coll: s.user_coll, Token_coll: s.token_coll,
-	}
+	s.auth = auth.CreateAuth(s.token_coll, s.user_coll)
+	s.clean()
 }
 
 func (s *AuthTestSuite) TeardownTest() {
-	s.token_coll.DeleteMany(s.ctx, bson.M{})
-	s.user_coll.DeleteMany(s.ctx, bson.M{})
+	s.clean()
 }
 
 func (s *AuthTestSuite) TestShouldCreateUser() {
@@ -53,6 +58,15 @@ func (s *AuthTestSuite) TestShouldCreateUser() {
 	err := bcrypt.CompareHashAndPassword(storedUser.PasswordHash, []byte("thisisveryunsafe"))
 
 	assert.Nil(s.T(), err)
+}
+
+func (s *AuthTestSuite) TestShouldCreateTokenForNewUser() {
+	s.auth.CreateToken(s.ctx, "alex")
+	var storedUserTokens auth.UserTokens
+	s.token_coll.FindOne(s.ctx, bson.M{"username": "alex"}).Decode(&storedUserTokens)
+
+	assert.Equal(s.T(), 1, len(storedUserTokens.Tokens))
+	assert.True(s.T(), len(storedUserTokens.Tokens[0]) > 2)
 }
 
 func TestAuthTestSuite(t *testing.T) {
