@@ -1,12 +1,5 @@
 {
-    "conventionalCommits.scopes": [
-        "UI",
-        "Backend"
-    ],
-    "css.customData": [
-        ".vscode/css_custom_data.json"
-    ],
-    "cSpell.ignoreWords": [
-        "tailwindcss"
-    ]
+    "conventionalCommits.scopes": ["UI", "Backend"],
+    "css.customData": [".vscode/css_custom_data.json"],
+    "cSpell.ignoreWords": ["tailwindcss"]
 }

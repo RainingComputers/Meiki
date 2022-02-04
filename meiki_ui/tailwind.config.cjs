@@ -1,9 +1,9 @@
-const colors = require('tailwindcss/colors')
+const colors = require("tailwindcss/colors")
 
 module.exports = {
-    darkMode: 'media',
+    darkMode: "media",
 
-    content: ['./src/**/*.{html,js,svelte,ts}'],
+    content: ["./src/**/*.{html,js,svelte,ts}"],
     theme: {
         color: {
             white: colors.white,
@@ -14,9 +14,9 @@ module.exports = {
             black: colors.black,
         },
         fontFamily: {
-            serif: ['Montserrat', 'system-ui'],
+            serif: ["Montserrat", "system-ui"],
         },
     },
     variants: {},
     plugins: [],
-};
+}
