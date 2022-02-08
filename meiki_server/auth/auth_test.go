@@ -42,7 +42,7 @@ func (s *AuthTestSuite) SetupTest() {
 	s.user_coll = auth_db.Collection("users")
 	s.token_coll = auth_db.Collection("tokens")
 
-	s.auth = auth.CreateAuth(s.token_coll, s.user_coll)
+	s.auth = auth.CreateAuth(s.ctx, s.token_coll, s.user_coll)
 	s.clean()
 }
 
@@ -60,6 +60,14 @@ func (s *AuthTestSuite) TestShouldCreateUser() {
 	err = bcrypt.CompareHashAndPassword(storedUser.PasswordHash, []byte("thisisveryunsafe"))
 
 	assert.Nil(s.T(), err)
+}
+
+func (s *AuthTestSuite) TestShouldErrorOutIfUserExists() {
+	err := s.auth.Create(s.ctx, "shnoo", "thisisveryunsafe")
+	assert.Nil(s.T(), err)
+
+	err = s.auth.Create(s.ctx, "shnoo", "thisisveryunsafe")
+	assert.NotNil(s.T(), err)
 }
 
 func (s *AuthTestSuite) TestShouldCreateTokenForNewUser() {
@@ -94,6 +102,7 @@ func (s *AuthTestSuite) TestShouldAddTokenForExistingUser() {
 func (s *AuthTestSuite) TestShouldDeleteUser() {
 	err := s.auth.Delete(s.ctx, "shnoo")
 	assert.NotNil(s.T(), err)
+	// assert.ErrorIsf(s.T(), err, errors.ErrKeyIncorrect, "unable to find user in DB")
 
 	err = s.auth.Create(s.ctx, "shnoo", "thisisveryunsafe")
 	assert.Nil(s.T(), err)
@@ -132,7 +141,10 @@ func TestShouldErroroutWhenMongoCannotBeConnected(t *testing.T) {
 	user_coll := auth_db.Collection("users")
 	token_coll := auth_db.Collection("tokens")
 
-	auth := auth.CreateAuth(token_coll, user_coll)
+	auth := auth.CreateAuth(ctx, token_coll, user_coll)
 	err = auth.Create(ctx, "shnoo", "thisisveryunsafe")
 	assert.NotNil(t, err)
+
+	// Need to check the correct error for future
+
 }

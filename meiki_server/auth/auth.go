@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -32,7 +33,24 @@ func getToken() []byte {
 	return []byte(uuid.NewString())
 }
 
-func CreateAuth(token_coll *mongo.Collection, user_coll *mongo.Collection) Auth {
+func CreateAuth(ctx context.Context, token_coll *mongo.Collection, user_coll *mongo.Collection) Auth {
+	mod := mongo.IndexModel{
+		Keys:    bson.D{{Key: "username", Value: 1}},
+		Options: options.Index().SetUnique(true),
+	}
+
+	_, err := user_coll.Indexes().CreateOne(ctx, mod)
+
+	if err != nil {
+		log.Error("Unable to create unique index in user collection", zap.Error(err))
+	}
+
+	_, err = token_coll.Indexes().CreateOne(ctx, mod)
+
+	if err != nil {
+		log.Error("Unable to create unique index in token collection", zap.Error(err))
+	}
+
 	return Auth{token_coll, user_coll}
 }
 
@@ -146,7 +164,7 @@ func (a Auth) CreateToken(ctx context.Context, username string) ([]byte, error) 
 	return newToken, nil
 }
 
-func (a Auth) Authenticate(username string, token string) (bool, error) {
+func (a Auth) Login(username string, token string) (bool, error) {
 	// get tokens struct with username
 
 	// check if token exists in token array
@@ -160,8 +178,4 @@ func (a Auth) Logout(username string, token string) error {
 	// delete particular token from array by username
 
 	return errors.New("test errors")
-}
-
-func TestLog() {
-	log.Error("something", zap.Error(errors.New("some error")))
 }
