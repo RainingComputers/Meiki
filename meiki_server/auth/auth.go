@@ -49,10 +49,13 @@ func (a Auth) storeCredentialsInDB(ctx context.Context, user User) error {
 
 func (a Auth) Create(ctx context.Context, username string, password string) error {
 
-	passwordHash, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(password), 8)
+
+	// log.Info("Total Time %d", zap.String("Time difference", end_time.Sub(start_time).String()))
 
 	if err != nil {
-		log.Error("Could not create password hash for user", zap.Error(err))
+		// log.Error("could not create password hash for user", zap.Error(err))
+		log.Fatal("could not create password hash for user", zap.Error(err)) // No idea why this would come
 		return err
 	}
 
@@ -64,11 +67,11 @@ func (a Auth) Create(ctx context.Context, username string, password string) erro
 	err = a.storeCredentialsInDB(ctx, user)
 
 	if err != nil {
-		log.Error("Could not store credentials while creating user", zap.Error(err))
+		log.Error("could not store credentials while creating user", zap.Error(err))
 		return err
 	}
 
-	return errors.New("Test errors")
+	return nil
 }
 
 func (a Auth) CreateToken(ctx context.Context, username string) ([]byte, error) {
@@ -105,13 +108,13 @@ func (a Auth) Authenticate(username string, token string) (bool, error) {
 
 	// if yes return true else false
 
-	return false, errors.New("Test errors")
+	return false, errors.New("test errors")
 }
 
 func (a Auth) Logout(username string, token string) error {
 	// delete particular token from array by username
 
-	return errors.New("Test errors")
+	return errors.New("test errors")
 }
 
 func TestLog() {
