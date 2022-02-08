@@ -91,6 +91,32 @@ func (s *AuthTestSuite) TestShouldAddTokenForExistingUser() {
 	assert.Equal(s.T(), token2, storedUserTokens.Tokens[1])
 }
 
+func (s *AuthTestSuite) TestShouldDeleteUser() {
+	err := s.auth.Delete(s.ctx, "shnoo")
+	assert.NotNil(s.T(), err)
+
+	err = s.auth.Create(s.ctx, "shnoo", "thisisveryunsafe")
+	assert.Nil(s.T(), err)
+
+	_, err = s.auth.CreateToken(s.ctx, "shnoo")
+
+	err = s.auth.Delete(s.ctx, "shnoo")
+	assert.Nil(s.T(), err)
+
+	var storedUser auth.User
+	s.user_coll.FindOne(s.ctx, bson.M{"username": "shnoo"}).Decode(&storedUser)
+
+	assert.Equal(s.T(), 0, len(storedUser.Username))
+	assert.Equal(s.T(), 0, len(storedUser.PasswordHash))
+
+	var storedUserToken auth.UserTokens
+	s.token_coll.FindOne(s.ctx, bson.M{"username": "shnoo"}).Decode(&storedUserToken)
+
+	assert.Equal(s.T(), 0, len(storedUserToken.Tokens))
+	assert.Equal(s.T(), 0, len(storedUserToken.Username))
+
+}
+
 func TestAuthTestSuite(t *testing.T) {
 	suite.Run(t, new(AuthTestSuite))
 }

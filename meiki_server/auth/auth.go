@@ -74,6 +74,51 @@ func (a Auth) Create(ctx context.Context, username string, password string) erro
 	return nil
 }
 
+func (a Auth) deleteUserInDB(ctx context.Context, username string) error {
+	result, err := a.user_coll.DeleteOne(ctx, bson.M{
+		"username": username,
+	})
+	if result.DeletedCount == 0 {
+		log.Error("could not find user in DB")
+		return errors.New("unable to find user in DB")
+	}
+	if err != nil {
+		log.Error("unable to delete user from DB", zap.Error(err))
+		return err
+	}
+	return nil
+}
+
+func (a Auth) deleteUserTokensInDB(ctx context.Context, username string) error {
+	result, err := a.token_coll.DeleteOne(ctx, bson.M{
+		"username": username,
+	})
+	if result.DeletedCount == 0 {
+		log.Error("could not find user token in DB")
+		return errors.New("unable to find user tokens in DB")
+	}
+	if err != nil {
+		log.Error("unable to delete user token from DB", zap.Error(err))
+		return err
+	}
+	return nil
+}
+
+func (a Auth) Delete(ctx context.Context, username string) error {
+	err := a.deleteUserInDB(ctx, username)
+	if err != nil {
+		log.Error("unable to delete user", zap.Error(err))
+		return err
+	}
+
+	err = a.deleteUserTokensInDB(ctx, username)
+	if err != nil {
+		log.Error("unable to delete user tokens", zap.Error(err))
+		return err
+	}
+	return nil
+}
+
 func (a Auth) CreateToken(ctx context.Context, username string) ([]byte, error) {
 	newToken := getToken()
 
