@@ -34,7 +34,7 @@ func getToken() []byte {
 	return []byte(uuid.NewString())
 }
 
-func CreateAuth(ctx context.Context, token_coll *mongo.Collection, user_coll *mongo.Collection) Auth {
+func CreateAuth(ctx context.Context, token_coll *mongo.Collection, user_coll *mongo.Collection) (Auth, error) {
 	mod := mongo.IndexModel{
 		Keys:    bson.D{{Key: "username", Value: 1}},
 		Options: options.Index().SetUnique(true),
@@ -44,15 +44,17 @@ func CreateAuth(ctx context.Context, token_coll *mongo.Collection, user_coll *mo
 
 	if err != nil {
 		log.Error("Unable to create unique index in user collection", zap.Error(err))
+		return Auth{}, err
 	}
 
 	_, err = token_coll.Indexes().CreateOne(ctx, mod)
 
 	if err != nil {
 		log.Error("Unable to create unique index in token collection", zap.Error(err))
+		return Auth{}, err
 	}
 
-	return Auth{token_coll, user_coll}
+	return Auth{token_coll, user_coll}, nil
 }
 
 func (a Auth) storeCredentialsInDB(ctx context.Context, user User) error {
@@ -240,7 +242,7 @@ func (a Auth) Logout(ctx context.Context, username string, token []byte) error {
 	if err != nil {
 		return errors.New("unable to log out this user")
 	}
-	
+
 	log.Info("logged out user successfully", zap.String("username", username))
 
 	return nil
