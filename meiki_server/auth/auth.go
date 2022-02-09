@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"bytes"
 	"context"
 	"errors"
 
@@ -164,18 +165,83 @@ func (a Auth) CreateToken(ctx context.Context, username string) ([]byte, error) 
 	return newToken, nil
 }
 
-func (a Auth) Login(username string, token string) (bool, error) {
-	// get tokens struct with username
+func (a Auth) ReadTokensFromDB(ctx context.Context, username string) [][]byte {
+	var userTokens UserTokens
+	a.token_coll.FindOne(ctx, bson.M{"username": username}).Decode(&userTokens)
 
-	// check if token exists in token array
-
-	// if yes return true else false
-
-	return false, errors.New("test errors")
+	return userTokens.Tokens
 }
 
-func (a Auth) Logout(username string, token string) error {
-	// delete particular token from array by username
+func (a Auth) Authenticate(ctx context.Context, username string, token []byte) bool {
 
-	return errors.New("test errors")
+	existingTokens := a.ReadTokensFromDB(ctx, username)
+
+	for _, t := range existingTokens {
+		if bytes.Equal(t, token) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (a Auth) getPasswordHashFromDB(ctx context.Context, username string) []byte {
+	var user User
+	a.user_coll.FindOne(ctx, bson.M{"username": username}).Decode(&user)
+
+	return user.PasswordHash
+}
+
+func (a Auth) PasswordMatches(ctx context.Context, username, password string) bool {
+	passwordHash := a.getPasswordHashFromDB(ctx, username)
+
+	err := bcrypt.CompareHashAndPassword(passwordHash, []byte(password))
+
+	if err != nil {
+		log.Info("password mismatch for user", zap.String("username", username))
+		return false
+	}
+
+	return true
+}
+
+func (a Auth) Login(ctx context.Context, username string, password string) ([]byte, error) {
+	if !a.PasswordMatches(ctx, username, password) {
+		return []byte{}, errors.New("could not login user due to password mismatch")
+	}
+
+	token, err := a.CreateToken(ctx, username)
+
+	if err != nil {
+		return nil, errors.New("could not login user due to token creation failure")
+	}
+
+	return token, nil
+}
+
+func (a Auth) deleteSingleTokenFromDB(ctx context.Context, username string, token []byte) error {
+	result, err := a.token_coll.UpdateOne(ctx, bson.M{"username": username}, bson.M{"$pull": bson.M{"tokens": token}})
+
+	if err != nil {
+		return err
+	}
+
+	if result.MatchedCount == 0 {
+		log.Error("unable to find existing token", zap.Error(err))
+		return errors.New("unable to delete token from DB")
+	}
+
+	return nil
+}
+
+func (a Auth) Logout(ctx context.Context, username string, token []byte) error {
+	err := a.deleteSingleTokenFromDB(ctx, username, token)
+
+	if err != nil {
+		return errors.New("unable to log out this user")
+	}
+	
+	log.Info("logged out user successfully", zap.String("username", username))
+
+	return nil
 }

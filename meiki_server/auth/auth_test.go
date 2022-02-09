@@ -83,9 +83,7 @@ func (s *AuthTestSuite) TestShouldCreateTokenForNewUser() {
 }
 
 func (s *AuthTestSuite) TestShouldAddTokenForExistingUser() {
-	// This tests both?
-	token1, err1 := s.auth.CreateToken(s.ctx, "alex")
-	assert.Nil(s.T(), err1)
+	token1, _ := s.auth.CreateToken(s.ctx, "alex")
 
 	token2, err2 := s.auth.CreateToken(s.ctx, "alex")
 	assert.Nil(s.T(), err2)
@@ -126,6 +124,43 @@ func (s *AuthTestSuite) TestShouldDeleteUser() {
 	assert.Equal(s.T(), 0, len(storedUserToken.Tokens))
 	assert.Equal(s.T(), 0, len(storedUserToken.Username))
 
+}
+
+func (s *AuthTestSuite) TestShouldMatchPassword() {
+	err := s.auth.Create(s.ctx, "shnoo", "right-password")
+	assert.Nil(s.T(), err)
+
+	assert.True(s.T(), s.auth.PasswordMatches(s.ctx, "shnoo", "right-password"))
+	assert.False(s.T(), s.auth.PasswordMatches(s.ctx, "shnoo", "wrong-password"))
+}
+
+func (s *AuthTestSuite) TestShouldLogin() {
+	err1 := s.auth.Create(s.ctx, "shnoo", "right-password")
+	assert.Nil(s.T(), err1)
+
+	token, err2 := s.auth.Login(s.ctx, "shnoo", "right-password")
+	assert.Nil(s.T(), err2)
+
+	assert.True(s.T(), len(token) > 0)
+}
+
+func (s *AuthTestSuite) TestShouldLogout() {
+	err := s.auth.Create(s.ctx, "alex", "alex-password")
+	assert.Nil(s.T(), err)
+
+	token1, _ := s.auth.CreateToken(s.ctx, "alex")
+	token2, _ := s.auth.CreateToken(s.ctx, "alex")
+
+	s.auth.Logout(s.ctx, "alex", token1)
+
+	storedTokens := s.auth.ReadTokensFromDB(s.ctx, "alex")
+	assert.Equal(s.T(), len(storedTokens), 1)
+	assert.Equal(s.T(), storedTokens[0], token2)
+
+	s.auth.Logout(s.ctx, "alex", token2)
+
+	storedTokens = s.auth.ReadTokensFromDB(s.ctx, "alex")
+	assert.Equal(s.T(), len(storedTokens), 0)
 }
 
 func TestAuthTestSuite(t *testing.T) {
