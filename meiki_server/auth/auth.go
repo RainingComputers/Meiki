@@ -69,20 +69,16 @@ func (a Auth) Create(ctx context.Context, username string, password string) erro
 
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(password), 8)
 
-	// log.Info("Total Time %d", zap.String("Time difference", end_time.Sub(start_time).String()))
-
 	if err != nil {
-		// log.Error("could not create password hash for user", zap.Error(err))
-		log.Fatal("could not create password hash for user", zap.Error(err)) // No idea why this would come
+		// This should never occur
+		log.Fatal("could not create password hash for user", zap.Error(err))
 		return err
 	}
 
-	user := User{
+	err = a.storeCredentialsInDB(ctx, User{
 		username,
 		passwordHash,
-	}
-
-	err = a.storeCredentialsInDB(ctx, user)
+	})
 
 	if err != nil {
 		log.Error("could not store credentials while creating user", zap.Error(err))
@@ -93,43 +89,47 @@ func (a Auth) Create(ctx context.Context, username string, password string) erro
 }
 
 func (a Auth) deleteUserInDB(ctx context.Context, username string) error {
-	result, err := a.user_coll.DeleteOne(ctx, bson.M{
-		"username": username,
-	})
+	result, err := a.user_coll.DeleteOne(ctx, bson.M{"username": username})
+
 	if result.DeletedCount == 0 {
 		log.Error("could not find user in DB")
 		return errors.New("unable to find user in DB")
 	}
+
 	if err != nil {
 		log.Error("unable to delete user from DB", zap.Error(err))
 		return err
 	}
+
 	return nil
 }
 
 func (a Auth) deleteUserTokensInDB(ctx context.Context, username string) error {
-	result, err := a.token_coll.DeleteOne(ctx, bson.M{
-		"username": username,
-	})
+	result, err := a.token_coll.DeleteOne(ctx, bson.M{"username": username})
+
 	if result.DeletedCount == 0 {
 		log.Error("could not find user token in DB")
 		return errors.New("unable to find user tokens in DB")
 	}
+
 	if err != nil {
 		log.Error("unable to delete user token from DB", zap.Error(err))
 		return err
 	}
+
 	return nil
 }
 
 func (a Auth) Delete(ctx context.Context, username string) error {
 	err := a.deleteUserInDB(ctx, username)
+
 	if err != nil {
 		log.Error("unable to delete user", zap.Error(err))
 		return err
 	}
 
 	err = a.deleteUserTokensInDB(ctx, username)
+
 	if err != nil {
 		log.Error("unable to delete user tokens", zap.Error(err))
 		return err

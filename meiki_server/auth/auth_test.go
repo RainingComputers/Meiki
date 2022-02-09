@@ -83,6 +83,7 @@ func (s *AuthTestSuite) TestShouldCreateTokenForNewUser() {
 }
 
 func (s *AuthTestSuite) TestShouldAddTokenForExistingUser() {
+	// This tests both?
 	token1, err1 := s.auth.CreateToken(s.ctx, "alex")
 	assert.Nil(s.T(), err1)
 
@@ -108,6 +109,7 @@ func (s *AuthTestSuite) TestShouldDeleteUser() {
 	assert.Nil(s.T(), err)
 
 	_, err = s.auth.CreateToken(s.ctx, "shnoo")
+	assert.Nil(s.T(), err)
 
 	err = s.auth.Delete(s.ctx, "shnoo")
 	assert.Nil(s.T(), err)
