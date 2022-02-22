@@ -30,7 +30,9 @@ func (s *AuthTestSuite) clean() {
 
 func (s *AuthTestSuite) SetupTest() {
 	log.Initialize()
-	s.ctx = context.Background()
+	// s.ctx = context.Background()
+
+	s.ctx, _ = context.WithTimeout(context.Background(), 100*time.Millisecond)
 
 	client, err := mongo.Connect(s.ctx, options.Client().ApplyURI("mongodb://root:example@localhost:27017"))
 
@@ -49,6 +51,10 @@ func (s *AuthTestSuite) SetupTest() {
 
 func (s *AuthTestSuite) TeardownTest() {
 	s.clean()
+}
+
+func TestAuthTestSuite(t *testing.T) {
+	suite.Run(t, new(AuthTestSuite))
 }
 
 func (s *AuthTestSuite) TestShouldCreateUser() {
@@ -162,10 +168,6 @@ func (s *AuthTestSuite) TestShouldLogout() {
 
 	storedTokens = s.auth.ReadTokensFromDB(s.ctx, "alex")
 	assert.Equal(s.T(), len(storedTokens), 0)
-}
-
-func TestAuthTestSuite(t *testing.T) {
-	suite.Run(t, new(AuthTestSuite))
 }
 
 func TestShouldErroroutWhenMongoCannotBeConnected(t *testing.T) {
