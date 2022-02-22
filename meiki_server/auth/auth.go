@@ -30,6 +30,16 @@ type UserTokens struct {
 	Tokens   [][]byte `bson:"tokens"`
 }
 
+var (
+	ErrUserAlreadyExists    = errors.New("user already exists")
+	ErrMissingUser          = errors.New("unable to find user in DB")
+	ErrUnableToLogOut       = errors.New("unable to log out this user")
+	errUnableToDeleteToken  = errors.New("unable to delete token from DB")
+	ErrPasswordMismatch     = errors.New("could not login user due to password mismatch")
+	ErrMissingUserToken     = errors.New("unable to find user tokens in DB")
+	ErrTokenCreationFailure = errors.New("could not login user due to token creation failure")
+)
+
 func getToken() []byte {
 	return []byte(uuid.NewString())
 }
@@ -61,11 +71,16 @@ func (a Auth) storeCredentialsInDB(ctx context.Context, user User) error {
 
 	_, err := a.user_coll.InsertOne(ctx, user)
 
+	if mongo.IsDuplicateKeyError(err) {
+		log.Error("User already exists", zap.Error(err))
+		return ErrUserAlreadyExists
+	}
+
 	if err != nil {
 		log.Error("Could not store credentials in DB", zap.Error(err))
 	}
 
-	return err
+	return err // check if user already exists error?
 }
 
 func (a Auth) Create(ctx context.Context, username string, password string) error {
@@ -73,7 +88,6 @@ func (a Auth) Create(ctx context.Context, username string, password string) erro
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(password), 8)
 
 	if err != nil {
-		// This should never occur
 		log.Fatal("could not create password hash for user", zap.Error(err))
 		return err
 	}
@@ -94,14 +108,14 @@ func (a Auth) Create(ctx context.Context, username string, password string) erro
 func (a Auth) deleteUserInDB(ctx context.Context, username string) error {
 	result, err := a.user_coll.DeleteOne(ctx, bson.M{"username": username})
 
-	if result.DeletedCount == 0 {
-		log.Error("could not find user in DB")
-		return errors.New("unable to find user in DB")
-	}
-
 	if err != nil {
 		log.Error("unable to delete user from DB", zap.Error(err))
 		return err
+	}
+
+	if result.DeletedCount == 0 {
+		log.Error("could not find user in DB")
+		return ErrMissingUser
 	}
 
 	return nil
@@ -112,7 +126,7 @@ func (a Auth) deleteUserTokensInDB(ctx context.Context, username string) error {
 
 	if result.DeletedCount == 0 {
 		log.Error("could not find user token in DB")
-		return errors.New("unable to find user tokens in DB")
+		return ErrMissingUserToken
 	}
 
 	if err != nil {
@@ -209,13 +223,13 @@ func (a Auth) PasswordMatches(ctx context.Context, username, password string) bo
 
 func (a Auth) Login(ctx context.Context, username string, password string) ([]byte, error) {
 	if !a.PasswordMatches(ctx, username, password) {
-		return []byte{}, errors.New("could not login user due to password mismatch")
+		return []byte{}, ErrPasswordMismatch
 	}
 
 	token, err := a.CreateToken(ctx, username)
 
 	if err != nil {
-		return nil, errors.New("could not login user due to token creation failure")
+		return nil, ErrTokenCreationFailure
 	}
 
 	return token, nil
@@ -230,7 +244,7 @@ func (a Auth) deleteSingleTokenFromDB(ctx context.Context, username string, toke
 
 	if result.MatchedCount == 0 {
 		log.Error("unable to find existing token", zap.Error(err))
-		return errors.New("unable to delete token from DB")
+		return errUnableToDeleteToken
 	}
 
 	return nil
@@ -240,7 +254,7 @@ func (a Auth) Logout(ctx context.Context, username string, token []byte) error {
 	err := a.deleteSingleTokenFromDB(ctx, username, token)
 
 	if err != nil {
-		return errors.New("unable to log out this user")
+		return ErrUnableToLogOut
 	}
 
 	log.Info("logged out user successfully", zap.String("username", username))

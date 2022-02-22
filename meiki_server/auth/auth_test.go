@@ -19,6 +19,7 @@ type AuthTestSuite struct {
 	suite.Suite
 	ctx        context.Context
 	auth       auth.Auth
+	cancel     context.CancelFunc
 	token_coll *mongo.Collection
 	user_coll  *mongo.Collection
 }
@@ -31,8 +32,7 @@ func (s *AuthTestSuite) clean() {
 func (s *AuthTestSuite) SetupTest() {
 	log.Initialize()
 	// s.ctx = context.Background()
-
-	s.ctx, _ = context.WithTimeout(context.Background(), 100*time.Millisecond)
+	s.ctx, s.cancel = context.WithTimeout(context.Background(), 100*time.Millisecond)
 
 	client, err := mongo.Connect(s.ctx, options.Client().ApplyURI("mongodb://root:example@localhost:27017"))
 
@@ -49,7 +49,7 @@ func (s *AuthTestSuite) SetupTest() {
 	s.clean()
 }
 
-func (s *AuthTestSuite) TeardownTest() {
+func (s *AuthTestSuite) TearDownTest() {
 	s.clean()
 }
 
@@ -74,7 +74,7 @@ func (s *AuthTestSuite) TestShouldErrorOutIfUserExists() {
 	assert.Nil(s.T(), err)
 
 	err = s.auth.Create(s.ctx, "shnoo", "thisisveryunsafe")
-	assert.NotNil(s.T(), err)
+	assert.ErrorIs(s.T(), err, auth.ErrUserAlreadyExists)
 }
 
 func (s *AuthTestSuite) TestShouldCreateTokenForNewUser() {
@@ -107,8 +107,7 @@ func (s *AuthTestSuite) TestShouldAddTokenForExistingUser() {
 
 func (s *AuthTestSuite) TestShouldDeleteUser() {
 	err := s.auth.Delete(s.ctx, "shnoo")
-	assert.NotNil(s.T(), err)
-	// assert.ErrorIsf(s.T(), err, errors.ErrKeyIncorrect, "unable to find user in DB")
+	assert.ErrorIs(s.T(), err, auth.ErrMissingUser)
 
 	err = s.auth.Create(s.ctx, "shnoo", "thisisveryunsafe")
 	assert.Nil(s.T(), err)
@@ -131,6 +130,12 @@ func (s *AuthTestSuite) TestShouldDeleteUser() {
 	assert.Equal(s.T(), 0, len(storedUserToken.Tokens))
 	assert.Equal(s.T(), 0, len(storedUserToken.Username))
 
+	err = s.auth.Delete(s.ctx, "shnoo")
+	assert.ErrorIs(s.T(), err, auth.ErrMissingUser)
+
+	s.cancel()
+	err = s.auth.Delete(s.ctx, "shnoo")
+	assert.ErrorIs(s.T(), err, context.Canceled)
 }
 
 func (s *AuthTestSuite) TestShouldMatchPassword() {
@@ -147,8 +152,10 @@ func (s *AuthTestSuite) TestShouldLogin() {
 
 	token, err2 := s.auth.Login(s.ctx, "shnoo", "right-password")
 	assert.Nil(s.T(), err2)
-
 	assert.True(s.T(), len(token) > 0)
+
+	_, err3 := s.auth.Login(s.ctx, "shnoo", "wrong-password")
+	assert.ErrorIs(s.T(), err3, auth.ErrPasswordMismatch)
 }
 
 func (s *AuthTestSuite) TestShouldLogout() {
@@ -170,6 +177,18 @@ func (s *AuthTestSuite) TestShouldLogout() {
 	assert.Equal(s.T(), len(storedTokens), 0)
 }
 
+func (s *AuthTestSuite) TestShouldErrorWhenUserCannotLogout() {
+	err := s.auth.Create(s.ctx, "alex", "alex-password")
+	assert.Nil(s.T(), err)
+
+	token1, _ := s.auth.CreateToken(s.ctx, "alex")
+
+	s.cancel()
+	err = s.auth.Logout(s.ctx, "alex", token1)
+
+	assert.ErrorIs(s.T(), err, auth.ErrUnableToLogOut)
+}
+
 func TestShouldErroroutWhenMongoCannotBeConnected(t *testing.T) {
 	log.Initialize()
 	ctx, cancel := context.WithTimeout(context.Background(), time.Millisecond*1)
@@ -182,8 +201,5 @@ func TestShouldErroroutWhenMongoCannotBeConnected(t *testing.T) {
 	token_coll := auth_db.Collection("tokens")
 
 	_, err = auth.CreateAuth(ctx, token_coll, user_coll)
-	assert.NotNil(t, err)
-
-	// Need to check the correct error for future
-
+	assert.ErrorIs(t, err, context.Canceled)
 }
