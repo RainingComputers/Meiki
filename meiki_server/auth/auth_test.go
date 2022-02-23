@@ -177,7 +177,24 @@ func (s *AuthTestSuite) TestShouldLogin() {
 
 // TODO: Login errors?
 
-// TODO: Test for ReadTokensFromDB?
+func (s *AuthTestSuite) TestShouldReturnTokens() {
+	token1, err := s.auth.CreateToken(s.ctx, "shnoo")
+	assert.Nil(s.T(), err)
+
+	tokenArray1, err := s.auth.ReadTokensFromDB(s.ctx, "shnoo")
+	assert.Nil(s.T(), err)
+	assert.Equal(s.T(), 1, len(tokenArray1))
+	assert.Equal(s.T(), tokenArray1[0], token1)
+
+	token2, err := s.auth.CreateToken(s.ctx, "shnoo")
+	assert.Nil(s.T(), err)
+
+	tokenArray2, err := s.auth.ReadTokensFromDB(s.ctx, "shnoo")
+	assert.Nil(s.T(), err)
+
+	assert.Equal(s.T(), 2, len(tokenArray2))
+	assert.Equal(s.T(), tokenArray2[1], token2)
+}
 
 // TODO: Test for authenticate
 
@@ -190,13 +207,15 @@ func (s *AuthTestSuite) TestShouldLogout() {
 
 	s.auth.Logout(s.ctx, "alex", token1)
 
-	storedTokens := s.auth.ReadTokensFromDB(s.ctx, "alex")
+	storedTokens, err := s.auth.ReadTokensFromDB(s.ctx, "alex")
+	assert.Nil(s.T(), err)
 	assert.Equal(s.T(), len(storedTokens), 1)
 	assert.Equal(s.T(), storedTokens[0], token2)
 
 	s.auth.Logout(s.ctx, "alex", token2)
 
-	storedTokens = s.auth.ReadTokensFromDB(s.ctx, "alex")
+	storedTokens, err = s.auth.ReadTokensFromDB(s.ctx, "alex")
+	assert.Nil(s.T(), err)
 	assert.Equal(s.T(), len(storedTokens), 0)
 }
 

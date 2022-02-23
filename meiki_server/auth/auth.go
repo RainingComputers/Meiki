@@ -69,7 +69,7 @@ func CreateAuth(ctx context.Context, token_coll *mongo.Collection, user_coll *mo
 func (a Auth) storeCredentialsInDB(ctx context.Context, user User) error {
 
 	_, err := a.user_coll.InsertOne(ctx, user)
-
+	
 	if mongo.IsDuplicateKeyError(err) {
 		log.Error("User already exists", zap.Error(err))
 		return ErrUserAlreadyExists
@@ -218,25 +218,36 @@ func (a Auth) Login(ctx context.Context, username string, password string) ([]by
 	return token, nil
 }
 
-func (a Auth) ReadTokensFromDB(ctx context.Context, username string) [][]byte {
+func (a Auth) ReadTokensFromDB(ctx context.Context, username string) ([][]byte, error) {
 	var userTokens UserTokens
-	// TODO What happens to errors? (Deal with ErrNoDocuments and all other errors)
-	a.token_coll.FindOne(ctx, bson.M{"username": username}).Decode(&userTokens)
+	err := a.token_coll.FindOne(ctx, bson.M{"username": username}).Decode(&userTokens)
 
-	return userTokens.Tokens
+	if errors.Is(err, mongo.ErrNoDocuments) {
+		return nil, ErrMissingUserTokens
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return userTokens.Tokens, nil
 }
 
-func (a Auth) Authenticate(ctx context.Context, username string, token []byte) bool {
+func (a Auth) Authenticate(ctx context.Context, username string, token []byte) (bool, error) {
 
-	existingTokens := a.ReadTokensFromDB(ctx, username)
+	existingTokens, err := a.ReadTokensFromDB(ctx, username)
+
+	if err != nil {
+		return false, err
+	}
 
 	for _, t := range existingTokens {
 		if bytes.Equal(t, token) {
-			return true
+			return true, nil
 		}
 	}
 
-	return false
+	return false, nil
 }
 
 func (a Auth) deleteSingleTokenFromDB(ctx context.Context, username string, token []byte) error {
@@ -248,7 +259,7 @@ func (a Auth) deleteSingleTokenFromDB(ctx context.Context, username string, toke
 
 	if result.MatchedCount == 0 {
 		log.Error("unable to find existing token", zap.Error(err))
-		return ErrMissingUserTokens 
+		return ErrMissingUserTokens
 	}
 
 	return nil
