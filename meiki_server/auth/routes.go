@@ -27,7 +27,7 @@ func getCreateHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 		err := a.Create(ctx, newUser.Username, newUser.Password)
 
 		if err != nil {
-			// return BAD_REQUEST if the user already exists, for now this
+			// TODO: return BAD_REQUEST if the user already exists, for now this
 			c.JSON(http.StatusInternalServerError, "Unable to create user")
 		}
 	}
