@@ -203,8 +203,6 @@ func (a Auth) CreateToken(ctx context.Context, username string) ([]byte, error) 
 }
 
 func (a Auth) Login(ctx context.Context, username string, password string) ([]byte, error) {
-	// TODO: Discuss testing this and CreateToken
-
 	if !a.PasswordMatches(ctx, username, password) {
 		return []byte{}, ErrPasswordMismatch
 	}

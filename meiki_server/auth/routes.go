@@ -2,33 +2,33 @@ package auth
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func HelloHandler() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.JSON(http.StatusOK, "Hello world")
-	}
+type Credentials struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 func getCreateHandler(ctx context.Context, a Auth) gin.HandlerFunc {
-	type CreateUserRequest struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-	}
-
 	return func(c *gin.Context) {
-		var newUser CreateUserRequest
+		var newUser Credentials
 
 		c.BindJSON(&newUser)
 
 		err := a.Create(ctx, newUser.Username, newUser.Password)
 
+		if errors.Is(err, ErrUserAlreadyExists) {
+			c.JSON(http.StatusBadRequest, "User already exists")
+			return
+		}
+
 		if err != nil {
-			// TODO: return BAD_REQUEST if the user already exists, for now this
 			c.JSON(http.StatusInternalServerError, "Unable to create user")
+			return
 		}
 	}
 }
@@ -52,7 +52,6 @@ func getLogoutHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 }
 
 func CreateRoutes(router *gin.Engine, ctx context.Context, auth Auth) {
-	router.POST("/hello", HelloHandler())
 	router.POST("/create", getCreateHandler(ctx, auth))
 	router.POST("/delete", getDeleteHandler(ctx, auth))
 	router.POST("/login", getLoginHandler(ctx, auth))
