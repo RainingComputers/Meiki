@@ -41,7 +41,23 @@ func getDeleteHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 
 func getLoginHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.JSON(http.StatusInternalServerError, "")
+		var creds Credentials
+
+		c.BindJSON(&creds)
+
+		token, err := a.Login(ctx, creds.Username, creds.Password)
+
+		if err == ErrPasswordMismatch {
+			c.JSON(http.StatusUnauthorized, "Password does not match")
+			return
+		}
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, "Unable to login")
+			return
+		}
+
+		c.SetCookie("meiki_session_token", string(token), 86400*100, "/", "", true, true)
 	}
 }
 
