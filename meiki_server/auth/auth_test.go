@@ -69,7 +69,7 @@ func (s *AuthTestSuite) TestShouldCreateUser() {
 	assert.Nil(s.T(), err)
 }
 
-func (s *AuthTestSuite) TestShouldErrorOutIfUserExistsOrMongoError() {
+func (s *AuthTestSuite) TestCreateShouldError() {
 	err := s.auth.Create(s.ctx, "shnoo", "thisisveryunsafe")
 	assert.Nil(s.T(), err)
 
@@ -107,7 +107,7 @@ func (s *AuthTestSuite) TestShouldDeleteUser() {
 	assert.Equal(s.T(), 0, len(storedUserToken.Username))
 }
 
-func (s *AuthTestSuite) TestShouldErrorWhenDeletingMissingUserOrMongoError() {
+func (s *AuthTestSuite) TestDeleteShouldError() {
 	err := s.auth.Delete(s.ctx, "shnoo")
 	assert.ErrorIs(s.T(), err, auth.ErrMissingUser)
 
@@ -200,16 +200,18 @@ func (s *AuthTestSuite) TestShouldLogout() {
 	assert.Equal(s.T(), len(storedTokens), 0)
 }
 
-func (s *AuthTestSuite) TestShouldErrorWhenUserCannotLogout() {
+func (s *AuthTestSuite) TestLogoutShouldError() {
 	err := s.auth.Create(s.ctx, "alex", "alex-password")
 	assert.Nil(s.T(), err)
 
 	token1, _ := s.auth.CreateToken(s.ctx, "alex")
 
+	err = s.auth.Logout(s.ctx, "doesNotExist", token1)
+	assert.ErrorIs(s.T(), err, auth.ErrMissingUserTokens)
+
 	s.cancel()
 	err = s.auth.Logout(s.ctx, "alex", token1)
-
-	assert.ErrorIs(s.T(), err, auth.ErrUnableToLogOut) // TODO: Test ErrMissingUserTokens
+	assert.ErrorIs(s.T(), err, context.Canceled)
 }
 
 func TestShouldErroroutWhenMongoCannotBeConnected(t *testing.T) {

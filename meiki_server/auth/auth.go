@@ -37,7 +37,6 @@ var (
 	ErrPasswordMismatch     = errors.New("could not login user due to password mismatch")
 	ErrMissingUserTokens    = errors.New("unable to find user tokens in DB")
 	ErrTokenCreationFailure = errors.New("could not login user due to token creation failure")
-	errUnableToDeleteToken  = errors.New("unable to delete token from DB")
 )
 
 func getToken() []byte {
@@ -204,6 +203,8 @@ func (a Auth) CreateToken(ctx context.Context, username string) ([]byte, error) 
 }
 
 func (a Auth) Login(ctx context.Context, username string, password string) ([]byte, error) {
+	// TODO: Discuss testing this and CreateToken
+
 	if !a.PasswordMatches(ctx, username, password) {
 		return []byte{}, ErrPasswordMismatch
 	}
@@ -219,7 +220,7 @@ func (a Auth) Login(ctx context.Context, username string, password string) ([]by
 
 func (a Auth) ReadTokensFromDB(ctx context.Context, username string) [][]byte {
 	var userTokens UserTokens
-	// TODO What happens to errors?
+	// TODO What happens to errors? (Deal with ErrNoDocuments and all other errors)
 	a.token_coll.FindOne(ctx, bson.M{"username": username}).Decode(&userTokens)
 
 	return userTokens.Tokens
@@ -247,7 +248,7 @@ func (a Auth) deleteSingleTokenFromDB(ctx context.Context, username string, toke
 
 	if result.MatchedCount == 0 {
 		log.Error("unable to find existing token", zap.Error(err))
-		return errUnableToDeleteToken // TODO: ErrMissingUserTokens?
+		return ErrMissingUserTokens 
 	}
 
 	return nil
@@ -257,7 +258,7 @@ func (a Auth) Logout(ctx context.Context, username string, token []byte) error {
 	err := a.deleteSingleTokenFromDB(ctx, username, token)
 
 	if err != nil {
-		return ErrUnableToLogOut
+		return err
 	}
 
 	log.Info("logged out user successfully", zap.String("username", username))
