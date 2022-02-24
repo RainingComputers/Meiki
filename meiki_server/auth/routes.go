@@ -35,7 +35,21 @@ func getCreateHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 
 func getDeleteHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.JSON(http.StatusInternalServerError, "")
+		var creds Credentials
+		c.BindJSON(&creds)
+
+		if !a.PasswordMatches(ctx, creds.Username, creds.Password) {
+
+			// TODO: if the user doesn't exist, return appropriate error OR return bad request
+			// We have a toDo in getPasswordHashFromDB that should force us to fix this
+			c.JSON(http.StatusBadRequest, "password mismatch OR user doesn't exist while deleting user")
+			return
+		}
+
+		if err := a.Delete(ctx, creds.Username); err != nil {
+			c.JSON(http.StatusBadRequest, "unable to delete user")
+		}
+
 	}
 }
 

@@ -104,8 +104,9 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	req.AddCookie(sessionTokenCookie)
 	s.assertStatusCode(req, 400)
 
-	// delete the user
-	// check for 200
-	// delete the user
-	// check for 400
+	req, _ = http.NewRequest("POST", "/delete", bytes.NewBuffer(credentialsBody))
+	s.assertStatusCode(req, 200)
+
+	req, _ = http.NewRequest("POST", "/delete", bytes.NewBuffer(credentialsBody))
+	s.assertStatusCode(req, 400)
 }
