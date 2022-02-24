@@ -255,7 +255,7 @@ func (a Auth) deleteSingleTokenFromDB(ctx context.Context, username string, toke
 		return err
 	}
 
-	if result.MatchedCount == 0 {
+	if result.UpsertedCount == 0 {
 		log.Error("unable to find existing token", zap.Error(err))
 		return ErrMissingUserTokens
 	}

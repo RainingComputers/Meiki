@@ -29,7 +29,7 @@ type AuthRoutesTestSuite struct {
 func (s *AuthRoutesTestSuite) SetupTest() {
 	log.Initialize()
 
-	s.ctx, s.cancel = context.WithTimeout(context.Background(), 100*time.Millisecond)
+	s.ctx, s.cancel = context.WithTimeout(context.Background(), 500*time.Millisecond)
 
 	client, err := mongo.Connect(s.ctx, options.Client().ApplyURI("mongodb://root:example@localhost:27017"))
 
@@ -74,7 +74,9 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	w := httptest.NewRecorder()
 	s.router.ServeHTTP(w, req)
 	assert.Equal(s.T(), 200, w.Code)
-	assert.True(s.T(), len(w.Result().Cookies()[0].Value) > 2)
+	sessionTokenCookie := w.Result().Cookies()[0]
+
+	assert.True(s.T(), len(sessionTokenCookie.Value) > 2)
 
 	badCredentialsBody1, _ := json.Marshal(auth.Credentials{
 		Username: "alex",
@@ -91,13 +93,17 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	req, _ = http.NewRequest("POST", "/login", bytes.NewBuffer(badCredentialsBody2))
 	s.assertStatusCode(req, 401)
 
-	// req, _ = http.NewRequest("POST", "/logout", bytes.NewBuffer(credentialsBody))
-	// s.assertStatusCode(req, 200)
+	req, _ = http.NewRequest("POST", "/logout", bytes.NewBuffer(credentialsBody))
+	s.assertStatusCode(req, 400)
 
-	// log out the user
-	// check for 200
-	// log out the user
-	// check for 400
+	req, _ = http.NewRequest("POST", "/logout", bytes.NewBuffer(credentialsBody))
+	req.AddCookie(sessionTokenCookie)
+
+	sessionTokenCookie.Value = "random"
+	req, _ = http.NewRequest("POST", "/logout", bytes.NewBuffer(credentialsBody))
+	req.AddCookie(sessionTokenCookie)
+	s.assertStatusCode(req, 400)
+
 	// delete the user
 	// check for 200
 	// delete the user

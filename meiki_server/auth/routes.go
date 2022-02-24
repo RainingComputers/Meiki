@@ -63,7 +63,25 @@ func getLoginHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 
 func getLogoutHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.JSON(http.StatusInternalServerError, "")
+		var creds Credentials
+		c.BindJSON(&creds)
+		token, err := c.Cookie("meiki_session_token")
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, "could not find session token cookie in request")
+		}
+
+		err = a.Logout(ctx, creds.Username, []byte(token))
+
+		if err == ErrMissingUserTokens {
+			c.JSON(http.StatusBadRequest, "user token is missing")
+			return
+		}
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, "unable to logout")
+			return
+		}
 	}
 }
 

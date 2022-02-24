@@ -228,6 +228,9 @@ func (s *AuthTestSuite) TestLogoutShouldError() {
 	err = s.auth.Logout(s.ctx, "doesNotExist", token1)
 	assert.ErrorIs(s.T(), err, auth.ErrMissingUserTokens)
 
+	err = s.auth.Logout(s.ctx, "alex", []byte("random"))
+	assert.ErrorIs(s.T(), err, auth.ErrMissingUserTokens)
+
 	s.cancel()
 	err = s.auth.Logout(s.ctx, "alex", token1)
 	assert.ErrorIs(s.T(), err, context.Canceled)
