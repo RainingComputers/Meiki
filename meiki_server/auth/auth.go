@@ -69,7 +69,7 @@ func CreateAuth(ctx context.Context, token_coll *mongo.Collection, user_coll *mo
 func (a Auth) storeCredentialsInDB(ctx context.Context, user User) error {
 
 	_, err := a.user_coll.InsertOne(ctx, user)
-	
+
 	if mongo.IsDuplicateKeyError(err) {
 		log.Error("User already exists", zap.Error(err))
 		return ErrUserAlreadyExists

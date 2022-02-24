@@ -58,7 +58,8 @@ func (s *AuthRoutesTestSuite) assertStatusCode(req *http.Request, expected int) 
 
 func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	gin.SetMode(gin.ReleaseMode)
-	s.auth.Delete(s.ctx, "alex") // Just for cleanup
+	s.auth.Delete(s.ctx, "alex")  // Just for cleanup
+	s.auth.Delete(s.ctx, "shnoo") // Just for cleanup
 
 	credentialsBody, _ := json.Marshal(auth.Credentials{
 		Username: "alex",
@@ -90,10 +91,9 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	req, _ = http.NewRequest("POST", "/login", bytes.NewBuffer(badCredentialsBody2))
 	s.assertStatusCode(req, 401)
 
-	// log in to non existent user
-	// check for 401
+	// req, _ = http.NewRequest("POST", "/logout", bytes.NewBuffer(credentialsBody))
+	// s.assertStatusCode(req, 200)
 
-	// check for token
 	// log out the user
 	// check for 200
 	// log out the user
