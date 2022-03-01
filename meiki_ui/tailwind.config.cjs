@@ -16,6 +16,11 @@ module.exports = {
         fontFamily: {
             serif: ["Montserrat", "system-ui"],
         },
+        extend: {
+            dropShadow: {
+                card: "0 0px 2px rgb(0 0 0 / 0.1)"
+            }
+        }
     },
     variants: {},
     plugins: [],
