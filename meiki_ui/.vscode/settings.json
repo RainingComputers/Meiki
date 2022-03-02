@@ -1,5 +1,7 @@
 {
     "conventionalCommits.scopes": ["UI", "Backend"],
     "css.customData": [".vscode/css_custom_data.json"],
-    "cSpell.ignoreWords": ["tailwindcss"]
+    "cSpell.ignoreWords": ["tailwindcss"],
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "javascript.preferences.importModuleSpecifier": "relative"
 }
