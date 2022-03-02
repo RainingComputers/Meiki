@@ -6,8 +6,8 @@
 
 <button
     on:click={onClick}
-    class="bg-blue-500 drop-shadow-card font-bold text-white rounded-md p-1 px-5"
+    class="bg-blue-500 drop-shadow-card font-bold text-white rounded-xl py-2 px-5"
     class:w-full={expand}
 >
-    {label}
+    <span class=" text-sm">{label}</span>
 </button>
