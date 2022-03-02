@@ -2,14 +2,19 @@
     import Root from "../components/Root.svelte"
     import Card from "../components/Card.svelte"
     import Button from "../components/Button.svelte"
+    import Entry from "../components/Entry.svelte"
+    import Logo from "../components/Logo.svelte"
 </script>
 
 <Root>
     <div class="flex flex-row">
         <Card>
-            Meiki UI
+            <Logo />
+            <div class="flex flex-col w-full gap-2">
+                <Entry label="Username" />
+                <Entry label="Password" />
+            </div>
             <Button expand={true} label="Login" />
         </Card>
-        
     </div>
 </Root>
