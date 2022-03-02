@@ -1,7 +1,7 @@
 import { makeRequest } from "./request"
 
 export const createAccount = (username: string, password: string) => {
-    const url = "http://localhost:8080"
+    const url = "http://localhost:8080/create"
     const body = {
         username,
         password,

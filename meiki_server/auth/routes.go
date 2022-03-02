@@ -30,6 +30,7 @@ func getCreateHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, "Unable to create user")
 			return
 		}
+		c.JSON(http.StatusOK, "Username created")
 	}
 }
 

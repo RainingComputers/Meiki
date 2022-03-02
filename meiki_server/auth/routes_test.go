@@ -66,6 +66,8 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 		Password: "alex-password",
 	})
 
+	// TODO: Check response text as well
+
 	req, _ := http.NewRequest("POST", "/create", bytes.NewBuffer(credentialsBody))
 	s.assertStatusCode(req, 200)
 	s.assertStatusCode(req, 400)
