@@ -11,6 +11,9 @@
     let passwordEntry: Entry
 
     function onClick() {
+        // TODO: Add input validation
+        // TODO: Add toast
+        // TOOD: redirect to login
         createAccount(usernameEntry.getValue(), passwordEntry.getValue())
     }
 </script>
@@ -20,7 +23,7 @@
         <Logo />
         <div class="flex flex-col w-full gap-2">
             <Entry label="Username" bind:this={usernameEntry} />
-            <Entry label="Password" bind:this={passwordEntry} />
+            <Entry label="Password" bind:this={passwordEntry} password={true} />
         </div>
         {#if type === "login"}
             <Button expand={true} label="Login" />
