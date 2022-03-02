@@ -4,6 +4,7 @@
     import Button from "../components/Button.svelte"
     import Entry from "../components/Entry.svelte"
     import Logo from "../components/Logo.svelte"
+    import Link from "../components/Link.svelte"
 </script>
 
 <Root>
@@ -16,5 +17,8 @@
             </div>
             <Button expand={true} label="Login" />
         </Card>
+    </div>
+    <div class=" mt-8 text-sm">
+        New to Meiki notes? <Link text="Create" /> a new account to get started
     </div>
 </Root>
