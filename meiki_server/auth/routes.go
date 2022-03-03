@@ -56,6 +56,7 @@ func getDeleteHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, "unable to delete user")
 		}
 
+		c.JSON(http.StatusOK, "Deleted user")
 	}
 }
 
@@ -78,6 +79,8 @@ func getLoginHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 		}
 
 		c.SetCookie("meiki_session_token", string(token), 86400*100, "/", "", true, true)
+
+		c.JSON(http.StatusOK, "Logged in successfully")
 	}
 }
 
@@ -102,6 +105,8 @@ func getLogoutHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, "unable to logout")
 			return
 		}
+
+		c.JSON(http.StatusOK, "Logged out successfully")
 	}
 }
 
