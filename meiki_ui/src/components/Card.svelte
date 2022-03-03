@@ -4,5 +4,7 @@
 
 <span
     class="flex flex-col bg-gray-100 border-gray-200 border p-5 drop-shadow-card gap-10 items-center"
-    style="width: {width}px;"><slot /></span
+    style="width: {width}px;"
 >
+    <slot />
+</span>
