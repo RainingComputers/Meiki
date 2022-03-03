@@ -1,8 +1,6 @@
 <script lang="ts">
     import Root from "../components/Root.svelte"
-    import CredentialForm, {
-        CredentialFromType,
-    } from "../appComponents/CredentialForm.svelte"
+    import CreateUserForm from "../appComponents/CreateUserForm.svelte"
     import UserCreated from "../appComponents/UserCreated.svelte"
 
     let userCreated: boolean = false
@@ -12,8 +10,7 @@
     {#if userCreated}
         <UserCreated />
     {:else}
-        <CredentialForm
-            type={CredentialFromType.CREATE}
+        <CreateUserForm
             on:userCreated={() => {
                 userCreated = true
             }}

@@ -1,36 +1,32 @@
-<script context="module" lang="ts">
-    export enum CredentialFromType {
-        LOGIN,
-        CREATE,
-    }
-</script>
-
 <script lang="ts">
     // TODO: Add input validation
     // TODO: show user exists
 
     import { createEventDispatcher } from "svelte"
-    import { createAccount } from "../api/createAccount"
+    import { login } from "../api/login"
     import Card from "../components/Card.svelte"
     import Button from "../components/Button.svelte"
     import Entry from "../components/Entry.svelte"
     import Error from "../components/Error.svelte"
     import Logo from "./Logo.svelte"
 
-    export let type: CredentialFromType = CredentialFromType.LOGIN
-
     let usernameEntry: Entry
     let passwordEntry: Entry
-    let error: boolean
+    let error: boolean = false
     const dispatch = createEventDispatcher()
 
     async function onClick() {
         error = false
 
         try {
-            await createAccount(usernameEntry.getValue(), passwordEntry.getValue())
-            dispatch("userCreated")
-        } catch {
+            await login(
+                usernameEntry.getValue(),
+                passwordEntry.getValue()
+            )
+
+            dispatch("userLoggedIn")
+        } catch (err) {
+            console.log(err)
             error = true
         }
     }
@@ -41,18 +37,12 @@
         <Logo />
         <div class="flex flex-col w-full gap-4">
             {#if error}
-                <Error>
-                    An error has occured while creating account, please try
-                    again later.
-                </Error>
+                <Error>An error has occured while logging in, try again</Error>
             {/if}
             <Entry label="Username" bind:this={usernameEntry} />
             <Entry label="Password" bind:this={passwordEntry} password={true} />
         </div>
-        {#if type === CredentialFromType.LOGIN}
-            <Button expand={true} label="Login" />
-        {:else if type === CredentialFromType.CREATE}
-            <Button {onClick} expand={true} label="Create Meiki account" />
-        {/if}
+
+        <Button {onClick} expand={true} label="Login" />
     </div>
 </Card>
