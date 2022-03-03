@@ -49,6 +49,8 @@ func run() error {
 		return err
 	}
 
+	client.Disconnect(ctx)
+
 	return nil
 }
 

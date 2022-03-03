@@ -1,6 +1,6 @@
 import { makeRequest } from "./request"
 
-export const createAccount = (username: string, password: string) => {
+export async function createAccount(username: string, password: string) {
     const url = "http://localhost:8080/create"
 
     const body = {
@@ -8,5 +8,5 @@ export const createAccount = (username: string, password: string) => {
         password,
     }
 
-    makeRequest(url, "POST", body)
+    await makeRequest(url, "POST", body)
 }

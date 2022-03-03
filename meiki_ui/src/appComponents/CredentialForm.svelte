@@ -14,16 +14,23 @@
     import Card from "../components/Card.svelte"
     import Button from "../components/Button.svelte"
     import Entry from "../components/Entry.svelte"
+    import Error from "../components/Error.svelte"
     import Logo from "./Logo.svelte"
 
     export let type: CredentialFromType = CredentialFromType.LOGIN
 
     let usernameEntry: Entry
     let passwordEntry: Entry
+    let error: boolean
 
-    function onClick() {
-        // TODO: Check for errors
-        createAccount(usernameEntry.getValue(), passwordEntry.getValue())
+    async function onClick() {
+        error = false
+
+        try {
+            await createAccount(usernameEntry.getValue(), passwordEntry.getValue())
+        } catch {
+            error = true
+        }
     }
 </script>
 
@@ -31,6 +38,12 @@
     <div class="flex flex-col gap-10 items-center p-5">
         <Logo />
         <div class="flex flex-col w-full gap-4">
+            {#if error}
+                <Error>
+                    An error has occured while creating account, please try
+                    again later.
+                </Error>
+            {/if}
             <Entry label="Username" bind:this={usernameEntry} />
             <Entry label="Password" bind:this={passwordEntry} password={true} />
         </div>

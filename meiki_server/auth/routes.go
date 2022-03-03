@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,6 +16,9 @@ type Credentials struct {
 
 func getCreateHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		ctx, cancel := context.WithTimeout(ctx, 500*time.Millisecond)
+		defer cancel()
+
 		var newUser Credentials
 
 		c.BindJSON(&newUser)
@@ -30,6 +34,7 @@ func getCreateHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, "Unable to create user")
 			return
 		}
+
 		c.JSON(http.StatusOK, "Username created")
 	}
 }
