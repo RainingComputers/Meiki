@@ -22,6 +22,7 @@
     let passwordEntry: Entry
 
     function onClick() {
+        // TODO: Check for errors
         createAccount(usernameEntry.getValue(), passwordEntry.getValue())
     }
 </script>
@@ -29,7 +30,7 @@
 <div class="flex flex-row">
     <Card>
         <Logo />
-        <div class="flex flex-col w-full gap-2">
+        <div class="flex flex-col w-full gap-4">
             <Entry label="Username" bind:this={usernameEntry} />
             <Entry label="Password" bind:this={passwordEntry} password={true} />
         </div>
