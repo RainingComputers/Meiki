@@ -1,5 +1,5 @@
 <script lang="ts">
-    export let label: string = "label"
+    export let label: string
     export let password: boolean = false
 
     let inputEl: HTMLInputElement

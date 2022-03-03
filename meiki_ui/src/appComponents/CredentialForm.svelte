@@ -27,8 +27,8 @@
     }
 </script>
 
-<div class="flex flex-row">
-    <Card>
+<Card>
+    <div class="flex flex-col gap-10 items-center p-5">
         <Logo />
         <div class="flex flex-col w-full gap-4">
             <Entry label="Username" bind:this={usernameEntry} />
@@ -39,5 +39,5 @@
         {:else if type === CredentialFromType.CREATE}
             <Button {onClick} expand={true} label="Create Meiki account" />
         {/if}
-    </Card>
-</div>
+    </div>
+</Card>

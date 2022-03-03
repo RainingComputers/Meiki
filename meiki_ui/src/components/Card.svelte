@@ -3,7 +3,7 @@
 </script>
 
 <span
-    class="flex flex-col bg-gray-50 border-gray-200 border p-5 drop-shadow-card gap-10 items-center"
+    class=" bg-gray-50 border-gray-200 border drop-shadow-card "
     style="width: {width}px;"
 >
     <slot />
