@@ -7,8 +7,7 @@
 
 <script lang="ts">
     // TODO: Add input validation
-    // TODO: Add toast
-    // TODO: redirect to login
+    // TODO: show user exists
 
     import { createEventDispatcher } from "svelte"
     import { createAccount } from "../api/createAccount"
