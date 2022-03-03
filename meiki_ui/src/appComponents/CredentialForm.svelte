@@ -1,19 +1,27 @@
+<script context="module" lang="ts">
+    export enum CredentialFromType {
+        LOGIN,
+        CREATE,
+    }
+</script>
+
 <script lang="ts">
+    // TODO: Add input validation
+    // TODO: Add toast
+    // TODO: redirect to login
+
+    import { createAccount } from "../api/createAccount"
     import Card from "../components/Card.svelte"
     import Button from "../components/Button.svelte"
     import Entry from "../components/Entry.svelte"
     import Logo from "./Logo.svelte"
 
-    export let type: string = "login"
-    import { createAccount } from "../api/createAccount"
+    export let type: CredentialFromType = CredentialFromType.LOGIN
 
     let usernameEntry: Entry
     let passwordEntry: Entry
 
     function onClick() {
-        // TODO: Add input validation
-        // TODO: Add toast
-        // TODO: redirect to login
         createAccount(usernameEntry.getValue(), passwordEntry.getValue())
     }
 </script>
@@ -25,9 +33,9 @@
             <Entry label="Username" bind:this={usernameEntry} />
             <Entry label="Password" bind:this={passwordEntry} password={true} />
         </div>
-        {#if type === "login"}
+        {#if type === CredentialFromType.LOGIN}
             <Button expand={true} label="Login" />
-        {:else}
+        {:else if type === CredentialFromType.CREATE}
             <Button {onClick} expand={true} label="Create Meiki account" />
         {/if}
     </Card>
