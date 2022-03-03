@@ -10,6 +10,7 @@
     // TODO: Add toast
     // TODO: redirect to login
 
+    import { createEventDispatcher } from "svelte"
     import { createAccount } from "../api/createAccount"
     import Card from "../components/Card.svelte"
     import Button from "../components/Button.svelte"
@@ -22,12 +23,14 @@
     let usernameEntry: Entry
     let passwordEntry: Entry
     let error: boolean
+    const dispatch = createEventDispatcher()
 
     async function onClick() {
         error = false
 
         try {
             await createAccount(usernameEntry.getValue(), passwordEntry.getValue())
+            dispatch("userCreated")
         } catch {
             error = true
         }
