@@ -44,10 +44,6 @@
             <Entry label="Password" bind:this={passwordEntry} password={true} />
         </div>
 
-        <Button
-            onClick={onClick}
-            expand={true}
-            label="Create Meiki account"
-        />
+        <Button {onClick} expand={true} label="Create Meiki account" />
     </div>
 </Card>

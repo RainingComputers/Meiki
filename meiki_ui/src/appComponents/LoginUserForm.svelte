@@ -19,10 +19,7 @@
         error = false
 
         try {
-            await login(
-                usernameEntry.getValue(),
-                passwordEntry.getValue()
-            )
+            await login(usernameEntry.getValue(), passwordEntry.getValue())
 
             dispatch("userLoggedIn")
         } catch (err) {

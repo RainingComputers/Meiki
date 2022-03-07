@@ -17,6 +17,7 @@ export async function makeRequest(
             method,
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(body),
+            credentials: "include",
         }
 
     const response = await fetch(url, requestOptions)

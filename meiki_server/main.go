@@ -35,10 +35,11 @@ func run() error {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins: []string{"http://localhost:3000"},
-		AllowMethods: []string{"*"},
-		AllowHeaders: []string{"*"},
-		MaxAge:       12 * time.Hour,
+		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowMethods:     []string{"*"},
+		AllowHeaders:     []string{"*"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
 	}))
 
 	auth.CreateRoutes(router, ctx, authCtx)
