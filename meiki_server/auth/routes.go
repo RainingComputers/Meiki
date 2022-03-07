@@ -6,7 +6,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/RainingComputers/Meiki/log"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type Credentials struct {
@@ -78,8 +80,8 @@ func getLoginHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 			return
 		}
 
-		c.SetCookie("meiki_session_token", string(token), 86400*100, "/", "", true, true)
-
+		c.SetCookie("meiki_session_token", string(token), 86400*100, "/", "http://localhost", true, true)
+		c.SetCookie("meiki_username", creds.Username, 86400*100, "/", "http://localhost", true, true)
 		c.JSON(http.StatusOK, "Logged in successfully")
 	}
 }
@@ -110,9 +112,42 @@ func getLogoutHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 	}
 }
 
+func getAuthStatus(ctx context.Context, a Auth) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		sessionToken, err := c.Cookie("meiki_session_token")
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, "not logged in. Redirecting...")
+			return
+		}
+		username, err := c.Cookie("meiki_username")
+
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, "not logged in. Redirecting...")
+			return
+		}
+
+		loggedIn, err := a.Authenticate(ctx, username, []byte(sessionToken))
+
+		if err != nil {
+			log.Error("Unable to create unique index in token collection", zap.Error(err))
+			c.JSON(http.StatusInternalServerError, "unable to authenticate")
+			return
+		}
+
+		if !loggedIn {
+			c.JSON(http.StatusUnauthorized, "invalid credientials")
+			return
+		}
+
+		c.JSON(http.StatusOK, "Login Successful")
+
+	}
+}
+
 func CreateRoutes(router *gin.Engine, ctx context.Context, auth Auth) {
 	router.POST("/create", getCreateHandler(ctx, auth))
 	router.POST("/delete", getDeleteHandler(ctx, auth))
 	router.POST("/login", getLoginHandler(ctx, auth))
 	router.POST("/logout", getLogoutHandler(ctx, auth))
+	router.POST("/authStatus", getAuthStatus(ctx, auth))
 }
