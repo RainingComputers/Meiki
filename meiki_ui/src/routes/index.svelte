@@ -22,7 +22,7 @@
 
 {#if loggedIn}
     <Toolbar>
-        <ToolbarButton>
+        <ToolbarButton isCheckedButton={true}>
             <SidebarIcon />
         </ToolbarButton>
     </Toolbar>

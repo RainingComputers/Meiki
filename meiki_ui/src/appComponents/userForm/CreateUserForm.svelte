@@ -14,10 +14,7 @@
 
     async function onClick() {
         try {
-            await createAccount(
-                userForm.getUsername(),
-                userForm.getPassword()
-            )
+            await createAccount(userForm.getUsername(), userForm.getPassword())
             dispatch("userCreated")
         } catch (err) {
             error =
@@ -26,4 +23,9 @@
     }
 </script>
 
-<UserForm bind:this={userForm} {error} {onClick} buttonLabel={"Create Meiki account"} />
+<UserForm
+    bind:this={userForm}
+    {error}
+    {onClick}
+    buttonLabel={"Create Meiki account"}
+/>
