@@ -7,6 +7,9 @@
 
     import ToolbarButton from "../components/toolbar/ToolbarButton.svelte"
     import SidebarIcon from "../components/icons/SidebarIcon.svelte"
+    import EditIcon from "../components/icons/EditIcon.svelte"
+    import PreviewIcon from "../components/icons/PreviewIcon.svelte"
+    import TrashIcon from "../components/icons/TrashIcon.svelte"
 
     let loggedIn: boolean = false
 
@@ -24,6 +27,16 @@
     <Toolbar>
         <ToolbarButton isCheckedButton={true}>
             <SidebarIcon />
+        </ToolbarButton>
+        <span class="px-2" />
+        <ToolbarButton isCheckedButton={true}>
+            <EditIcon />
+        </ToolbarButton>
+        <ToolbarButton isCheckedButton={true}>
+            <PreviewIcon />
+        </ToolbarButton>
+        <ToolbarButton isCheckedButton={false}>
+            <TrashIcon />
         </ToolbarButton>
     </Toolbar>
 {/if}

@@ -15,7 +15,7 @@
 <span
     on:click={onClick}
     class:bg-slate-700={checked}
-    class="stroke-white h-12 w-12 hover:bg-slate-700 p-2 rounded-xl"
+    class="stroke-gray-200 h-9 w-9 hover:bg-slate-700 p-2 rounded-xl"
 >
     <slot />
 </span>
