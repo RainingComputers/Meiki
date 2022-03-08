@@ -5,6 +5,10 @@
     stroke-width="1.5"
     stroke-linecap="round"
     stroke-linejoin="round"
-    class="feather feather-edit-2"
-    ><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" /></svg
+    class="feather feather-user"
+    ><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle
+        cx="12"
+        cy="7"
+        r="4"
+    /></svg
 >

@@ -1,6 +1,6 @@
 <script lang="ts">
     export let isCheckedButton: boolean = false
-
+    export let label: string = ""
     let checked: boolean = false
 
     function onClick() {
@@ -12,10 +12,15 @@
     }
 </script>
 
-<span
-    on:click={onClick}
+<div
+    class="flex flex-row items-center hover:bg-slate-700 rounded-xl p-2"
     class:bg-slate-700={checked}
-    class="stroke-gray-200 h-9 w-9 hover:bg-slate-700 p-2 rounded-xl"
 >
-    <slot />
-</span>
+    {#if label}
+        <span class="text-gray-200">{label}</span>
+    {/if}
+
+    <span on:click={onClick} class="stroke-gray-200 h-6 w-6">
+        <slot />
+    </span>
+</div>

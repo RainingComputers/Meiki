@@ -5,11 +5,14 @@
     import { authStatus } from "../api/authStatus"
     import Toolbar from "../components/toolbar/Toolbar.svelte"
 
-    import ToolbarButton from "../components/toolbar/ToolbarButton.svelte"
+    import ToolbarButton from "../components/toolbar/Button.svelte"
+    import ToolbarTitle from "../components/toolbar/Title.svelte"
     import SidebarIcon from "../components/icons/SidebarIcon.svelte"
     import EditIcon from "../components/icons/EditIcon.svelte"
     import PreviewIcon from "../components/icons/PreviewIcon.svelte"
     import TrashIcon from "../components/icons/TrashIcon.svelte"
+    import UserIcon from "../components/icons/UserIcon.svelte"
+    import ToolBarAction from "../components/toolbar/Action.svelte"
 
     let loggedIn: boolean = false
 
@@ -37,6 +40,11 @@
         </ToolbarButton>
         <ToolbarButton isCheckedButton={false}>
             <TrashIcon />
+        </ToolbarButton>
+        <ToolbarTitle title="Meiki" />
+        <ToolBarAction label="Create" />
+        <ToolbarButton isCheckedButton={false} label="shnooshankar">
+            <UserIcon />
         </ToolbarButton>
     </Toolbar>
 {/if}
