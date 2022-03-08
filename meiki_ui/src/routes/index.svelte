@@ -3,6 +3,10 @@
     import { onMount } from "svelte"
 
     import { authStatus } from "../api/authStatus"
+    import Toolbar from "../components/toolbar/Toolbar.svelte"
+
+    import ToolbarButton from "../components/toolbar/ToolbarButton.svelte"
+    import SidebarIcon from "../components/icons/SidebarIcon.svelte"
 
     let loggedIn: boolean = false
 
@@ -17,5 +21,9 @@
 </script>
 
 {#if loggedIn}
-    <h1>Meiki UI</h1>
+    <Toolbar>
+        <ToolbarButton>
+            <SidebarIcon />
+        </ToolbarButton>
+    </Toolbar>
 {/if}
