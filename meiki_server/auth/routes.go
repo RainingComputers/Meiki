@@ -6,9 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/RainingComputers/Meiki/log"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 )
 
 type Credentials struct {
@@ -28,12 +26,12 @@ func getCreateHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 		err := a.Create(ctx, newUser.Username, newUser.Password)
 
 		if errors.Is(err, ErrUserAlreadyExists) {
-			c.JSON(http.StatusBadRequest, "User already exists")
+			c.JSON(http.StatusBadRequest, "Username already exists")
 			return
 		}
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, "Unable to create user")
+			c.JSON(http.StatusInternalServerError, "Unable to create user, please try again later")
 			return
 		}
 
@@ -55,7 +53,7 @@ func getDeleteHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 		}
 
 		if err := a.Delete(ctx, creds.Username); err != nil {
-			c.JSON(http.StatusBadRequest, "unable to delete user")
+			c.JSON(http.StatusBadRequest, "Unable to delete user, please try again later")
 		}
 
 		c.JSON(http.StatusOK, "Deleted user")
@@ -76,7 +74,7 @@ func getLoginHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 		}
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, "Unable to login")
+			c.JSON(http.StatusInternalServerError, "Unable to login, please try again later")
 			return
 		}
 
@@ -87,19 +85,21 @@ func getLoginHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 }
 
 func getLogoutHandler(ctx context.Context, a Auth) gin.HandlerFunc {
+	// TODO: Delete the cookie, get username from cookie
+
 	return func(c *gin.Context) {
 		var creds Credentials
 		c.BindJSON(&creds)
 		token, err := c.Cookie("meiki_session_token")
 
 		if err != nil {
-			c.JSON(http.StatusBadRequest, "could not find session token cookie in request")
+			c.JSON(http.StatusBadRequest, "Could not find session token cookie in request")
 		}
 
 		err = a.Logout(ctx, creds.Username, []byte(token))
 
 		if err == ErrMissingUserTokens {
-			c.JSON(http.StatusBadRequest, "user token is missing")
+			c.JSON(http.StatusBadRequest, "User token is missing")
 			return
 		}
 
@@ -115,32 +115,32 @@ func getLogoutHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 func getAuthStatus(ctx context.Context, a Auth) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		sessionToken, err := c.Cookie("meiki_session_token")
+
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, "not logged in. Redirecting...")
+			c.JSON(http.StatusUnauthorized, "User not logged in")
 			return
 		}
+
 		username, err := c.Cookie("meiki_username")
 
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, "not logged in. Redirecting...")
+			c.JSON(http.StatusUnauthorized, "User not logged in")
 			return
 		}
 
 		loggedIn, err := a.Authenticate(ctx, username, []byte(sessionToken))
 
 		if err != nil {
-			log.Error("Unable to create unique index in token collection", zap.Error(err))
-			c.JSON(http.StatusInternalServerError, "unable to authenticate")
+			c.JSON(http.StatusInternalServerError, "Unable to authenticate, please try again later")
 			return
 		}
 
 		if !loggedIn {
-			c.JSON(http.StatusUnauthorized, "invalid credientials")
+			c.JSON(http.StatusUnauthorized, "Invalid credentials")
 			return
 		}
 
-		c.JSON(http.StatusOK, "Login Successful")
-
+		c.JSON(http.StatusOK, username)
 	}
 }
 

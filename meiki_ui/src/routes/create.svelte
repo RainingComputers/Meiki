@@ -1,7 +1,7 @@
 <script lang="ts">
     import Root from "../components/Root.svelte"
-    import CreateUserForm from "../appComponents/CreateUserForm.svelte"
-    import UserCreated from "../appComponents/UserCreated.svelte"
+    import CreateUserForm from "../appComponents/userForm/CreateUserForm.svelte"
+    import UserCreated from "../appComponents/userForm/UserCreated.svelte"
 
     let userCreated: boolean = false
 </script>

@@ -1,13 +1,13 @@
 <script lang="ts">
     export let label: string
     export let onClick: any = undefined
-    export let expand: boolean = false
+    export let fullWidth: boolean = false
 </script>
 
 <button
     on:click={onClick}
     class="bg-blue-600 hover:bg-blue-500 drop-shadow-card font-bold text-white rounded-xl py-2 px-5"
-    class:w-full={expand}
+    class:w-full={fullWidth}
 >
-    <span class=" text-sm">{label}</span>
+    <span>{label}</span>
 </button>
