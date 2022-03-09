@@ -1,26 +1,27 @@
 <script lang="ts">
-    export let isCheckedButton: boolean = false
+    export let checked: boolean = false
     export let label: string = ""
-    let checked: boolean = false
+    let isButtonChecked: boolean = false
 
     function onClick() {
-        if (isCheckedButton) checked = !checked
+        if (checked) isButtonChecked = !isButtonChecked
     }
 
     export function isChecked() {
-        return checked
+        return isButtonChecked
     }
 </script>
 
 <div
-    class="flex flex-row items-center hover:bg-slate-700 rounded-xl p-2"
-    class:bg-slate-700={checked}
+    class="flex gap-2 flex-row items-center hover:bg-slate-600 rounded-xl p-2"
+    class:bg-slate-600={isButtonChecked}
+    on:click={onClick}
 >
     {#if label}
         <span class="text-gray-200">{label}</span>
     {/if}
 
-    <span on:click={onClick} class="stroke-gray-200 h-6 w-6">
+    <span class="stroke-gray-200 h-6 w-6">
         <slot />
     </span>
 </div>

@@ -5,11 +5,7 @@ function ensureStatusOK(response: Response) {
         throw { error: "response not OK", context: response }
 }
 
-export async function makeRequest(
-    url: string,
-    method: string,
-    body: any = undefined
-) {
+export async function makeRequest(url: string, method: string, body: any = {}) {
     let requestOptions: any = { method }
 
     if (body)

@@ -28,22 +28,23 @@
 
 {#if loggedIn}
     <Toolbar>
-        <ToolbarButton isCheckedButton={true}>
+        <ToolbarButton checked={true}>
             <SidebarIcon />
         </ToolbarButton>
         <span class="px-2" />
-        <ToolbarButton isCheckedButton={true}>
+        <ToolbarButton checked={true}>
             <EditIcon />
         </ToolbarButton>
-        <ToolbarButton isCheckedButton={true}>
+        <ToolbarButton checked={true}>
             <PreviewIcon />
         </ToolbarButton>
-        <ToolbarButton isCheckedButton={false}>
+        <ToolbarButton checked={false}>
             <TrashIcon />
         </ToolbarButton>
         <ToolbarTitle title="Meiki" />
         <ToolBarAction label="Create" />
-        <ToolbarButton isCheckedButton={false} label="shnooshankar">
+        <span class="px-0.5" />
+        <ToolbarButton checked={false} label="shnooshankar">
             <UserIcon />
         </ToolbarButton>
     </Toolbar>
