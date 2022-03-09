@@ -1,3 +1,3 @@
-<div class=" bg-gray-500 flex-grow">
+<div class="flex-grow">
     <slot />
 </div>

@@ -52,7 +52,7 @@
             </ToolbarButton>
         </Toolbar>
         <div class="flex flex-row flex-grow">
-            <Panel />
+            <Panel width="30rem" />
             <Workbench />
         </div>
     </section>
