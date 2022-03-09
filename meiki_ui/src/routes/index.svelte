@@ -15,6 +15,8 @@
     import ToolBarAction from "../components/toolbar/Action.svelte"
     import Panel from "../components/explorer/Panel.svelte"
     import Workbench from "../components/explorer/Workbench.svelte"
+    import itemList from "../itemList.json"
+    import Item from "../components/explorer/Item.svelte"
 
     let loggedIn: boolean = false
 
@@ -52,7 +54,11 @@
             </ToolbarButton>
         </Toolbar>
         <div class="flex flex-row flex-grow">
-            <Panel width="30rem" />
+            <Panel width="30rem">
+                {#each itemList as item (item.id)}
+                    <Item title={item.title} />
+                {/each}
+            </Panel>
             <Workbench />
         </div>
     </section>
