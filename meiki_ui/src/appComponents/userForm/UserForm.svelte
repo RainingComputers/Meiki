@@ -4,7 +4,7 @@
     import Card from "../../components/Card.svelte"
     import Entry from "../../components/Entry.svelte"
     import Logo from "../Logo.svelte"
-    import Error from "../../components/Error.svelte"
+    import Error from "../../components/toast/Error.svelte"
 
     export let error: string
     export let buttonLabel: string

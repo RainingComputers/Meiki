@@ -1,7 +1,7 @@
 <script>
     import Link from "../../components/Link.svelte"
     import Root from "../../components/Root.svelte"
-    import Success from "../../components/Success.svelte"
+    import Success from "../../components/toast/Success.svelte"
 </script>
 
 <Root>
