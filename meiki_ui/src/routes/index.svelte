@@ -13,6 +13,8 @@
     import TrashIcon from "../components/icons/TrashIcon.svelte"
     import UserIcon from "../components/icons/UserIcon.svelte"
     import ToolBarAction from "../components/toolbar/Action.svelte"
+    import Panel from "../components/explorer/Panel.svelte"
+    import Workbench from "../components/explorer/Workbench.svelte"
 
     let loggedIn: boolean = false
 
@@ -27,25 +29,31 @@
 </script>
 
 {#if loggedIn}
-    <Toolbar>
-        <ToolbarButton checked={true}>
-            <SidebarIcon />
-        </ToolbarButton>
-        <span class="px-2" />
-        <ToolbarButton checked={true}>
-            <EditIcon />
-        </ToolbarButton>
-        <ToolbarButton checked={true}>
-            <PreviewIcon />
-        </ToolbarButton>
-        <ToolbarButton checked={false}>
-            <TrashIcon />
-        </ToolbarButton>
-        <ToolbarTitle title="Meiki" />
-        <ToolBarAction label="Create" />
-        <span class="px-0.5" />
-        <ToolbarButton checked={false} label="shnooshankar">
-            <UserIcon />
-        </ToolbarButton>
-    </Toolbar>
+    <section class="flex flex-col items-stretch h-screen">
+        <Toolbar>
+            <ToolbarButton checked={true}>
+                <SidebarIcon />
+            </ToolbarButton>
+            <span class="px-2" />
+            <ToolbarButton checked={true}>
+                <EditIcon />
+            </ToolbarButton>
+            <ToolbarButton checked={true}>
+                <PreviewIcon />
+            </ToolbarButton>
+            <ToolbarButton checked={false}>
+                <TrashIcon />
+            </ToolbarButton>
+            <ToolbarTitle title="Meiki" />
+            <ToolBarAction label="Create" />
+            <span class="px-0.5" />
+            <ToolbarButton checked={false} label="shnooshankar">
+                <UserIcon />
+            </ToolbarButton>
+        </Toolbar>
+        <div class="flex flex-row flex-grow">
+            <Panel />
+            <Workbench />
+        </div>
+    </section>
 {/if}
