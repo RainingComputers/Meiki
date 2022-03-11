@@ -54,7 +54,7 @@
             </ToolbarButton>
         </Toolbar>
         <div class="flex flex-row flex-grow">
-            <Panel width="30rem">
+            <Panel width="22rem">
                 {#each itemList as item (item.id)}
                     <Item title={item.title} />
                 {/each}

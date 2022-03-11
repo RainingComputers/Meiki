@@ -3,7 +3,7 @@
 </script>
 
 <div
-    class=" bg-gray-50 border-gray-200 border flex flex-col gap-1 py-2"
+    class=" bg-gray-50 border-gray-200 border-r flex flex-col gap-1 py-5"
     style="width: {width}"
 >
     <slot />
