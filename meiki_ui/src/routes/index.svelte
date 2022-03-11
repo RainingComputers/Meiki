@@ -17,6 +17,7 @@
     import Workbench from "../components/explorer/Workbench.svelte"
     import itemList from "../itemList.json"
     import Item from "../components/explorer/Item.svelte"
+    import Root from "../components/Root.svelte"
 
     let loggedIn: boolean = false
 
@@ -31,7 +32,7 @@
 </script>
 
 {#if loggedIn}
-    <section class="flex flex-col items-stretch h-screen">
+    <Root>
         <Toolbar>
             <ToolbarButton checked={true}>
                 <SidebarIcon />
@@ -53,7 +54,7 @@
                 <UserIcon />
             </ToolbarButton>
         </Toolbar>
-        <div class="flex flex-row flex-grow">
+        <div class="flex flex-row flex-grow w-full">
             <Panel width="22rem">
                 {#each itemList as item (item.id)}
                     <Item title={item.title} />
@@ -61,5 +62,5 @@
             </Panel>
             <Workbench />
         </div>
-    </section>
+    </Root>
 {/if}

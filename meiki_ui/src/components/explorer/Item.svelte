@@ -2,28 +2,16 @@
     import ItemsIcon from "../icons/ItemsIcon.svelte"
     export let title: string
 
-    let isButtonChecked: boolean = false
+    export let checked: boolean = false
 
-    function onClick() {
-        isButtonChecked = !isButtonChecked
-    }
-
-    export function isChecked() {
-        return isButtonChecked
-    }
+    $: checkedClass = checked ? "bg-blue-500 text-white stroke-white" : ""
 </script>
 
 <div
-    class=" hover:bg-blue-500 hover:text-white text-slate-900 stroke-black hover:stroke-white"
-    on:click={onClick}
+    class=" text-slate-900 stroke-slate-900 hover:bg-blue-500 hover:text-white hover:stroke-white"
 >
-    <div
-        class="flex flex-row px-4 gap-3 py-1 items-center"
-        class:bg-blue-500={isButtonChecked}
-        class:text-white={isButtonChecked}
-        class:stroke-white={isButtonChecked}
-    >
-        <span class="w-5 h-5 flex-shrink-0">
+    <div class="flex flex-row px-4 gap-3 py-1 items-center {checkedClass}">
+        <span class="flex-shrink-0 w-5 h-5">
             <ItemsIcon />
         </span>
         <span>{title}</span>
