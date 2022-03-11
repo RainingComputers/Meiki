@@ -3,6 +3,5 @@
     "css.customData": [".vscode/css_custom_data.json"],
     "cSpell.ignoreWords": ["tailwindcss"],
     "typescript.preferences.importModuleSpecifier": "relative",
-    "javascript.preferences.importModuleSpecifier": "relative",
-    "editor.formatOnSave": true
+    "javascript.preferences.importModuleSpecifier": "relative"
 }
