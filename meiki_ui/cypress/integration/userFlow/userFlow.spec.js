@@ -2,7 +2,7 @@
 
 const baseUrl = "http://localhost:3000/"
 
-import { del } from "../../../src/api/delete.ts"
+import { del } from "$lib/api/delete"
 
 describe("UserFlow Test", () => {
     before(async () => {

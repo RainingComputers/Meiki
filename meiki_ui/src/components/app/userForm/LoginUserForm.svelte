@@ -4,7 +4,7 @@
     // TODO: show better error messages
 
     import { createEventDispatcher } from "svelte"
-    import { login } from "../../api/login"
+    import { login } from "$lib/api/login"
     import UserForm from "./UserForm.svelte"
 
     let error: string = ""

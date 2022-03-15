@@ -1,10 +1,10 @@
 <script lang="ts">
-    import Button from "../../components/Button.svelte"
+    import Button from "$cmp/Button.svelte"
 
-    import Card from "../../components/Card.svelte"
-    import Entry from "../../components/Entry.svelte"
+    import Card from "$cmp/Card.svelte"
+    import Entry from "$cmp/Entry.svelte"
     import Logo from "../Logo.svelte"
-    import Error from "../../components/toast/Error.svelte"
+    import Error from "$cmp/toast/Error.svelte"
 
     export let error: string
     export let buttonLabel: string

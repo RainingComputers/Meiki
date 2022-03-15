@@ -25,13 +25,20 @@
         "checkJs": true,
         "paths": {
             "$lib": ["src/lib"],
-            "$lib/*": ["src/lib/*"]
+            "$lib/*": ["src/lib/*"],
+            "$cmp": ["src/components"],
+            "$cmp/*": ["src/components/*"],
+            "$data": ["src/data"],
+            "$data/*": ["src/data/*"],
+            "$root": ["./"],
+            "$root/*": ["./*"],
         }
     },
     "include": [
+        ".",
         "src/**/*.d.ts",
         "src/**/*.js",
         "src/**/*.ts",
-        "src/**/*.svelte"
+        "src/**/*.svelte",
     ]
 }

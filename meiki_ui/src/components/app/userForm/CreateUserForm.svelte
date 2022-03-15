@@ -4,7 +4,7 @@
     // TODO: Better error messages
 
     import { createEventDispatcher } from "svelte"
-    import { createAccount } from "../../api/createAccount"
+    import { createAccount } from "$lib/api/createAccount"
     import UserForm from "./UserForm.svelte"
 
     let error: string = ""
