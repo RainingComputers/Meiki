@@ -1,21 +1,12 @@
 /// <reference types="cypress"/>
 
 const baseUrl = "http://localhost:3000/"
-const serverUrl = "http://localhost:8080/"
 
 describe("UserFlow Test", () => {
-    before(() => {
-        const options = {
-            method: "POST",
-            url: `${serverUrl}delete`,
-            failOnStatusCode: false,
-            body: {
-                username: "shnoo",
-                password: "thisisveryunsafe",
-            },
-        }
 
-        cy.request(options)
+
+    beforeEach(() => {
+        cy.testRequest("delete", false)
     })
 
     it("Login flow works fully", () => {
@@ -51,5 +42,18 @@ describe("UserFlow Test", () => {
         // assert it goes to the app
         cy.get("nav").should("be.visible")
         // TODO: adder username in the app
+    })
+
+    it("App should have proper layout", () => {
+        // create user
+        cy.testRequest("create", true)
+
+        // login
+        cy.testRequest("login", true)
+
+        cy.visit(baseUrl)
+
+        cy.get("nav").should("be.visible")
+        cy.get("[data-cy='explorer']").should("be.visible")
     })
 })
