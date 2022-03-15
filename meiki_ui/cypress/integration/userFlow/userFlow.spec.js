@@ -1,16 +1,21 @@
 /// <reference types="cypress"/>
 
 const baseUrl = "http://localhost:3000/"
-
-import { del } from "$lib/api/delete"
+const serverUrl = "http://localhost:8080/"
 
 describe("UserFlow Test", () => {
-    before(async () => {
-        try {
-            await del("shnoo", "thisisveryunsafe")
-        } catch {
-            console.log("User doesn't exist yet")
+    before(() => {
+        const options = {
+            method: "POST",
+            url: `${serverUrl}delete`,
+            failOnStatusCode: false,
+            body: {
+                username: "shnoo",
+                password: "thisisveryunsafe",
+            },
         }
+
+        cy.request(options)
     })
 
     it("Login flow works fully", () => {
@@ -33,7 +38,9 @@ describe("UserFlow Test", () => {
             .click()
 
         // goes to account creation success page
-        cy.contains("Your account has successfully been created").should("be.visible")
+        cy.contains("Your account has successfully been created").should(
+            "be.visible"
+        )
         cy.get("a").should("be.visible").click()
 
         // user logs in
