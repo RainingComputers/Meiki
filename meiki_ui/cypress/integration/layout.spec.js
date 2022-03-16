@@ -12,4 +12,10 @@ describe("Layout Test", () => {
         cy.get("nav").should("be.visible")
         cy.get("[data-cy='explorer']").should("be.visible")
     })
+
+    it("Explorer should toggle in and out", () => {
+        cy.visit("/")
+
+        cy.get("[data-cy='explorer']").should("be.visible")
+    })
 })
