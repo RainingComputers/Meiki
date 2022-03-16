@@ -8,7 +8,7 @@
 <Root>
     <LoginUserForm
         on:userLoggedIn={() => {
-            goto("/")
+            goto("/notes")
         }}
     />
     <div class=" mt-8 text-sm">

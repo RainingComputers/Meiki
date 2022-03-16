@@ -8,14 +8,18 @@ describe("Layout Test", () => {
     })
 
     it("App should have proper layout", () => {
-        cy.visit("/")
+        cy.visit("/notes")
         cy.get("nav").should("be.visible")
         cy.get("[data-cy='explorer']").should("be.visible")
     })
 
     it("Explorer should toggle in and out", () => {
-        cy.visit("/")
+        cy.visit("/notes")
 
+        cy.get("[data-cy='explorer']").should("be.visible")
+        cy.get(".feather-sidebar").click()
+        cy.get("[data-cy='explorer']").should("not.be.visible")
+        cy.get(".feather-sidebar").click()
         cy.get("[data-cy='explorer']").should("be.visible")
     })
 })

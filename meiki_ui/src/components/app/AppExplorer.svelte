@@ -1,6 +1,6 @@
 <script lang="ts">
     import Panel from "$cmp/explorer/Panel.svelte"
-    import Workbench from "$cmp/explorer/Workbench.svelte"
+    import Workbench from "$cmp/app/Workbench.svelte"
     import itemList from "$data/itemList.json"
     import Item from "$cmp/explorer/Item.svelte"
 </script>

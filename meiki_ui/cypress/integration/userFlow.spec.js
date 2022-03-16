@@ -9,7 +9,7 @@ describe("UserFlow Test", () => {
     })
 
     it("Login flow works fully", () => {
-        cy.visit("/")
+        cy.visit("/login")
         // shows login page
         cy.get("img[alt='meiki-logo']").should("be.visible")
         cy.get("#Username").should("be.visible")

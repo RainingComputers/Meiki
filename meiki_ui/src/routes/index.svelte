@@ -1,28 +1,22 @@
 <script lang="ts">
-    import { goto } from "$app/navigation"
-    import { onMount } from "svelte"
-
-    import { authStatus } from "$lib/api/authStatus"
-
     import Root from "$cmp/Root.svelte"
-    import AppExplorer from "$cmp/app/AppExplorer.svelte"
-    import AppToolbar from "$cmp/app/AppToolbar.svelte"
-
-    let loggedIn: boolean = false
-
-    onMount(async () => {
-        try {
-            await authStatus()
-            loggedIn = true
-        } catch {
-            goto(`/login`)
-        }
-    })
+    import Link from "$cmp/Link.svelte"
 </script>
 
-{#if loggedIn}
-    <Root>
-        <AppToolbar />
-        <AppExplorer />
-    </Root>
-{/if}
+<Root>
+    <div
+        class=" grid h-screen w-full v-screen font-serif text-gray-800 bg-gray-200 place-content-center dark:bg-gray-800 dark:text-gray-50 sm:p-0"
+    >
+        <h1 class="text-9xl">Meiki UI</h1>
+        <div class=" text-xl mt-8 text-sm">
+            New to Meiki notes? <Link text="Create" target="/create" /> a new account
+            to get started
+        </div>
+        <div class="text-xl mt-8 text-sm">
+            If you already have an account, Click <Link
+                text="here"
+                target="/login"
+            /> to login
+        </div>
+    </div>
+</Root>
