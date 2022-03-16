@@ -17,14 +17,14 @@ const config = {
             resolve: {
                 alias: {
                     // these are the aliases and paths to them
-                    '$cmp': path.resolve('src/components'),
-                    '$lib': path.resolve('src/lib'),
-                    '$data': path.resolve('src/data'),
-                    '$root': path.resolve('')
+                    $cmp: path.resolve("src/components"),
+                    $lib: path.resolve("src/lib"),
+                    $data: path.resolve("src/data"),
+                    $root: path.resolve(""),
                     // '@utils': path.resolve('./src/lib/utils')
-                }
-            }
-        }
+                },
+            },
+        },
     },
 }
 

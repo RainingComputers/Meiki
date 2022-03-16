@@ -4,10 +4,5 @@
     "cSpell.ignoreWords": ["tailwindcss"],
     "typescript.preferences.importModuleSpecifier": "relative",
     "javascript.preferences.importModuleSpecifier": "relative",
-    "cSpell.words": [
-        "meiki",
-        "shnoo",
-        "thisisveryunsafe",
-        "vite"
-    ]
+    "cSpell.words": ["meiki", "shnoo", "thisisveryunsafe", "vite"]
 }
