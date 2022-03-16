@@ -1,0 +1,6 @@
+POST http://localhost:8080/delete HTTP/1.1
+content-type: application/json
+{
+    "username": "alex",
+    "password": "thisIsAVeryUnsafePassword"
+}
