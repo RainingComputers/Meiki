@@ -37,7 +37,7 @@ func run() error {
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:3000"},
 		AllowMethods:     []string{"*"},
-		AllowHeaders:     []string{"Origin, Content-Type, Access-Control-Allow-Headers"},
+		AllowHeaders:     []string{"Origin, Content-Type, Access-Control-Allow-Headers", "X-Username", "X-Token"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))

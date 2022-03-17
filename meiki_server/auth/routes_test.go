@@ -75,8 +75,8 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 
 	// check auth status is false before logging in
 	req, _ = http.NewRequest("POST", "/authStatus", nil)
-	req.Header.Set("Username", "alex")
-	req.Header.Set("Token", "randomToken")
+	req.Header.Set("X-Username", "alex")
+	req.Header.Set("X-Token", "randomToken")
 	s.assertStatusCode(req, 401)
 
 	// login and assert returned token headers and username
@@ -84,15 +84,18 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	w := httptest.NewRecorder()
 	s.router.ServeHTTP(w, req)
 	assert.Equal(s.T(), 200, w.Code)
-	token := w.Header().Get("Token")
+	var sessionCredentials auth.SessionCredentials
+	err := json.Unmarshal(w.Body.Bytes(), &sessionCredentials)
+	assert.Nil(s.T(), err)
 
-	assert.Equal(s.T(), w.Header().Get("Username"), "alex")
+	token := sessionCredentials.Token
+	assert.Equal(s.T(), sessionCredentials.Username, "alex")
 	assert.True(s.T(), len(token) > 2)
 
 	// check auth status is true after a login
 	req, _ = http.NewRequest("POST", "/authStatus", nil)
-	req.Header.Set("Username", "alex")
-	req.Header.Set("Token", token)
+	req.Header.Set("X-Username", "alex")
+	req.Header.Set("X-Token", token)
 	s.assertStatusCode(req, 200)
 
 	// test login with wrong password
@@ -114,20 +117,20 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 
 	// test logout with bad token
 	req, _ = http.NewRequest("POST", "/logout", nil)
-	req.Header.Set("Username", "alex")
-	req.Header.Set("Token", "badToken")
+	req.Header.Set("X-Username", "alex")
+	req.Header.Set("X-Token", "badToken")
 	s.assertStatusCode(req, 400)
 
 	// test logout with good token should log out
 	req, _ = http.NewRequest("POST", "/logout", nil)
-	req.Header.Set("Username", "alex")
-	req.Header.Set("Token", token)
+	req.Header.Set("X-Username", "alex")
+	req.Header.Set("X-Token", token)
 	s.assertStatusCode(req, 200)
 
 	// auth status should now return unauthorized
 	req, _ = http.NewRequest("POST", "/authStatus", nil)
-	req.Header.Set("Username", "alex")
-	req.Header.Set("Token", token)
+	req.Header.Set("X-Username", "alex")
+	req.Header.Set("X-Token", token)
 	s.assertStatusCode(req, 401)
 
 	// delete user with bad creds should not delete anything

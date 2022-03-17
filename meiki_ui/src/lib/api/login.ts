@@ -8,5 +8,8 @@ export async function login(username: string, password: string) {
         password,
     }
 
-    await makeRequest(url, "POST", body)
+    const response = await makeRequest(url, "POST", body)
+
+    localStorage.setItem("username", response.username)
+    localStorage.setItem("token", response.token)
 }

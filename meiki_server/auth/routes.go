@@ -84,9 +84,12 @@ func getLoginHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 			return
 		}
 
-		c.Header("Username", creds.Username)
-		c.Header("Token", string(token))
-		c.JSON(http.StatusOK, "Login successfull")
+		sessionCredentials := SessionCredentials{
+			Username: creds.Username,
+			Token:    string(token),
+		}
+
+		c.JSON(http.StatusOK, sessionCredentials)
 	}
 }
 
@@ -94,14 +97,14 @@ func getLogoutHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 	// TODO: see if this can be DRY
 
 	return func(c *gin.Context) {
-		token := c.GetHeader("Token")
+		token := c.GetHeader("X-Token")
 
 		if token == "" {
 			c.JSON(http.StatusUnauthorized, "User not logged in")
 			return
 		}
 
-		username := c.GetHeader("Username")
+		username := c.GetHeader("X-Username")
 
 		if username == "" {
 			c.JSON(http.StatusUnauthorized, "User not logged in")
@@ -127,14 +130,14 @@ func getLogoutHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 
 func getAuthStatus(ctx context.Context, a Auth) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token := c.GetHeader("Token")
+		token := c.GetHeader("X-Token")
 
 		if token == "" {
 			c.JSON(http.StatusUnauthorized, "User not logged in")
 			return
 		}
 
-		username := c.GetHeader("Username")
+		username := c.GetHeader("X-Username")
 
 		if username == "" {
 			c.JSON(http.StatusUnauthorized, "User not logged in")
