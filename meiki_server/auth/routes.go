@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -12,6 +13,11 @@ import (
 type Credentials struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+}
+
+type SessionCredentials struct {
+	Username string `json:"username"`
+	Token    string `json:"token"`
 }
 
 func getCreateHandler(ctx context.Context, a Auth) gin.HandlerFunc {
@@ -78,27 +84,35 @@ func getLoginHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 			return
 		}
 
-		c.SetCookie("meiki_session_token", string(token), 86400*100, "/", "http://localhost", true, true)
-		c.SetCookie("meiki_username", creds.Username, 86400*100, "/", "http://localhost", true, true)
-		c.JSON(http.StatusOK, "Logged in successfully")
+		c.Header("Username", creds.Username)
+		c.Header("Token", string(token))
+		c.JSON(http.StatusOK, "Login successfull")
 	}
 }
 
 func getLogoutHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 	// TODO: Delete the cookie, get username from cookie
+	// TODO: see if this can be DRY
 
 	return func(c *gin.Context) {
-		var creds Credentials
-		c.BindJSON(&creds)
-		token, err := c.Cookie("meiki_session_token")
+		token := c.GetHeader("Token")
 
-		if err != nil {
-			c.JSON(http.StatusBadRequest, "Could not find session token cookie in request")
+		if token == "" {
+			c.JSON(http.StatusUnauthorized, "User not logged in")
+			return
 		}
 
-		err = a.Logout(ctx, creds.Username, []byte(token))
+		username := c.GetHeader("Username")
+
+		if username == "" {
+			c.JSON(http.StatusUnauthorized, "User not logged in")
+			return
+		}
+
+		err := a.Logout(ctx, username, []byte(token))
 
 		if err == ErrMissingUserTokens {
+			fmt.Println(token)
 			c.JSON(http.StatusBadRequest, "User token is missing")
 			return
 		}

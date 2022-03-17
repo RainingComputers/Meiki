@@ -29,7 +29,7 @@ type AuthRoutesTestSuite struct {
 func (s *AuthRoutesTestSuite) SetupTest() {
 	log.Initialize()
 
-	s.ctx, s.cancel = context.WithTimeout(context.Background(), 500*time.Millisecond)
+	s.ctx, s.cancel = context.WithTimeout(context.Background(), 1000000000*time.Millisecond)
 
 	client, err := mongo.Connect(s.ctx, options.Client().ApplyURI("mongodb://root:example@localhost:27017"))
 
@@ -76,9 +76,10 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	w := httptest.NewRecorder()
 	s.router.ServeHTTP(w, req)
 	assert.Equal(s.T(), 200, w.Code)
-	sessionTokenCookie := w.Result().Cookies()[0]
+	token := w.Header().Get("Token")
 
-	assert.True(s.T(), len(sessionTokenCookie.Value) > 2)
+	assert.Equal(s.T(), w.Header().Get("Username"), "alex")
+	assert.True(s.T(), len(token) > 2)
 
 	badCredentialsBody1, _ := json.Marshal(auth.Credentials{
 		Username: "alex",
@@ -95,20 +96,24 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	req, _ = http.NewRequest("POST", "/login", bytes.NewBuffer(badCredentialsBody2))
 	s.assertStatusCode(req, 401)
 
-	req, _ = http.NewRequest("POST", "/logout", bytes.NewBuffer(credentialsBody))
+	req, _ = http.NewRequest("POST", "/logout", nil)
+	req.Header.Set("Username", "alex")
+	req.Header.Set("Token", "badToken")
 	s.assertStatusCode(req, 400)
 
-	req, _ = http.NewRequest("POST", "/logout", bytes.NewBuffer(credentialsBody))
-	req.AddCookie(sessionTokenCookie)
-
-	sessionTokenCookie.Value = "random"
-	req, _ = http.NewRequest("POST", "/logout", bytes.NewBuffer(credentialsBody))
-	req.AddCookie(sessionTokenCookie)
-	s.assertStatusCode(req, 400)
-
-	req, _ = http.NewRequest("POST", "/delete", bytes.NewBuffer(credentialsBody))
+	req, _ = http.NewRequest("POST", "/logout", nil)
+	req.Header.Set("Username", "alex")
+	req.Header.Set("Token", token)
 	s.assertStatusCode(req, 200)
 
-	req, _ = http.NewRequest("POST", "/delete", bytes.NewBuffer(credentialsBody))
-	s.assertStatusCode(req, 400)
+	// sessionTokenCookie.Value = "random"
+	// req, _ = http.NewRequest("POST", "/logout", bytes.NewBuffer(credentialsBody))
+	// req.AddCookie(sessionTokenCookie)
+	// s.assertStatusCode(req, 400)
+
+	// req, _ = http.NewRequest("POST", "/delete", bytes.NewBuffer(credentialsBody))
+	// s.assertStatusCode(req, 200)
+
+	// req, _ = http.NewRequest("POST", "/delete", bytes.NewBuffer(credentialsBody))
+	// s.assertStatusCode(req, 400)
 }
