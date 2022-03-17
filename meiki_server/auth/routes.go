@@ -91,7 +91,6 @@ func getLoginHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 }
 
 func getLogoutHandler(ctx context.Context, a Auth) gin.HandlerFunc {
-	// TODO: Delete the cookie, get username from cookie
 	// TODO: see if this can be DRY
 
 	return func(c *gin.Context) {
@@ -128,21 +127,21 @@ func getLogoutHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 
 func getAuthStatus(ctx context.Context, a Auth) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		sessionToken, err := c.Cookie("meiki_session_token")
+		token := c.GetHeader("Token")
 
-		if err != nil {
+		if token == "" {
 			c.JSON(http.StatusUnauthorized, "User not logged in")
 			return
 		}
 
-		username, err := c.Cookie("meiki_username")
+		username := c.GetHeader("Username")
 
-		if err != nil {
+		if username == "" {
 			c.JSON(http.StatusUnauthorized, "User not logged in")
 			return
 		}
 
-		loggedIn, err := a.Authenticate(ctx, username, []byte(sessionToken))
+		loggedIn, err := a.Authenticate(ctx, username, []byte(token))
 
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "Unable to authenticate, please try again later")

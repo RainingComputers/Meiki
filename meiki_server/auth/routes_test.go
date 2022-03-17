@@ -61,17 +61,25 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	s.auth.Delete(s.ctx, "alex")  // Just for cleanup
 	s.auth.Delete(s.ctx, "shnoo") // Just for cleanup
 
+	// TODO: Check response text as well
+
+	// Create user
 	credentialsBody, _ := json.Marshal(auth.Credentials{
 		Username: "alex",
 		Password: "alex-password",
 	})
 
-	// TODO: Check response text as well
-
 	req, _ := http.NewRequest("POST", "/create", bytes.NewBuffer(credentialsBody))
 	s.assertStatusCode(req, 200)
 	s.assertStatusCode(req, 400)
 
+	// check auth status is false before logging in
+	req, _ = http.NewRequest("POST", "/authStatus", nil)
+	req.Header.Set("Username", "alex")
+	req.Header.Set("Token", "randomToken")
+	s.assertStatusCode(req, 401)
+
+	// login and assert returned token headers and username
 	req, _ = http.NewRequest("POST", "/login", bytes.NewBuffer(credentialsBody))
 	w := httptest.NewRecorder()
 	s.router.ServeHTTP(w, req)
@@ -81,6 +89,13 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	assert.Equal(s.T(), w.Header().Get("Username"), "alex")
 	assert.True(s.T(), len(token) > 2)
 
+	// check auth status is true after a login
+	req, _ = http.NewRequest("POST", "/authStatus", nil)
+	req.Header.Set("Username", "alex")
+	req.Header.Set("Token", token)
+	s.assertStatusCode(req, 200)
+
+	// test login with wrong password
 	badCredentialsBody1, _ := json.Marshal(auth.Credentials{
 		Username: "alex",
 		Password: "alex-wrong-password",
@@ -89,6 +104,7 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	req, _ = http.NewRequest("POST", "/login", bytes.NewBuffer(badCredentialsBody1))
 	s.assertStatusCode(req, 401)
 
+	// test login username does not exist
 	badCredentialsBody2, _ := json.Marshal(auth.Credentials{
 		Username: "shnoo",
 		Password: "no-shnoo",
@@ -96,24 +112,33 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	req, _ = http.NewRequest("POST", "/login", bytes.NewBuffer(badCredentialsBody2))
 	s.assertStatusCode(req, 401)
 
+	// test logout with bad token
 	req, _ = http.NewRequest("POST", "/logout", nil)
 	req.Header.Set("Username", "alex")
 	req.Header.Set("Token", "badToken")
 	s.assertStatusCode(req, 400)
 
+	// test logout with good token should log out
 	req, _ = http.NewRequest("POST", "/logout", nil)
 	req.Header.Set("Username", "alex")
 	req.Header.Set("Token", token)
 	s.assertStatusCode(req, 200)
 
-	// sessionTokenCookie.Value = "random"
-	// req, _ = http.NewRequest("POST", "/logout", bytes.NewBuffer(credentialsBody))
-	// req.AddCookie(sessionTokenCookie)
-	// s.assertStatusCode(req, 400)
+	// auth status should now return unauthorized
+	req, _ = http.NewRequest("POST", "/authStatus", nil)
+	req.Header.Set("Username", "alex")
+	req.Header.Set("Token", token)
+	s.assertStatusCode(req, 401)
 
-	// req, _ = http.NewRequest("POST", "/delete", bytes.NewBuffer(credentialsBody))
-	// s.assertStatusCode(req, 200)
+	// delete user with bad creds should not delete anything
+	req, _ = http.NewRequest("POST", "/delete", bytes.NewBuffer(badCredentialsBody1))
+	s.assertStatusCode(req, 400) // TODO: Should be 401, along with another todo
 
-	// req, _ = http.NewRequest("POST", "/delete", bytes.NewBuffer(credentialsBody))
-	// s.assertStatusCode(req, 400)
+	// delete user with good creds should delete user
+	req, _ = http.NewRequest("POST", "/delete", bytes.NewBuffer(credentialsBody))
+	s.assertStatusCode(req, 200)
+
+	// delete user which doesn't exist should give 400
+	req, _ = http.NewRequest("POST", "/delete", bytes.NewBuffer(credentialsBody))
+	s.assertStatusCode(req, 400)
 }
