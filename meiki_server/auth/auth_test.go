@@ -205,15 +205,17 @@ func (s *AuthTestSuite) TestShouldLogout() {
 	token1, _ := s.auth.CreateToken(s.ctx, "alex")
 	token2, _ := s.auth.CreateToken(s.ctx, "alex")
 
-	s.auth.Logout(s.ctx, "alex", token1)
+	err = s.auth.Logout(s.ctx, "alex", token1)
+	assert.Nil(s.T(), err)
 
 	storedTokens, err := s.auth.ReadTokensFromDB(s.ctx, "alex")
 	assert.Nil(s.T(), err)
 	assert.Equal(s.T(), len(storedTokens), 1)
 	assert.Equal(s.T(), storedTokens[0], token2)
 
-	s.auth.Logout(s.ctx, "alex", token2)
-
+	err = s.auth.Logout(s.ctx, "alex", token2)
+	assert.Nil(s.T(), err)
+	
 	storedTokens, err = s.auth.ReadTokensFromDB(s.ctx, "alex")
 	assert.Nil(s.T(), err)
 	assert.Equal(s.T(), len(storedTokens), 0)
