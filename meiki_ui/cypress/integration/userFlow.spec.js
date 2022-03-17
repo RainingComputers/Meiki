@@ -5,7 +5,7 @@
 describe("UserFlow Test", () => {
     before(() => {
         cy.testRequest("delete", false)
-        cy.clearCookies()
+        cy.clearLocalStorage()
     })
 
     it("Login flow works fully", () => {
