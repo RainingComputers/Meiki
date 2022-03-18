@@ -7,8 +7,10 @@
     import App from "$cmp/App.svelte"
     import AppExplorer from "$cmp/app/AppExplorer.svelte"
     import AppToolbar from "$cmp/app/AppToolbar.svelte"
+    import Workbench from "../../components/app/Workbench.svelte"
 
     let loggedIn: boolean = false
+    let showExplorer: boolean = true
 
     onMount(async () => {
         try {
@@ -18,11 +20,20 @@
             goto(`/login`)
         }
     })
+
+    function toggleExplorer() {
+        showExplorer = !showExplorer
+    }
 </script>
 
 {#if loggedIn}
     <App>
-        <AppToolbar />
-        <AppExplorer />
+        <AppToolbar on:sidebar={toggleExplorer} />
+        <div class="flex flex-row flex-grow w-full">
+            {#if showExplorer}
+                <AppExplorer />
+            {/if}
+            <Workbench />
+        </div>
     </App>
 {/if}

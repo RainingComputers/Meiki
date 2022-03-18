@@ -12,7 +12,7 @@
 </script>
 
 <Toolbar>
-    <ToolbarButton checked={true}>
+    <ToolbarButton checked={true} name="sidebar" on:sidebar>
         <SidebarIcon />
     </ToolbarButton>
     <span class="px-2" />
@@ -28,7 +28,7 @@
     <ToolbarTitle title="Meiki" />
     <ToolBarAction label="Create" />
     <span class="px-0.5" />
-    <ToolbarButton checked={false} label="shnooshankar">
+    <ToolbarButton checked={false} name="shnooshankar" showLabel={true}>
         <UserIcon />
     </ToolbarButton>
 </Toolbar>

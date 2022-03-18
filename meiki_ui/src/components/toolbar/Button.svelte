@@ -1,10 +1,16 @@
 <script lang="ts">
+    import { createEventDispatcher } from "svelte"
+
     export let checked: boolean = false
-    export let label: string = ""
+    export let name: string = ""
+    export let showLabel: boolean = false
     let isButtonChecked: boolean = false
+
+    const dispatch = createEventDispatcher()
 
     function onClick() {
         if (checked) isButtonChecked = !isButtonChecked
+        dispatch(name)
     }
 
     export function isChecked() {
@@ -17,8 +23,8 @@
     class:bg-slate-600={isButtonChecked}
     on:click={onClick}
 >
-    {#if label}
-        <span class="text-gray-200">{label}</span>
+    {#if showLabel}
+        <span class="text-gray-200">{name}</span>
     {/if}
 
     <span class="stroke-gray-200 h-6 w-6">
