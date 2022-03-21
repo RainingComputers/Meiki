@@ -9,26 +9,39 @@
     import TrashIcon from "$cmp/icons/TrashIcon.svelte"
     import UserIcon from "$cmp/icons/UserIcon.svelte"
     import ToolBarAction from "$cmp/toolbar/Action.svelte"
+    import { showRenderer, showEditor } from "$cmp/app/Workbench/stores"
 </script>
 
 <Toolbar>
-    <ToolbarButton checked={true} name="sidebar" on:sidebar>
+    <ToolbarButton checkable={true} name="sidebar" on:sidebar>
         <SidebarIcon />
     </ToolbarButton>
     <span class="px-2" />
-    <ToolbarButton checked={true}>
+    <ToolbarButton
+        checkable={true}
+        name="editor"
+        on:editor={() => {
+            $showEditor = !$showEditor
+        }}
+    >
         <EditIcon />
     </ToolbarButton>
-    <ToolbarButton checked={true}>
+    <ToolbarButton
+        checkable={true}
+        name="renderer"
+        on:renderer={() => {
+            $showRenderer = !$showRenderer
+        }}
+    >
         <PreviewIcon />
     </ToolbarButton>
-    <ToolbarButton checked={false}>
+    <ToolbarButton checkable={false}>
         <TrashIcon />
     </ToolbarButton>
     <ToolbarTitle title="Meiki" />
     <ToolBarAction label="Create" />
     <span class="px-0.5" />
-    <ToolbarButton checked={false} name="shnooshankar" showLabel={true}>
+    <ToolbarButton checkable={false} name="shnooshankar" showLabel={true}>
         <UserIcon />
     </ToolbarButton>
 </Toolbar>

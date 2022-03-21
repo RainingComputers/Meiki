@@ -1,15 +1,15 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte"
 
-    export let checked: boolean = false
+    export let checkable: boolean = false
     export let name: string = ""
     export let showLabel: boolean = false
-    let isButtonChecked: boolean = false
+    let isButtonChecked: boolean = true
 
     const dispatch = createEventDispatcher()
 
     function onClick() {
-        if (checked) isButtonChecked = !isButtonChecked
+        if (checkable) isButtonChecked = !isButtonChecked
         dispatch(name)
     }
 
@@ -20,7 +20,7 @@
 
 <div
     class="flex gap-2 flex-row items-center hover:bg-slate-600 rounded-xl p-2"
-    class:bg-slate-600={isButtonChecked}
+    class:bg-slate-600={isButtonChecked && checkable}
     on:click={onClick}
 >
     {#if showLabel}

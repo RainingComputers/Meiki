@@ -7,7 +7,7 @@
     import App from "$cmp/App.svelte"
     import AppExplorer from "$cmp/app/AppExplorer.svelte"
     import AppToolbar from "$cmp/app/AppToolbar.svelte"
-    import Workbench from "../../components/app/Workbench.svelte"
+    import Workbench from "$cmp/app/Workbench/Workbench.svelte"
 
     let loggedIn: boolean = false
     let showExplorer: boolean = true
