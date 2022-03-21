@@ -4,7 +4,7 @@
     import Item from "$cmp/explorer/Item.svelte"
 </script>
 
-<Panel width="22rem">
+<Panel width="20%">
     {#each itemList as item (item.id)}
         <Item title={item.title} />
     {/each}
