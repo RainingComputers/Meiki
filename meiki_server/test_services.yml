@@ -13,8 +13,8 @@ services:
     healthcheck:
       test: |
         echo 'db.runCommand({serverStatus:1}).ok' | mongo admin \
-          --username $MONGO_INITDB_ROOT_USERNAME \
-          --password $MONGO_INITDB_ROOT_PASSWORD \
+          --username $$MONGO_INITDB_ROOT_USERNAME \
+          --password $$MONGO_INITDB_ROOT_PASSWORD \
           --quiet | grep 1
       interval: 10s
       timeout: 10s
