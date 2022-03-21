@@ -10,5 +10,10 @@ Cypress.Commands.add("testRequest", (command, failOnStatusCode) => {
             password: "thisisveryunsafe",
         },
     }
-    cy.request(options)
+
+    const response = cy.request(options).then((response) => {
+        if (command !== "login") return
+        localStorage.setItem("username", response.body.username)
+        localStorage.setItem("token", response.body.token)
+    })
 })

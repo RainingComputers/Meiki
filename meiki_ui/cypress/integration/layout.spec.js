@@ -3,6 +3,7 @@
 describe("Layout Test", () => {
     beforeEach(() => {
         cy.testRequest("delete", false)
+        cy.clearLocalStorage()
         cy.testRequest("create", true)
         cy.testRequest("login", true)
     })
@@ -18,7 +19,7 @@ describe("Layout Test", () => {
 
         cy.get("[data-cy='explorer']").should("be.visible")
         cy.get(".feather-sidebar").click()
-        cy.get("[data-cy='explorer']").should("not.be.visible")
+        cy.get("[data-cy='explorer']").should("not.exist")
         cy.get(".feather-sidebar").click()
         cy.get("[data-cy='explorer']").should("be.visible")
     })
