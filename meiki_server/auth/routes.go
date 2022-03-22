@@ -165,5 +165,5 @@ func CreateRoutes(router *gin.Engine, ctx context.Context, auth Auth) {
 	router.POST("/delete", getDeleteHandler(ctx, auth))
 	router.POST("/login", getLoginHandler(ctx, auth))
 	router.POST("/logout", getLogoutHandler(ctx, auth))
-	router.POST("/authStatus", getAuthStatus(ctx, auth))
+	router.GET("/authStatus", getAuthStatus(ctx, auth))
 }
