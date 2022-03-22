@@ -9,7 +9,6 @@
     import TrashIcon from "$cmp/icons/TrashIcon.svelte"
     import UserIcon from "$cmp/icons/UserIcon.svelte"
     import ToolBarAction from "$cmp/toolbar/Action.svelte"
-    import { showRenderer, showEditor } from "$cmp/app/Workbench/stores"
 </script>
 
 <Toolbar>
@@ -17,22 +16,10 @@
         <SidebarIcon />
     </ToolbarButton>
     <span class="px-2" />
-    <ToolbarButton
-        checkable={true}
-        name="editor"
-        on:editor={() => {
-            $showEditor = !$showEditor
-        }}
-    >
+    <ToolbarButton checkable={true} name="editor" on:editor>
         <EditIcon />
     </ToolbarButton>
-    <ToolbarButton
-        checkable={true}
-        name="renderer"
-        on:renderer={() => {
-            $showRenderer = !$showRenderer
-        }}
-    >
+    <ToolbarButton checkable={true} name="renderer" on:renderer>
         <PreviewIcon />
     </ToolbarButton>
     <ToolbarButton checkable={false}>

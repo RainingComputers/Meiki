@@ -7,10 +7,12 @@
     import App from "$cmp/App.svelte"
     import AppExplorer from "$cmp/app/AppExplorer.svelte"
     import AppToolbar from "$cmp/app/AppToolbar.svelte"
-    import Workbench from "$cmp/app/Workbench/Workbench.svelte"
+    import Workbench from "$cmp/app/userForm/Workbench.svelte"
 
     let loggedIn: boolean = false
     let showExplorer: boolean = true
+
+    let workbench: Workbench
 
     onMount(async () => {
         try {
@@ -28,12 +30,20 @@
 
 {#if loggedIn}
     <App>
-        <AppToolbar on:sidebar={toggleExplorer} />
+        <AppToolbar
+            on:sidebar={toggleExplorer}
+            on:editor={() => {
+                workbench.toggleEditor()
+            }}
+            on:renderer={() => {
+                workbench.toggleRenderer()
+            }}
+        />
         <div class="flex flex-row flex-grow w-full">
             {#if showExplorer}
                 <AppExplorer />
             {/if}
-            <Workbench />
+            <Workbench bind:this={workbench} />
         </div>
     </App>
 {/if}
