@@ -32,10 +32,10 @@
     <App>
         <AppToolbar
             on:sidebar={toggleExplorer}
-            on:editor={() => {
+            on:edit={() => {
                 workbench.toggleEditor()
             }}
-            on:renderer={() => {
+            on:render={() => {
                 workbench.toggleRenderer()
             }}
         />

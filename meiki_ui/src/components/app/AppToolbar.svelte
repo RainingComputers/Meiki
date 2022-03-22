@@ -16,10 +16,10 @@
         <SidebarIcon />
     </ToolbarButton>
     <span class="px-2" />
-    <ToolbarButton checkable={true} name="editor" on:editor>
+    <ToolbarButton checkable={true} name="edit" on:edit>
         <EditIcon />
     </ToolbarButton>
-    <ToolbarButton checkable={true} name="renderer" on:renderer>
+    <ToolbarButton checkable={true} name="render" on:render>
         <PreviewIcon />
     </ToolbarButton>
     <ToolbarButton checkable={false}>

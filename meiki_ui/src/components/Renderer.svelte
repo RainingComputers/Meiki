@@ -1,4 +1,4 @@
 <script lang="ts">
 </script>
 
-<div>Render</div>
+<div data-cy="renderer">Render</div>

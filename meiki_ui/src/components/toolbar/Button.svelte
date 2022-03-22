@@ -20,8 +20,9 @@
 
 <div
     class="flex gap-2 flex-row items-center hover:bg-slate-600 rounded-xl p-2"
-    class:bg-slate-600={isButtonChecked && checkable}
+    class:isChecked={isButtonChecked && checkable}
     on:click={onClick}
+    data-cy={name}
 >
     {#if showLabel}
         <span class="text-gray-200">{name}</span>
@@ -31,3 +32,9 @@
         <slot />
     </span>
 </div>
+
+<style>
+    .isChecked {
+        background: rgb(71 85 105);
+    }
+</style>

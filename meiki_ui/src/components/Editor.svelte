@@ -1,4 +1,4 @@
 <script lang="ts">
 </script>
 
-<div>Editor</div>
+<div data-cy="editor">Editor</div>
