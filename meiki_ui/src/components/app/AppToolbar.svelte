@@ -9,6 +9,8 @@
     import TrashIcon from "$cmp/icons/TrashIcon.svelte"
     import UserIcon from "$cmp/icons/UserIcon.svelte"
     import ToolBarAction from "$cmp/toolbar/Action.svelte"
+
+    const username = localStorage.getItem("username")
 </script>
 
 <Toolbar>
@@ -28,7 +30,7 @@
     <ToolbarTitle title="Meiki" />
     <ToolBarAction label="Create" />
     <span class="px-0.5" />
-    <ToolbarButton checkable={false} name="shnooshankar" showLabel={true}>
+    <ToolbarButton checkable={false} name="profile" label={username} on:profile>
         <UserIcon />
     </ToolbarButton>
 </Toolbar>

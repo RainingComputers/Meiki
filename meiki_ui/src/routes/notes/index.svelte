@@ -3,15 +3,21 @@
     import AppExplorer from "$cmp/app/AppExplorer.svelte"
     import AppToolbar from "$cmp/app/AppToolbar.svelte"
     import Workbench from "$cmp/app/userForm/Workbench.svelte"
+    import LogoutModal from "../../components/app/LogoutModal.svelte"
+    import ModalOverlay from "../../components/ModalOverlay.svelte"
 
     let showExplorer: boolean = true
-
     let workbench: Workbench
+    let logoutModal: ModalOverlay
 
     function toggleExplorer() {
         showExplorer = !showExplorer
     }
 </script>
+
+<ModalOverlay bind:this={logoutModal}>
+    <LogoutModal />
+</ModalOverlay>
 
 <App>
     <AppToolbar
@@ -21,6 +27,9 @@
         }}
         on:render={() => {
             workbench.toggleRenderer()
+        }}
+        on:profile={() => {
+            logoutModal.showModal()
         }}
     />
     <div class="flex flex-row flex-grow w-full">

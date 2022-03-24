@@ -3,7 +3,7 @@
 
     export let checkable: boolean = false
     export let name: string = ""
-    export let showLabel: boolean = false
+    export let label: string = ""
     let isButtonChecked: boolean = true
 
     const dispatch = createEventDispatcher()
@@ -24,8 +24,8 @@
     on:click={onClick}
     data-cy={name}
 >
-    {#if showLabel}
-        <span class="text-gray-200">{name}</span>
+    {#if label}
+        <span class="text-gray-200">{label}</span>
     {/if}
 
     <span class="stroke-gray-200 h-6 w-6">

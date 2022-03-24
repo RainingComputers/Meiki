@@ -1,7 +1,7 @@
 // from https://github.com/RainingComputers/shnootalk-playground/blob/main/ui/src/api/request.ts
 
 export function ensureStatusOK(response: Response) {
-    if (response.status !== 200){
+    if (response.status !== 200) {
         throw { error: "response not OK", context: response }
     }
 }
@@ -20,7 +20,7 @@ export async function makeRequest(url: string, method: string, body: any = {}) {
         credentials: "include",
     }
 
-    if (method === "POST"){
+    if (method === "POST") {
         requestOptions.body = JSON.stringify(body)
     }
 
