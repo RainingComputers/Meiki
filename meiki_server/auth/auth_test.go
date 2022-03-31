@@ -122,13 +122,18 @@ func (s *AuthTestSuite) TestDeleteShouldError() {
 }
 
 func (s *AuthTestSuite) TestShouldMatchPassword() {
-	// TODO: Errors
-
 	err := s.auth.Create(s.ctx, "shnoo", "right-password")
 	assert.Nil(s.T(), err)
 
-	assert.True(s.T(), s.auth.PasswordMatches(s.ctx, "shnoo", "right-password"))
-	assert.False(s.T(), s.auth.PasswordMatches(s.ctx, "shnoo", "wrong-password"))
+	match1, err1 := s.auth.PasswordMatches(s.ctx, "shnoo", "right-password")
+
+	assert.Nil(s.T(), err1)
+	assert.True(s.T(), match1)
+
+	match2, err2 := s.auth.PasswordMatches(s.ctx, "shnoo", "wrong-password")
+
+	assert.Nil(s.T(), err2)
+	assert.False(s.T(), match2)
 }
 
 func (s *AuthTestSuite) TestShouldCreateTokenForNewUser() {
@@ -215,7 +220,7 @@ func (s *AuthTestSuite) TestShouldLogout() {
 
 	err = s.auth.Logout(s.ctx, "alex", token2)
 	assert.Nil(s.T(), err)
-	
+
 	storedTokens, err = s.auth.ReadTokensFromDB(s.ctx, "alex")
 	assert.Nil(s.T(), err)
 	assert.Equal(s.T(), len(storedTokens), 0)

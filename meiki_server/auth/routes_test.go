@@ -58,8 +58,8 @@ func (s *AuthRoutesTestSuite) assertStatusCode(req *http.Request, expected int) 
 
 func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	gin.SetMode(gin.ReleaseMode)
-	s.auth.Delete(s.ctx, "alex")  // Just for cleanup
-	s.auth.Delete(s.ctx, "shnoo") // Just for cleanup
+	s.auth.Delete(s.ctx, "alex") // Cleanup before test
+	s.auth.Delete(s.ctx, "shnoo")
 
 	// TODO: Check response text as well
 
@@ -74,7 +74,7 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	s.assertStatusCode(req, 400)
 
 	// check auth status is false before logging in
-	req, _ = http.NewRequest("POST", "/authStatus", nil)
+	req, _ = http.NewRequest("GET", "/authStatus", nil)
 	req.Header.Set("X-Username", "alex")
 	req.Header.Set("X-Token", "randomToken")
 	s.assertStatusCode(req, 401)
@@ -93,7 +93,7 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	assert.True(s.T(), len(token) > 2)
 
 	// check auth status is true after a login
-	req, _ = http.NewRequest("POST", "/authStatus", nil)
+	req, _ = http.NewRequest("GET", "/authStatus", nil)
 	req.Header.Set("X-Username", "alex")
 	req.Header.Set("X-Token", token)
 	s.assertStatusCode(req, 200)
@@ -113,7 +113,7 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 		Password: "no-shnoo",
 	})
 	req, _ = http.NewRequest("POST", "/login", bytes.NewBuffer(badCredentialsBody2))
-	s.assertStatusCode(req, 401)
+	s.assertStatusCode(req, 400)
 
 	// test logout with bad token
 	req, _ = http.NewRequest("POST", "/logout", nil)
@@ -128,14 +128,14 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	s.assertStatusCode(req, 200)
 
 	// auth status should now return unauthorized
-	req, _ = http.NewRequest("POST", "/authStatus", nil)
+	req, _ = http.NewRequest("GET", "/authStatus", nil)
 	req.Header.Set("X-Username", "alex")
 	req.Header.Set("X-Token", token)
 	s.assertStatusCode(req, 401)
 
 	// delete user with bad creds should not delete anything
 	req, _ = http.NewRequest("POST", "/delete", bytes.NewBuffer(badCredentialsBody1))
-	s.assertStatusCode(req, 400) // TODO: Should be 401, along with another todo
+	s.assertStatusCode(req, 401)
 
 	// delete user with good creds should delete user
 	req, _ = http.NewRequest("POST", "/delete", bytes.NewBuffer(credentialsBody))
