@@ -115,10 +115,7 @@ func (s *AuthTestSuite) TestDeleteShouldError() {
 	err = s.auth.Delete(s.ctx, "shnoo")
 	assert.ErrorIs(s.T(), err, context.Canceled)
 
-	// TODO: Simulate error on line 148 using mocks or write internal tests
-	// s.token_coll.Drop(s.ctx)
-	// err = s.auth.Delete(s.ctx, "shnoo")
-	// assert.ErrorIs(s.T(), err, )
+	// TODO: Simulate error on line 148 using internal tests
 }
 
 func (s *AuthTestSuite) TestShouldMatchPassword() {
@@ -164,8 +161,6 @@ func (s *AuthTestSuite) TestShouldAddTokenForExistingUser() {
 	assert.Equal(s.T(), token2, storedUserTokens.Tokens[1])
 }
 
-// TODO: CreateToken errors?
-
 func (s *AuthTestSuite) TestShouldLogin() {
 	err1 := s.auth.Create(s.ctx, "shnoo", "right-password")
 	assert.Nil(s.T(), err1)
@@ -174,7 +169,9 @@ func (s *AuthTestSuite) TestShouldLogin() {
 	assert.Nil(s.T(), err2)
 	assert.True(s.T(), len(token) > 0)
 
-	// TODO: Test if tokens are created in DB?
+	tokens, err := s.auth.ReadTokensFromDB(s.ctx, "shnoo")
+	assert.Nil(s.T(), err)
+	assert.True(s.T(), len(tokens[0]) > 2)
 
 	_, err3 := s.auth.Login(s.ctx, "shnoo", "wrong-password")
 	assert.ErrorIs(s.T(), err3, auth.ErrPasswordMismatch)
