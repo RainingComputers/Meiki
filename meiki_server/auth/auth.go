@@ -254,10 +254,6 @@ func (a Auth) Authenticate(ctx context.Context, username string, token []byte) (
 
 	existingTokens, err := a.ReadTokensFromDB(ctx, username)
 
-	if errors.Is(err, ErrMissingUserTokens) {
-		return false, nil
-	}
-
 	if err != nil {
 		return false, err
 	}

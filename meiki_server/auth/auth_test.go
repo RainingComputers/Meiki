@@ -32,7 +32,7 @@ func (s *AuthTestSuite) clean() {
 func (s *AuthTestSuite) SetupTest() {
 	log.Initialize()
 
-	s.ctx, s.cancel = context.WithTimeout(context.Background(), 500*time.Millisecond) // 500ms might not be enough on some systems?
+	s.ctx, s.cancel = context.WithTimeout(context.Background(), 500000000000*time.Millisecond) // 500ms might not be enough on some systems?
 
 	client, err := mongo.Connect(s.ctx, options.Client().ApplyURI("mongodb://root:example@localhost:27017"))
 
@@ -214,7 +214,27 @@ func (s *AuthTestSuite) TestShouldReturnTokens() {
 	assert.Equal(s.T(), tokenArray2[1], token2)
 }
 
-// TODO: Test for authenticate
+func (s *AuthTestSuite) TestShouldAuthenticateUser() {
+	token, err := s.auth.CreateToken(s.ctx, "shnoo")
+	assert.Nil(s.T(), err)
+
+	authenticated, err := s.auth.Authenticate(s.ctx, "shnoo", token)
+	assert.Nil(s.T(), err)
+	assert.True(s.T(), authenticated)
+
+	authenticated, err = s.auth.Authenticate(s.ctx, "shnoo", []byte{})
+	assert.Nil(s.T(), err)
+	assert.False(s.T(), authenticated)
+}
+
+func (s *AuthTestSuite) TestAuthenticateShouldError() {
+	_, err := s.auth.Authenticate(s.ctx, "does-not-exist", []byte{})
+	assert.ErrorIs(s.T(), err, auth.ErrMissingUserTokens)
+
+	s.cancel()
+	_, err = s.auth.Authenticate(s.ctx, "shnoo", []byte{})
+	assert.ErrorIs(s.T(), err, context.Canceled)
+}
 
 func (s *AuthTestSuite) TestShouldLogout() {
 	err := s.auth.Create(s.ctx, "alex", "alex-password")
