@@ -115,7 +115,7 @@ func (s *AuthTestSuite) TestDeleteShouldError() {
 	err = s.auth.Delete(s.ctx, "shnoo")
 	assert.ErrorIs(s.T(), err, context.Canceled)
 
-	// TODO: Simulate error on line 148 using internal tests
+	// TODO: Simulate error on line 148 using internal tests, or is this too much?
 }
 
 func (s *AuthTestSuite) TestShouldMatchPassword() {
@@ -131,6 +131,15 @@ func (s *AuthTestSuite) TestShouldMatchPassword() {
 
 	assert.Nil(s.T(), err2)
 	assert.False(s.T(), match2)
+}
+
+func (s *AuthRoutesTestSuite) TestMatchPasswordShouldError() {
+	_, err := s.auth.PasswordMatches(s.ctx, "shnoo", "right-password")
+	assert.ErrorIs(s.T(), err, auth.ErrMissingUser)
+
+	s.cancel()
+	_, err = s.auth.PasswordMatches(s.ctx, "shnoo", "wrong-password")
+	assert.ErrorIs(s.T(), err, context.Canceled)
 }
 
 func (s *AuthTestSuite) TestShouldCreateTokenForNewUser() {
@@ -177,7 +186,14 @@ func (s *AuthTestSuite) TestShouldLogin() {
 	assert.ErrorIs(s.T(), err3, auth.ErrPasswordMismatch)
 }
 
-// TODO: Login errors?
+func (s *AuthRoutesTestSuite) TestLoginShouldError() {
+	_, err := s.auth.Login(s.ctx, "does-not-exist", "pass")
+	assert.ErrorIs(s.T(), err, auth.ErrMissingUser)
+
+	s.cancel()
+	_, err = s.auth.Login(s.ctx, "shnoo", "pass")
+	assert.ErrorIs(s.T(), err, context.Canceled)
+}
 
 func (s *AuthTestSuite) TestShouldReturnTokens() {
 	token1, err := s.auth.CreateToken(s.ctx, "shnoo")
