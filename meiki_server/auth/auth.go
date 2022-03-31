@@ -31,12 +31,11 @@ type UserTokens struct {
 }
 
 var (
-	ErrUserAlreadyExists    = errors.New("user already exists")
-	ErrMissingUser          = errors.New("unable to find user in DB")
-	ErrUnableToLogOut       = errors.New("unable to log out this user")
-	ErrPasswordMismatch     = errors.New("could not login user due to password mismatch")
-	ErrMissingUserTokens    = errors.New("unable to find user tokens in DB")
-	ErrTokenCreationFailure = errors.New("could not login user due to token creation failure")
+	ErrUserAlreadyExists = errors.New("user already exists")
+	ErrMissingUser       = errors.New("unable to find user in DB")
+	ErrUnableToLogOut    = errors.New("unable to log out this user")
+	ErrPasswordMismatch  = errors.New("could not login user due to password mismatch")
+	ErrMissingUserTokens = errors.New("unable to find user tokens in DB")
 )
 
 func getToken() []byte {
@@ -230,7 +229,7 @@ func (a Auth) Login(ctx context.Context, username string, password string) ([]by
 	token, err := a.CreateToken(ctx, username)
 
 	if err != nil {
-		return nil, ErrTokenCreationFailure
+		return nil, err
 	}
 
 	return token, nil
