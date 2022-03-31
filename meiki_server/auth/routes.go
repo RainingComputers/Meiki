@@ -108,8 +108,6 @@ func getLoginHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 }
 
 func getLogoutHandler(ctx context.Context, a Auth) gin.HandlerFunc {
-	// TODO: see if this can be DRY
-
 	return func(c *gin.Context) {
 		token := c.GetHeader("X-Token")
 
@@ -159,6 +157,11 @@ func getAuthStatus(ctx context.Context, a Auth) gin.HandlerFunc {
 		}
 
 		loggedIn, err := a.Authenticate(ctx, username, []byte(token))
+
+		if errors.Is(err, ErrMissingUserTokens) {
+			c.JSON(http.StatusUnauthorized, "No tokens were found for the user")
+			return
+		}
 
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "Unable to authenticate, please try again later")
