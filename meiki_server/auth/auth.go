@@ -154,25 +154,39 @@ func (a Auth) Delete(ctx context.Context, username string) error {
 	return nil
 }
 
-func (a Auth) getPasswordHashFromDB(ctx context.Context, username string) []byte {
+func (a Auth) getPasswordHashFromDB(ctx context.Context, username string) ([]byte, error) {
 	var user User
-	// TODO: Error?
-	a.user_coll.FindOne(ctx, bson.M{"username": username}).Decode(&user)
 
-	return user.PasswordHash
+	err := a.user_coll.FindOne(ctx, bson.M{"username": username}).Decode(&user)
+
+	if errors.Is(err, mongo.ErrNoDocuments) {
+		log.Info("password missmatch for user", zap.Error(err))
+		return nil, ErrMissingUser
+	}
+
+	if err != nil {
+		log.Error("unable to read password for user", zap.Error(err))
+		return nil, err
+	}
+
+	return user.PasswordHash, nil
 }
 
-func (a Auth) PasswordMatches(ctx context.Context, username, password string) bool {
-	passwordHash := a.getPasswordHashFromDB(ctx, username)
+func (a Auth) PasswordMatches(ctx context.Context, username, password string) (bool, error) {
+	passwordHash, err := a.getPasswordHashFromDB(ctx, username)
 
-	err := bcrypt.CompareHashAndPassword(passwordHash, []byte(password))
+	if err != nil {
+		return false, err
+	}
+
+	err = bcrypt.CompareHashAndPassword(passwordHash, []byte(password))
 
 	if err != nil {
 		log.Info("password mismatch for user", zap.String("username", username))
-		return false
+		return false, nil
 	}
 
-	return true
+	return true, nil
 }
 
 func (a Auth) CreateToken(ctx context.Context, username string) ([]byte, error) {
@@ -203,7 +217,13 @@ func (a Auth) CreateToken(ctx context.Context, username string) ([]byte, error) 
 }
 
 func (a Auth) Login(ctx context.Context, username string, password string) ([]byte, error) {
-	if !a.PasswordMatches(ctx, username, password) {
+	match, err := a.PasswordMatches(ctx, username, password)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if !match {
 		return []byte{}, ErrPasswordMismatch
 	}
 
