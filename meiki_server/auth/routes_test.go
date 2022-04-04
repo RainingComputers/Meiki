@@ -113,7 +113,7 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 		Password: "no-shnoo",
 	})
 	req, _ = http.NewRequest("POST", "/login", bytes.NewBuffer(badCredentialsBody2))
-	s.assertStatusCode(req, 400)
+	s.assertStatusCode(req, 401)
 
 	// test logout with bad token
 	req, _ = http.NewRequest("POST", "/logout", nil)
