@@ -89,22 +89,6 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	s.assertStatusCode(req, 200)
 	s.assertStatusCode(req, 400)
 
-	// check auth status is false before logging in
-	req, _ = http.NewRequest("GET", "/authStatus", nil)
-	req.Header.Set("X-Username", "alex")
-	req.Header.Set("X-Token", "randomToken")
-	s.assertStatusCode(req, 401)
-
-	// login and assert returned token headers and username
-	req, _ = http.NewRequest("POST", "/login", bytes.NewBuffer(credentialsBody))
-	token := s.assertSessionCredentials(req, "alex")
-
-	// check auth status is true after a login
-	req, _ = http.NewRequest("GET", "/authStatus", nil)
-	req.Header.Set("X-Username", "alex")
-	req.Header.Set("X-Token", token)
-	s.assertStatusCode(req, 200)
-
 	// test login with wrong password
 	badCredentialsBody1, _ := json.Marshal(auth.Credentials{
 		Username: "alex",
@@ -122,6 +106,22 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 
 	req, _ = http.NewRequest("POST", "/login", bytes.NewBuffer(badCredentialsBody2))
 	s.assertStatusCode(req, 401)
+
+	// check auth status is false before logging in
+	req, _ = http.NewRequest("GET", "/authStatus", nil)
+	req.Header.Set("X-Username", "alex")
+	req.Header.Set("X-Token", "randomToken")
+	s.assertStatusCode(req, 401)
+
+	// login and assert returned token headers and username
+	req, _ = http.NewRequest("POST", "/login", bytes.NewBuffer(credentialsBody))
+	token := s.assertSessionCredentials(req, "alex")
+
+	// check auth status is true after a login
+	req, _ = http.NewRequest("GET", "/authStatus", nil)
+	req.Header.Set("X-Username", "alex")
+	req.Header.Set("X-Token", token)
+	s.assertStatusCode(req, 200)
 
 	// test logout with bad token
 	req, _ = http.NewRequest("POST", "/logout", nil)
