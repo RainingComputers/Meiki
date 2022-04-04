@@ -29,7 +29,7 @@ type AuthRoutesTestSuite struct {
 func (s *AuthRoutesTestSuite) SetupTest() {
 	log.Initialize()
 
-	s.ctx, s.cancel = context.WithTimeout(context.Background(), 1000000000*time.Millisecond)
+	s.ctx, s.cancel = context.WithTimeout(context.Background(), 500*time.Millisecond)
 
 	client, err := mongo.Connect(s.ctx, options.Client().ApplyURI("mongodb://root:example@localhost:27017"))
 
