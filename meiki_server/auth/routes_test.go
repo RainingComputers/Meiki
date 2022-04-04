@@ -56,6 +56,22 @@ func (s *AuthRoutesTestSuite) assertStatusCode(req *http.Request, expected int) 
 	assert.Equal(s.T(), expected, w.Code)
 }
 
+func (s *AuthRoutesTestSuite) assertSessionCredentials(req *http.Request, expectedUsername string) string {
+	w := httptest.NewRecorder()
+	s.router.ServeHTTP(w, req)
+	assert.Equal(s.T(), 200, w.Code)
+
+	var sessionCredentials auth.SessionCredentials
+	err := json.Unmarshal(w.Body.Bytes(), &sessionCredentials)
+	assert.Nil(s.T(), err)
+
+	token := sessionCredentials.Token
+	assert.Equal(s.T(), sessionCredentials.Username, expectedUsername)
+	assert.True(s.T(), len(token) > 2)
+
+	return token
+}
+
 func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	gin.SetMode(gin.ReleaseMode)
 	s.auth.Delete(s.ctx, "alex") // Cleanup before test
@@ -63,7 +79,7 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 
 	// TODO: Check response text as well
 
-	// Create user
+	// create user
 	credentialsBody, _ := json.Marshal(auth.Credentials{
 		Username: "alex",
 		Password: "alex-password",
@@ -81,16 +97,7 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 
 	// login and assert returned token headers and username
 	req, _ = http.NewRequest("POST", "/login", bytes.NewBuffer(credentialsBody))
-	w := httptest.NewRecorder()
-	s.router.ServeHTTP(w, req)
-	assert.Equal(s.T(), 200, w.Code)
-	var sessionCredentials auth.SessionCredentials
-	err := json.Unmarshal(w.Body.Bytes(), &sessionCredentials)
-	assert.Nil(s.T(), err)
-
-	token := sessionCredentials.Token
-	assert.Equal(s.T(), sessionCredentials.Username, "alex")
-	assert.True(s.T(), len(token) > 2)
+	token := s.assertSessionCredentials(req, "alex")
 
 	// check auth status is true after a login
 	req, _ = http.NewRequest("GET", "/authStatus", nil)
@@ -112,6 +119,7 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 		Username: "shnoo",
 		Password: "no-shnoo",
 	})
+
 	req, _ = http.NewRequest("POST", "/login", bytes.NewBuffer(badCredentialsBody2))
 	s.assertStatusCode(req, 401)
 
