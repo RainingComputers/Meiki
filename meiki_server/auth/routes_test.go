@@ -86,7 +86,10 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 
 	req, _ := http.NewRequest("POST", "/create", bytes.NewBuffer(credentialsBody))
 	s.assertResponse(req, 200, "User successfully created")
-	// s.assertResponse(req, 400, "User already exists") // TODO: Fix this flaky assert
+
+	// test create existing user
+	req, _ = http.NewRequest("POST", "/create", bytes.NewBuffer(credentialsBody))
+	s.assertResponse(req, 400, "User already exists")
 
 	// test login with wrong password
 	badCredentialsBody1, _ := json.Marshal(auth.Credentials{
