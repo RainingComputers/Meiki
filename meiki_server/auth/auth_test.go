@@ -32,7 +32,7 @@ func (s *AuthTestSuite) clean() {
 func (s *AuthTestSuite) SetupTest() {
 	log.Initialize()
 
-	s.ctx, s.cancel = context.WithTimeout(context.Background(), 500000000000*time.Millisecond) // 500ms might not be enough on some systems?
+	s.ctx, s.cancel = context.WithTimeout(context.Background(), 500*time.Millisecond) // 500ms might not be enough on some systems?
 
 	client, err := mongo.Connect(s.ctx, options.Client().ApplyURI("mongodb://root:example@localhost:27017"))
 
