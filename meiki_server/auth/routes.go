@@ -32,7 +32,7 @@ func getCreateHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 		err := a.Create(ctx, newUser.Username, newUser.Password)
 
 		if errors.Is(err, ErrUserAlreadyExists) {
-			c.JSON(http.StatusBadRequest, "Username already exists")
+			c.JSON(http.StatusBadRequest, "User already exists")
 			return
 		}
 
@@ -41,7 +41,7 @@ func getCreateHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, "Username created")
+		c.JSON(http.StatusOK, "User successfully created")
 	}
 }
 
@@ -69,9 +69,10 @@ func getDeleteHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 
 		if err := a.Delete(ctx, creds.Username); err != nil {
 			c.JSON(http.StatusBadRequest, "Unable to delete user, please try again later")
+			return
 		}
 
-		c.JSON(http.StatusOK, "Deleted user")
+		c.JSON(http.StatusOK, "User deleted user successfully")
 	}
 }
 
@@ -127,16 +128,16 @@ func getLogoutHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 
 		if err == ErrMissingUserTokens {
 			fmt.Println(token)
-			c.JSON(http.StatusBadRequest, "User token is missing")
+			c.JSON(http.StatusBadRequest, "User token does not exist")
 			return
 		}
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, "unable to logout")
+			c.JSON(http.StatusInternalServerError, "Unable to logout, please try again later")
 			return
 		}
 
-		c.JSON(http.StatusOK, "Logged out successfully")
+		c.JSON(http.StatusOK, "User logged out successfully")
 	}
 }
 
@@ -159,7 +160,7 @@ func getAuthStatus(ctx context.Context, a Auth) gin.HandlerFunc {
 		loggedIn, err := a.Authenticate(ctx, username, []byte(token))
 
 		if errors.Is(err, ErrMissingUserTokens) {
-			c.JSON(http.StatusUnauthorized, "No tokens were found for the user")
+			c.JSON(http.StatusUnauthorized, "User token does not exist")
 			return
 		}
 
