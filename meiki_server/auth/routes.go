@@ -84,7 +84,7 @@ func getLoginHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 		token, err := a.Login(ctx, creds.Username, creds.Password)
 
 		if err == ErrMissingUser {
-			c.JSON(http.StatusBadRequest, "User does not exist")
+			c.JSON(http.StatusUnauthorized, "User does not exist")
 			return
 		}
 
