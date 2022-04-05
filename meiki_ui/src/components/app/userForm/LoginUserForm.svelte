@@ -1,10 +1,9 @@
 <script lang="ts">
     // TODO: Add input validation
-    // TODO: show user exists
-    // TODO: show better error messages
 
     import { createEventDispatcher } from "svelte"
     import { login } from "$lib/api/login"
+    import { StatusNotOkError } from "$lib/api/request"
     import UserForm from "./UserForm.svelte"
 
     let error: string = ""
@@ -15,10 +14,15 @@
     async function onClick() {
         try {
             await login(userForm.getUsername(), userForm.getPassword())
-
             dispatch("userLoggedIn")
         } catch (err) {
-            error = "An error has occured while logging in, try again"
+            if (err instanceof StatusNotOkError) {
+                error = await err.message
+                return
+            }
+
+            error =
+                "An error has occured while creating the account, please try again later"
         }
     }
 </script>
