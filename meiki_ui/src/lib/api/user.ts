@@ -9,7 +9,6 @@ export async function createUser(username: string, password: string) {
     await makeRequest("/create", "POST", body)
 }
 
-
 export async function login(username: string, password: string) {
     const body = {
         username,
