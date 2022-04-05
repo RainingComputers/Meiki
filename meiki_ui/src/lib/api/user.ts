@@ -1,6 +1,6 @@
 import { makeRequest } from "./request"
 
-export async function createAccount(username: string, password: string) {
+export async function createUser(username: string, password: string) {
     const body = {
         username,
         password,
@@ -26,7 +26,7 @@ export async function authStatus() {
     await makeRequest("/authStatus", "GET")
 }
 
-export async function del(username: string, password: string) {
+export async function deleteUser(username: string, password: string) {
     const body = {
         username,
         password,
