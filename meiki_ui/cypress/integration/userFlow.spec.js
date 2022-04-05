@@ -37,5 +37,7 @@ describe("UserFlow Test", () => {
         // assert it goes to the app
         cy.get("nav").should("be.visible")
         cy.get("[data-cy='profile']").should("contain", "shnoo")
+
+        // TODO: Add logout
     })
 })
