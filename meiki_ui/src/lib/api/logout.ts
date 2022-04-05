@@ -1,4 +1,4 @@
-import { ensureStatusOK, makeRequest } from "./request"
+import { makeRequest } from "./request"
 
 export async function logout() {
     const url = "http://localhost:8080/logout"
