@@ -2,7 +2,7 @@
     // TODO: Add input validation
 
     import { createEventDispatcher } from "svelte"
-    import { createAccount } from "$lib/api/createAccount"
+    import { createAccount } from "$lib/api/user"
     import { StatusNotOkError } from "$lib/api/request"
     import UserForm from "./UserForm.svelte"
 
