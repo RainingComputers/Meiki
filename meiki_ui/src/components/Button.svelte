@@ -7,9 +7,9 @@
     function getButtonClass(type: ButtonType) {
         switch (type) {
             case ButtonType.PRIMARY:
-                return "bg-blue-600 hover:bg-blue-500"
+                return "bg-blue-600 hover:bg-blue-500 text-white"
             case ButtonType.SECONDARY:
-                return "bg-slate-600 hover:bg-slate-500"
+                return "bg-gray-300 hover:bg-gray-200 text-slate-700"
         }
     }
 </script>
@@ -25,7 +25,7 @@
 
 <button
     on:click={onClick}
-    class="drop-shadow-card font-bold text-white rounded-xl py-2 px-5 {buttonClass}"
+    class="drop-shadow-card font-bold rounded-xl py-2 px-5 {buttonClass}"
     class:w-full={fullWidth}
 >
     <span>{label}</span>
