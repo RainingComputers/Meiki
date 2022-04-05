@@ -78,7 +78,7 @@ func (a Auth) storeCredentialsInDB(ctx context.Context, user User) error {
 		log.Error("Could not store credentials in DB", zap.Error(err))
 	}
 
-	return err
+	return nil
 }
 
 func (a Auth) Create(ctx context.Context, username string, password string) error {
