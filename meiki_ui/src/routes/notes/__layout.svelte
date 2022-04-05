@@ -1,7 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation"
     import { onMount } from "svelte"
-    import { authStatus } from "$lib/api/authStatus"
+    import { authStatus } from "$lib/api/user"
 
     let loggedIn: boolean = false
 
