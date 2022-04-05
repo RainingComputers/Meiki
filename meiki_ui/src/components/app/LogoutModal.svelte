@@ -1,6 +1,6 @@
 <script lang="ts">
     import { goto } from "$app/navigation"
-    import Button from "$cmp/Button.svelte"
+    import Button, { ButtonType } from "$cmp/Button.svelte"
     import Logo from "./Logo.svelte"
     import { logout } from "$lib/api/logout"
 
@@ -16,7 +16,11 @@
     <div />
     <Logo />
     <div class="px-5 flex flex-col">
-        <Button label="Logout" type="secondary" onClick={handleLogout} />
+        <Button
+            label="Logout"
+            type={ButtonType.SECONDARY}
+            onClick={handleLogout}
+        />
     </div>
 
     <div class="flex flex-col text-center text-sm">
