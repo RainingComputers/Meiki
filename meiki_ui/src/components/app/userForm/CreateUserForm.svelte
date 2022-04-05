@@ -2,7 +2,7 @@
     // TODO: Add input validation
 
     import { createEventDispatcher } from "svelte"
-    import { createAccount } from "$lib/api/user"
+    import { createUser } from "$lib/api/user"
     import { StatusNotOkError } from "$lib/api/request"
     import UserForm from "./UserForm.svelte"
 
@@ -13,7 +13,7 @@
 
     async function onClick() {
         try {
-            await createAccount(userForm.getUsername(), userForm.getPassword())
+            await createUser(userForm.getUsername(), userForm.getPassword())
             dispatch("userCreated")
         } catch (err) {
             if (err instanceof StatusNotOkError) {
