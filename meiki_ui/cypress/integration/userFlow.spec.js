@@ -1,7 +1,5 @@
 /// <reference types="cypress"/>
 
-// const baseUrl = "http://localhost:3000/"
-
 describe("UserFlow Test", () => {
     before(() => {
         cy.testRequest("delete", false)
@@ -38,6 +36,6 @@ describe("UserFlow Test", () => {
 
         // assert it goes to the app
         cy.get("nav").should("be.visible")
-        // TODO: adder username in the app
+        cy.get("[data-cy='profile']").should("contain", "shnoo")
     })
 })
