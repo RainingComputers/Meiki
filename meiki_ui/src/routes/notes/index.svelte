@@ -8,14 +8,14 @@
 
     let showExplorer: boolean = true
     let workbench: Workbench
-    let logoutModal: ModalOverlay
+    let logoutModalOverlay: ModalOverlay
 
     function toggleExplorer() {
         showExplorer = !showExplorer
     }
 </script>
 
-<ModalOverlay bind:this={logoutModal}>
+<ModalOverlay bind:this={logoutModalOverlay}>
     <LogoutModal />
 </ModalOverlay>
 
@@ -29,7 +29,7 @@
             workbench.toggleRenderer()
         }}
         on:profile={() => {
-            logoutModal.showModal()
+            logoutModalOverlay.showModal()
         }}
     />
     <div class="flex flex-row flex-grow w-full">
