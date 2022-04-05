@@ -2,7 +2,7 @@
     import { goto } from "$app/navigation"
     import Button, { ButtonType } from "$cmp/Button.svelte"
     import Logo from "./Logo.svelte"
-    import { logout } from "$lib/api/logout"
+    import { logout } from "$lib/api/user"
 
     export async function handleLogout() {
         await logout()
