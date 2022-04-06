@@ -7,7 +7,7 @@
 <span
     class=" bg-gray-50 border-gray-200 border drop-shadow-card "
     style="width: {width}px;"
-    transition:scale={{ duration: 30, opacity: 1 }}
+    transition:scale={{ duration: 70, opacity: 1 }}
 >
     <slot />
 </span>
