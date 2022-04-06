@@ -23,7 +23,7 @@
         <span
             on:click|stopPropagation
             class="max-w-fit m-auto"
-            transition:scale={{ duration: 30, opacity: 1 }}
+            transition:scale={{ duration: 70, opacity: 1 }}
         >
             <slot />
         </span>
