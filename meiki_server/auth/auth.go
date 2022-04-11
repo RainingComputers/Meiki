@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"regexp"
 
 	"github.com/RainingComputers/Meiki/log"
 	"go.uber.org/zap"
@@ -36,7 +37,11 @@ var (
 	ErrUnableToLogOut    = errors.New("unable to log out this user")
 	ErrPasswordMismatch  = errors.New("could not login user due to password mismatch")
 	ErrMissingUserTokens = errors.New("unable to find user tokens in DB")
+	ErrInvalidUsername   = errors.New("invalid username")
+	ErrInvalidPassword   = errors.New("invalid password")
 )
+
+var usernameRegex = regexp.MustCompile(`^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$`)
 
 func getToken() []byte {
 	return []byte(uuid.NewString())
@@ -65,6 +70,18 @@ func CreateAuth(ctx context.Context, token_coll *mongo.Collection, user_coll *mo
 	return Auth{token_coll, user_coll}, nil
 }
 
+func validateCredentials(username string, password string) error {
+	if !usernameRegex.MatchString(username) {
+		return ErrInvalidUsername
+	}
+
+	if len(password) < 5 {
+		return ErrInvalidPassword
+	}
+
+	return nil
+}
+
 func (a Auth) storeCredentialsInDB(ctx context.Context, user User) error {
 
 	_, err := a.user_coll.InsertOne(ctx, user)
@@ -83,6 +100,12 @@ func (a Auth) storeCredentialsInDB(ctx context.Context, user User) error {
 }
 
 func (a Auth) Create(ctx context.Context, username string, password string) error {
+	err := validateCredentials(username, password)
+
+	if err != nil {
+		log.Info("abort creating user because invalid credentials", zap.Error(err))
+		return err
+	}
 
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(password), 8)
 
@@ -195,7 +218,7 @@ func (a Auth) CreateToken(ctx context.Context, username string) ([]byte, error) 
 	result, err := a.token_coll.UpdateOne(ctx, bson.M{"username": username}, bson.M{"$push": bson.M{"tokens": newToken}})
 
 	if err != nil {
-		log.Error("Unable to update token into DB", zap.Error(err))
+		log.Error("unable to update token into DB", zap.Error(err))
 		return nil, err
 	}
 
@@ -208,7 +231,7 @@ func (a Auth) CreateToken(ctx context.Context, username string) ([]byte, error) 
 		_, err := a.token_coll.InsertOne(ctx, newUserTokens)
 
 		if err != nil {
-			log.Error("Unable to insert token into DB", zap.Error(err))
+			log.Error("unable to insert token into DB", zap.Error(err))
 			return nil, err
 		}
 	}
@@ -217,6 +240,13 @@ func (a Auth) CreateToken(ctx context.Context, username string) ([]byte, error) 
 }
 
 func (a Auth) Login(ctx context.Context, username string, password string) ([]byte, error) {
+	err := validateCredentials(username, password)
+
+	if err != nil {
+		log.Info("abort login because invalid credentials", zap.Error(err))
+		return nil, err
+	}
+
 	match, err := a.PasswordMatches(ctx, username, password)
 
 	if err != nil {
