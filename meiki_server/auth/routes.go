@@ -21,6 +21,20 @@ type SessionCredentials struct {
 
 const MSG_INVALID_USERNAME = "Username should not contain any special characters other than '-' and '_'"
 const MSG_INVALID_PASSWORD = "Password should have minimum five characters"
+const MSG_USER_EXISTS = "User already exists"
+const MSG_UNABLE_TO_CREATE_USER = "Unable to create user, please try again later"
+const MSG_USER_CREATED = "User successfully created"
+const MSG_USER_DOES_NOT_EXIST = "User does not exist"
+const MSG_UNABLE_TO_DELETE_USER = "Unable to delete user, please try again later"
+const MSG_PASSWORD_DOES_NOT_MATCH = "Password does not match"
+const MSG_USER_DELETED = "User deleted user successfully"
+const MSG_UNABLE_TO_LOGIN = "Unable to login, please try again later"
+const MSG_USER_NOT_LOGGED_IN = "User not logged in"
+const MSG_TOKEN_DOES_NOT_EXIST = "User token does not exist"
+const MSG_UNABLE_TO_LOGOUT = "Unable to logout, please try again later"
+const MSG_USER_LOGGED_OUT = "User logged out successfully"
+const MSG_UNABLE_TO_AUTHENTICATE = "Unable to authenticate, please try again later"
+const MSG_INVALID_OR_WRONG_CREDENTIALS = "Invalid or wrong credentials"
 
 func getCreateHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -47,16 +61,16 @@ func getCreateHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 		}
 
 		if err == ErrUserAlreadyExists {
-			c.JSON(http.StatusBadRequest, "User already exists")
+			c.JSON(http.StatusBadRequest, MSG_USER_EXISTS)
 			return
 		}
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, "Unable to create user, please try again later")
+			c.JSON(http.StatusInternalServerError, MSG_UNABLE_TO_CREATE_USER)
 			return
 		}
 
-		c.JSON(http.StatusOK, "User successfully created")
+		c.JSON(http.StatusOK, MSG_USER_CREATED)
 	}
 }
 
@@ -68,26 +82,26 @@ func getDeleteHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 		match, err := a.PasswordMatches(ctx, creds.Username, creds.Password)
 
 		if err == ErrMissingUser {
-			c.JSON(http.StatusBadRequest, "User does not exist")
+			c.JSON(http.StatusBadRequest, MSG_USER_DOES_NOT_EXIST)
 			return
 		}
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, "Unable to check password, please try again later")
+			c.JSON(http.StatusInternalServerError, MSG_UNABLE_TO_DELETE_USER)
 			return
 		}
 
 		if !match {
-			c.JSON(http.StatusUnauthorized, "Password does not match")
+			c.JSON(http.StatusUnauthorized, MSG_PASSWORD_DOES_NOT_MATCH)
 			return
 		}
 
 		if err := a.Delete(ctx, creds.Username); err != nil {
-			c.JSON(http.StatusBadRequest, "Unable to delete user, please try again later")
+			c.JSON(http.StatusBadRequest, MSG_UNABLE_TO_CREATE_USER)
 			return
 		}
 
-		c.JSON(http.StatusOK, "User deleted user successfully")
+		c.JSON(http.StatusOK, MSG_USER_DELETED)
 	}
 }
 
@@ -110,17 +124,17 @@ func getLoginHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 		}
 
 		if err == ErrMissingUser {
-			c.JSON(http.StatusUnauthorized, "User does not exist")
+			c.JSON(http.StatusUnauthorized, MSG_USER_DOES_NOT_EXIST)
 			return
 		}
 
 		if err == ErrPasswordMismatch {
-			c.JSON(http.StatusUnauthorized, "Password does not match")
+			c.JSON(http.StatusUnauthorized, MSG_PASSWORD_DOES_NOT_MATCH)
 			return
 		}
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, "Unable to login, please try again later")
+			c.JSON(http.StatusInternalServerError, MSG_UNABLE_TO_LOGIN)
 			return
 		}
 
@@ -138,14 +152,14 @@ func getLogoutHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 		token := c.GetHeader("X-Token")
 
 		if token == "" {
-			c.JSON(http.StatusUnauthorized, "User not logged in")
+			c.JSON(http.StatusUnauthorized, MSG_USER_NOT_LOGGED_IN)
 			return
 		}
 
 		username := c.GetHeader("X-Username")
 
 		if username == "" {
-			c.JSON(http.StatusUnauthorized, "User not logged in")
+			c.JSON(http.StatusUnauthorized, MSG_USER_NOT_LOGGED_IN)
 			return
 		}
 
@@ -153,16 +167,16 @@ func getLogoutHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 
 		if err == ErrMissingUserTokens {
 			fmt.Println(token)
-			c.JSON(http.StatusBadRequest, "User token does not exist")
+			c.JSON(http.StatusBadRequest, MSG_TOKEN_DOES_NOT_EXIST)
 			return
 		}
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, "Unable to logout, please try again later")
+			c.JSON(http.StatusInternalServerError, MSG_UNABLE_TO_LOGOUT)
 			return
 		}
 
-		c.JSON(http.StatusOK, "User logged out successfully")
+		c.JSON(http.StatusOK, MSG_USER_LOGGED_OUT)
 	}
 }
 
@@ -171,31 +185,31 @@ func getAuthStatus(ctx context.Context, a Auth) gin.HandlerFunc {
 		token := c.GetHeader("X-Token")
 
 		if token == "" {
-			c.JSON(http.StatusUnauthorized, "User not logged in")
+			c.JSON(http.StatusUnauthorized, MSG_USER_NOT_LOGGED_IN)
 			return
 		}
 
 		username := c.GetHeader("X-Username")
 
 		if username == "" {
-			c.JSON(http.StatusUnauthorized, "User not logged in")
+			c.JSON(http.StatusUnauthorized, MSG_USER_NOT_LOGGED_IN)
 			return
 		}
 
 		loggedIn, err := a.Authenticate(ctx, username, []byte(token))
 
 		if err == ErrMissingUserTokens {
-			c.JSON(http.StatusUnauthorized, "User token does not exist")
+			c.JSON(http.StatusUnauthorized, MSG_TOKEN_DOES_NOT_EXIST)
 			return
 		}
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, "Unable to authenticate, please try again later")
+			c.JSON(http.StatusInternalServerError, MSG_UNABLE_TO_AUTHENTICATE)
 			return
 		}
 
 		if !loggedIn {
-			c.JSON(http.StatusUnauthorized, "Invalid credentials")
+			c.JSON(http.StatusUnauthorized, MSG_INVALID_OR_WRONG_CREDENTIALS)
 			return
 		}
 
