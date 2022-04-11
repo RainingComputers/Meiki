@@ -2,7 +2,6 @@ package auth
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -20,6 +19,9 @@ type SessionCredentials struct {
 	Token    string `json:"token"`
 }
 
+const MSG_INVALID_USERNAME = "Username should not contain any special characters other than '-' and '_'"
+const MSG_INVALID_PASSWORD = "Password should have minimum five characters"
+
 func getCreateHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(ctx, 500*time.Millisecond)
@@ -31,7 +33,20 @@ func getCreateHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 
 		err := a.Create(ctx, newUser.Username, newUser.Password)
 
-		if errors.Is(err, ErrUserAlreadyExists) {
+		// TODO: DRY other and duplicate messages by making all messages a global var?
+		// TODO: move these global vars to a separate messages.go file and use them in tests as well?
+
+		if err == ErrInvalidUsername {
+			c.JSON(http.StatusBadRequest, MSG_INVALID_USERNAME)
+			return
+		}
+
+		if err == ErrInvalidPassword {
+			c.JSON(http.StatusBadRequest, MSG_INVALID_PASSWORD)
+			return
+		}
+
+		if err == ErrUserAlreadyExists {
 			c.JSON(http.StatusBadRequest, "User already exists")
 			return
 		}
@@ -83,6 +98,16 @@ func getLoginHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 		c.BindJSON(&creds)
 
 		token, err := a.Login(ctx, creds.Username, creds.Password)
+
+		if err == ErrInvalidUsername {
+			c.JSON(http.StatusBadRequest, MSG_INVALID_USERNAME)
+			return
+		}
+
+		if err == ErrInvalidPassword {
+			c.JSON(http.StatusBadRequest, MSG_INVALID_PASSWORD)
+			return
+		}
 
 		if err == ErrMissingUser {
 			c.JSON(http.StatusUnauthorized, "User does not exist")
@@ -159,7 +184,7 @@ func getAuthStatus(ctx context.Context, a Auth) gin.HandlerFunc {
 
 		loggedIn, err := a.Authenticate(ctx, username, []byte(token))
 
-		if errors.Is(err, ErrMissingUserTokens) {
+		if err == ErrMissingUserTokens {
 			c.JSON(http.StatusUnauthorized, "User token does not exist")
 			return
 		}
