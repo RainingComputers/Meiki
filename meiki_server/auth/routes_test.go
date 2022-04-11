@@ -141,7 +141,7 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	req, _ = http.NewRequest("GET", "/authStatus", nil)
 	req.Header.Set("X-Username", "alex")
 	req.Header.Set("X-Token", token)
-	s.assertResponse(req, 401, "Invalid credentials")
+	s.assertResponse(req, 401, "Invalid or wrong credentials")
 
 	// delete user with bad creds should not delete anything
 	req, _ = http.NewRequest("POST", "/delete", bytes.NewBuffer(badCredentialsBody1))
