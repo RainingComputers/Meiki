@@ -76,6 +76,12 @@ func (s *AuthTestSuite) TestCreateShouldError() {
 	err = s.auth.Create(s.ctx, "shnoo", "thisisveryunsafe")
 	assert.ErrorIs(s.T(), err, auth.ErrUserAlreadyExists)
 
+	err = s.auth.Create(s.ctx, "shnoo", "1234")
+	assert.ErrorIs(s.T(), err, auth.ErrInvalidPassword)
+
+	err = s.auth.Create(s.ctx, "*shnoo", "thisisveryunsafe")
+	assert.ErrorIs(s.T(), err, auth.ErrInvalidUsername)
+
 	s.cancel()
 	err = s.auth.Create(s.ctx, "alex", "alex-password")
 	assert.ErrorIs(s.T(), err, context.Canceled)
@@ -189,6 +195,12 @@ func (s *AuthTestSuite) TestShouldLogin() {
 func (s *AuthRoutesTestSuite) TestLoginShouldError() {
 	_, err := s.auth.Login(s.ctx, "does-not-exist", "pass")
 	assert.ErrorIs(s.T(), err, auth.ErrMissingUser)
+
+	err = s.auth.Create(s.ctx, "shnoo", "1234")
+	assert.ErrorIs(s.T(), err, auth.ErrInvalidPassword)
+
+	err = s.auth.Create(s.ctx, "*shnoo", "thisisveryunsafe")
+	assert.ErrorIs(s.T(), err, auth.ErrInvalidUsername)
 
 	s.cancel()
 	_, err = s.auth.Login(s.ctx, "shnoo", "pass")

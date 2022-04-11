@@ -155,3 +155,27 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	req, _ = http.NewRequest("POST", "/delete", bytes.NewBuffer(credentialsBody))
 	s.assertResponse(req, 400, "User does not exist")
 }
+
+func (s *AuthRoutesTestSuite) TestRoutesInputValidation() {
+	badUsernameCredentials, _ := json.Marshal(auth.Credentials{
+		Username: "*a",
+		Password: "something",
+	})
+
+	req, _ := http.NewRequest("POST", "/login", bytes.NewBuffer(badUsernameCredentials))
+	s.assertResponse(req, 400, auth.MSG_INVALID_USERNAME)
+
+	req, _ = http.NewRequest("POST", "/create", bytes.NewBuffer(badUsernameCredentials))
+	s.assertResponse(req, 400, auth.MSG_INVALID_USERNAME)
+
+	badPasswordCredentials, _ := json.Marshal(auth.Credentials{
+		Username: "shnoo",
+		Password: "1234",
+	})
+
+	req, _ = http.NewRequest("POST", "/login", bytes.NewBuffer(badPasswordCredentials))
+	s.assertResponse(req, 400, auth.MSG_INVALID_PASSWORD)
+
+	req, _ = http.NewRequest("POST", "/create", bytes.NewBuffer(badPasswordCredentials))
+	s.assertResponse(req, 400, auth.MSG_INVALID_PASSWORD)
+}
