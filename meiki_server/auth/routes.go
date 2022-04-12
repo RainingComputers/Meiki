@@ -47,9 +47,6 @@ func getCreateHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 
 		err := a.Create(ctx, newUser.Username, newUser.Password)
 
-		// TODO: DRY other and duplicate messages by making all messages a global var?
-		// TODO: move these global vars to a separate messages.go file and use them in tests as well?
-
 		if err == ErrInvalidUsername {
 			c.JSON(http.StatusBadRequest, MSG_INVALID_USERNAME)
 			return
