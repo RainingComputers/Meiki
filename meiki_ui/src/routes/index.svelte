@@ -1,22 +1,23 @@
 <script lang="ts">
     import Root from "$cmp/Root.svelte"
-    import Link from "$cmp/Link.svelte"
+    import Logo from "$cmp/app/Logo.svelte"
+    import Button, { ButtonType } from "../components/Button.svelte"
+    import Link from "../components/Link.svelte"
 </script>
 
 <Root>
-    <div
-        class=" grid h-screen w-full v-screen font-serif text-gray-800 bg-gray-200 place-content-center dark:bg-gray-800 dark:text-gray-50 sm:p-0"
-    >
-        <h1 class="text-9xl">Meiki UI</h1>
-        <div class="mt-8 text-sm">
-            New to Meiki notes? <Link text="Create" target="/create" /> a new account
-            to get started
-        </div>
-        <div class="mt-8 text-sm">
-            If you already have an account, Click <Link
-                text="here"
-                target="/login"
-            /> to login
-        </div>
-    </div>
+    <span class="flex flex-col items-center gap-6">
+        <Logo width="50%" />
+        <h1 class="text-5xl">The ⚡ lightning fast ⚡ notes editor</h1>
+        <h1 class="text-2xl">
+            Meiki is a markdown notes editor built with performance and
+            simplicity in mind
+        </h1>
+    </span>
+    <span class="flex flex-col gap-4 p-14">
+        <Button type={ButtonType.HERO} label="Create Meiki Account" />
+        <span class="text-lg">
+            Already have an account? <Link text="Click here" target="/login" /> to login
+        </span>
+    </span>
 </Root>
