@@ -1,7 +1,6 @@
 <p align="center">
-<img src="./meiki.svg" width="40%">
-
-The ⚡ lightning fast ⚡ notes editor
+    <img src="./meiki.svg" width="50%"><br>
+    <b>The ⚡ lightning fast ⚡ notes editor</b>
 </p>
 
 # Meiki Notes
