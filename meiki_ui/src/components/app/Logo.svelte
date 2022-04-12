@@ -4,4 +4,4 @@
     export let width: string = "100%"
 </script>
 
-<img src={logo} alt="meiki-logo" width={width} />
+<img src={logo} alt="meiki-logo" {width} />
