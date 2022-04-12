@@ -6,7 +6,7 @@
 # Meiki Notes
 
 Meiki is a markdown notes editor built with performance and
-simplicity in mind. The name "MEIKI" was inspired from the Japanese word [銘記](https://jisho.org/word/%E9%8A%98%E8%A8%98) (めいき), which means to "keep in mind" or "take note of" or "remember​".
+simplicity in mind. The name "MEIKI" was inspired from the Japanese word [銘記](https://jisho.org/word/%E9%8A%98%E8%A8%98) (めいき), which means to "take note of" or "remember​".
 
 Meiki's frontend is written in svelte and the backend is written in golang. Meiki uses mongoDB to store the notes, user credentials and session tokens.
 
