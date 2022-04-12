@@ -27,7 +27,13 @@
             </h1>
         </span>
         <span class="flex flex-col gap-4 p-14">
-            <Button type={ButtonType.HERO} label="Create Meiki Account" />
+            <Button
+                type={ButtonType.HERO}
+                label="Create Meiki Account"
+                onClick={() => {
+                    goto("/create")
+                }}
+            />
             <span class="text-lg">
                 Already have an account? <Link
                     text="Click here"
