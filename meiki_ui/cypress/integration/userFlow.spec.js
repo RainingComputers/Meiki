@@ -36,8 +36,14 @@ describe("UserFlow Test", () => {
 
         // assert it goes to the app
         cy.get("nav").should("be.visible")
-        cy.get("[data-cy='profile']").should("contain", "shnoo")
+        cy.get("[data-cy='profile']").should("contain", "shnoo").click()
 
-        // TODO: Add logout
+        // click logout button
+        cy.get("button:contains('Logout')").click()
+
+        // shows login page
+        cy.get("img[alt='meiki-logo']").should("be.visible")
+        cy.get("#Username").should("be.visible")
+        cy.get("#Password").should("be.visible")        
     })
 })
