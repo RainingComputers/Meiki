@@ -44,6 +44,6 @@ describe("UserFlow Test", () => {
         // shows login page
         cy.get("img[alt='meiki-logo']").should("be.visible")
         cy.get("#Username").should("be.visible")
-        cy.get("#Password").should("be.visible")        
+        cy.get("#Password").should("be.visible")
     })
 })
