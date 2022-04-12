@@ -1,6 +1,4 @@
 <script lang="ts">
-    // TODO: Add input validation
-
     import { createEventDispatcher } from "svelte"
     import { login } from "$lib/api/user"
     import { StatusNotOkError } from "$lib/api/request"
