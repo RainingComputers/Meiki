@@ -1,6 +1,6 @@
 <script lang="ts">
+    import { getUsername } from "$lib/api/user"
     import Toolbar from "$cmp/toolbar/Toolbar.svelte"
-
     import ToolbarButton from "$cmp/toolbar/Button.svelte"
     import ToolbarTitle from "$cmp/toolbar/Title.svelte"
     import SidebarIcon from "$cmp/icons/SidebarIcon.svelte"
@@ -10,7 +10,7 @@
     import UserIcon from "$cmp/icons/UserIcon.svelte"
     import ToolBarAction from "$cmp/toolbar/Action.svelte"
 
-    const username = localStorage.getItem("username")
+    const username = getUsername()
 </script>
 
 <Toolbar>

@@ -1,7 +1,7 @@
 <script lang="ts">
-    import ItemsIcon from "../icons/ItemsIcon.svelte"
-    export let title: string
+    import ItemsIcon from "$cmp/icons/ItemsIcon.svelte"
 
+    export let title: string
     export let checked: boolean = false
 
     $: checkedClass = checked ? "bg-blue-500 text-white stroke-white" : ""

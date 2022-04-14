@@ -1,20 +1,12 @@
 import { makeRequest } from "./request"
 
 export async function createUser(username: string, password: string) {
-    const body = {
-        username,
-        password,
-    }
-
+    const body = { username, password }
     await makeRequest("/create", "POST", body)
 }
 
 export async function login(username: string, password: string) {
-    const body = {
-        username,
-        password,
-    }
-
+    const body = { username, password }
     const response = await makeRequest("/login", "POST", body)
 
     localStorage.setItem("username", response.username)
@@ -26,15 +18,22 @@ export async function authStatus() {
 }
 
 export async function deleteUser(username: string, password: string) {
-    const body = {
-        username,
-        password,
-    }
-
+    const body = { username, password }
     await makeRequest("/delete", "POST", body)
 }
 
 export async function logout() {
     await makeRequest("/logout", "POST")
     localStorage.clear()
+}
+
+export function getUsername() {
+    return localStorage.getItem("username")
+}
+
+export function tokensPresent() {
+    const username = localStorage.getItem("username")
+    const token = localStorage.getItem("token")
+
+    return !!(username && token)
 }

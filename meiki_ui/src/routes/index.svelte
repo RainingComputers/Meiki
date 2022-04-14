@@ -1,12 +1,11 @@
 <script lang="ts">
     import { goto } from "$app/navigation"
     import { onMount } from "svelte"
-    import { tokensPresent } from "$lib/api/request"
-
+    import { tokensPresent } from "$lib/api/user"
     import Root from "$cmp/Root.svelte"
     import Logo from "$cmp/app/Logo.svelte"
-    import Button, { ButtonType } from "../components/Button.svelte"
-    import Link from "../components/Link.svelte"
+    import Button, { ButtonType } from "$cmp/Button.svelte"
+    import Link from "$cmp/Link.svelte"
 
     let loggedIn: boolean = true
 

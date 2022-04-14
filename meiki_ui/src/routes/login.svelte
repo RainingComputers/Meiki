@@ -1,8 +1,8 @@
 <script lang="ts">
+    import { goto } from "$app/navigation"
     import Root from "$cmp/Root.svelte"
     import Link from "$cmp/Link.svelte"
     import LoginUserForm from "$cmp/app/userForm/LoginUserForm.svelte"
-    import { goto } from "$app/navigation"
 </script>
 
 <Root>
