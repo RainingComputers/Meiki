@@ -1,7 +1,10 @@
 package notes
 
 import (
+	"context"
 	"errors"
+
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type Note struct {
@@ -10,7 +13,8 @@ type Note struct {
 	Content  string
 }
 
-type NoteStore struct {
+type NotesStore struct {
+	coll *mongo.Collection
 }
 
 var (
@@ -19,22 +23,26 @@ var (
 	ErrNoteAlreadyExists = errors.New("note already exists")
 )
 
-func (ns NoteStore) Create() error {
+func CreateNotesStore(ctx context.Context, coll *mongo.Collection) (NotesStore, error) {
+	return NotesStore{coll}, nil
+}
+
+func (ns NotesStore) Create() error {
 	return ErrNotImplemented
 }
 
-func (ns NoteStore) List(username string) ([]string, error) {
+func (ns NotesStore) List(username string) ([]string, error) {
 	return nil, ErrNotImplemented
 }
 
-func (ns NoteStore) Read(username string, title string) (string, error) {
+func (ns NotesStore) Read(username string, title string) (string, error) {
 	return "", ErrNotImplemented
 }
 
-func (ns NoteStore) Update(username string, title string) error {
+func (ns NotesStore) Update(username string, title string) error {
 	return ErrNotImplemented
 }
 
-func (ns NoteStore) Delete() error {
+func (ns NotesStore) Delete() error {
 	return ErrNotImplemented
 }
