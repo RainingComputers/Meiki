@@ -14,7 +14,12 @@
 </script>
 
 <Toolbar>
-    <ToolbarButton checkable={true} isButtonChecked={true} name="sidebar" on:sidebar>
+    <ToolbarButton
+        checkable={true}
+        isButtonChecked={true}
+        name="sidebar"
+        on:sidebar
+    >
         <SidebarIcon />
     </ToolbarButton>
     <span class="px-2" />
