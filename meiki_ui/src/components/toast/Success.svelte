@@ -1,6 +1,7 @@
-<script>
-    export let fullWidth = false
+<script lang="ts">
     import { scale } from "svelte/transition"
+
+    export let fullWidth = false
 </script>
 
 <span

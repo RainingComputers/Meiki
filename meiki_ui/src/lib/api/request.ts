@@ -38,10 +38,3 @@ export async function makeRequest(url: string, method: string, body: any = {}) {
     await ensureStatusOK(response)
     return response.json()
 }
-
-export function tokensPresent() {
-    const username = localStorage.getItem("username")
-    const token = localStorage.getItem("token")
-
-    return !!(username && token)
-}

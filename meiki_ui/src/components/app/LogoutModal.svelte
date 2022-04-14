@@ -1,10 +1,10 @@
 <script lang="ts">
     import { goto } from "$app/navigation"
+    import { logout } from "$lib/api/user"
     import Button, { ButtonType } from "$cmp/Button.svelte"
     import Logo from "./Logo.svelte"
-    import { logout } from "$lib/api/user"
 
-    export async function handleLogout() {
+    async function logoutUser() {
         await logout()
         goto("/login")
     }
@@ -19,7 +19,7 @@
         <Button
             label="Logout"
             type={ButtonType.SECONDARY}
-            onClick={handleLogout}
+            onClick={logoutUser}
         />
     </div>
 

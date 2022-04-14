@@ -1,9 +1,8 @@
 <script lang="ts">
     import Button from "$cmp/Button.svelte"
-
     import Card from "$cmp/Card.svelte"
     import Entry from "$cmp/Entry.svelte"
-    import Logo from "../Logo.svelte"
+    import Logo from "$cmp/app/Logo.svelte"
     import Error from "$cmp/toast/Error.svelte"
 
     export let error: string

@@ -2,9 +2,9 @@
     import App from "$cmp/App.svelte"
     import AppExplorer from "$cmp/app/AppExplorer.svelte"
     import AppToolbar from "$cmp/app/AppToolbar.svelte"
-    import Workbench from "$cmp/app/userForm/Workbench.svelte"
-    import LogoutModal from "../../components/app/LogoutModal.svelte"
-    import ModalOverlay from "../../components/ModalOverlay.svelte"
+    import Workbench from "$cmp/app/Workbench.svelte"
+    import LogoutModal from "$cmp/app/LogoutModal.svelte"
+    import ModalOverlay from "$cmp/ModalOverlay.svelte"
 
     let showExplorer: boolean = true
     let workbench: Workbench
