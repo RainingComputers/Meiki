@@ -9,6 +9,7 @@
     ],
     "conventionalCommits.scopes": [
         "auth",
-        "main"
+        "main",
+        "notes"
     ]
 }
