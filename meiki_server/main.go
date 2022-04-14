@@ -14,6 +14,8 @@ import (
 )
 
 func run() error {
+	// TODO: Make config env variables and use same db for auth and notes
+
 	ctx := context.Background()
 
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://root:example@localhost:27017"))
