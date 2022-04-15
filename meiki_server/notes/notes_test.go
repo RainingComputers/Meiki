@@ -92,6 +92,10 @@ func (s *NotesStoreTestSuite) TestCreateShouldError() {
 
 	_, err = s.notesStore.Create(s.ctx, note1)
 	assert.ErrorIs(s.T(), err, notes.ErrNoteAlreadyExists)
+
+	s.cancel()
+	_, err = s.notesStore.Create(s.ctx, note3)
+	assert.ErrorIs(s.T(), err, context.Canceled)
 }
 
 func (s *NotesStoreTestSuite) TestReadShouldError() {
@@ -101,6 +105,9 @@ func (s *NotesStoreTestSuite) TestReadShouldError() {
 	_, err = s.notesStore.Read(s.ctx, primitive.NewObjectID().Hex())
 	assert.ErrorIs(s.T(), err, notes.ErrNoteDoesNotExist)
 
+	s.cancel()
+	_, err = s.notesStore.Read(s.ctx, primitive.NewObjectID().Hex())
+	assert.ErrorIs(s.T(), err, context.Canceled)
 }
 
 func (s *NotesStoreTestSuite) TestShouldListNotes() {
@@ -141,6 +148,10 @@ func (s *NotesStoreTestSuite) TestUpdateShouldError() {
 
 	err = s.notesStore.Update(s.ctx, primitive.NewObjectID().Hex(), "Testing")
 	assert.ErrorIs(s.T(), err, notes.ErrNoteDoesNotExist)
+
+	s.cancel()
+	err = s.notesStore.Update(s.ctx, primitive.NewObjectID().Hex(), "Testing")
+	assert.ErrorIs(s.T(), err, context.Canceled)
 }
 
 func (s *NotesStoreTestSuite) TestShouldDeleteNote() {
@@ -165,4 +176,8 @@ func (s *NotesStoreTestSuite) TestDeleteShouldError() {
 
 	err = s.notesStore.Delete(s.ctx, primitive.NewObjectID().Hex())
 	assert.ErrorIs(s.T(), err, notes.ErrNoteDoesNotExist)
+
+	s.cancel()
+	err = s.notesStore.Delete(s.ctx, primitive.NewObjectID().Hex())
+	assert.ErrorIs(s.T(), err, context.Canceled)
 }
