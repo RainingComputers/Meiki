@@ -126,7 +126,7 @@ func (s *NotesStoreTestSuite) TestShouldUpdateNote() {
 	noteInfo, err := s.notesStore.Create(s.ctx, note1)
 	assert.Nil(s.T(), err)
 
-	err = s.notesStore.Update(s.ctx, noteInfo.ID, "Content has been modified")
+	_ = s.notesStore.Update(s.ctx, noteInfo.ID, "Content has been modified")
 	assert.Nil(s.T(), err)
 
 	content, err := s.notesStore.Read(s.ctx, noteInfo.ID)
