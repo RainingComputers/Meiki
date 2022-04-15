@@ -125,10 +125,10 @@ func (ns NotesStore) Read(ctx context.Context, id string) (string, error) {
 	return note.Content, nil
 }
 
-func (ns NotesStore) Update(ctx context.Context, username string, title string) error {
+func (ns NotesStore) Update(ctx context.Context, id string) error {
 	return ErrNotImplemented
 }
 
-func (ns NotesStore) Delete(ctx context.Context) error {
+func (ns NotesStore) Delete(ctx context.Context, id string) error {
 	return ErrNotImplemented
 }
