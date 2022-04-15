@@ -93,7 +93,9 @@ func getDeleteHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 			return
 		}
 
-		if err := a.Delete(ctx, creds.Username); err != nil {
+		err = a.Delete(ctx, creds.Username)
+
+		if err != nil {
 			c.JSON(http.StatusBadRequest, MSG_UNABLE_TO_CREATE_USER)
 			return
 		}
