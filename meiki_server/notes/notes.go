@@ -27,7 +27,7 @@ func CreateNotesStore(ctx context.Context, coll *mongo.Collection) (NotesStore, 
 	return NotesStore{coll}, nil
 }
 
-func (ns NotesStore) Create() error {
+func (ns NotesStore) Create(note Note) error {
 	return ErrNotImplemented
 }
 

@@ -47,3 +47,63 @@ func (s *NotesStoreTestSuite) SetupTest() {
 func (s *NotesStoreTestSuite) TearDownTest() {
 	s.clean()
 }
+
+var note1 = notes.Note{
+	Username: "alex",
+	Title:    "This is a note",
+	Content:  "This is a test note, so it does not have many words in it",
+}
+
+var note2 = notes.Note{
+	Username: "alex",
+	Title:    "This is another note",
+	Content:  "You don't need to read this tho",
+}
+
+var note3 = notes.Note{
+	Username: "shnoo",
+	Title:    "This is shnoo's note",
+	Content:  "What is my purpose?; You are a dummy for this test; Oh my god",
+}
+
+func (s *NotesStoreTestSuite) TestShouldCreateAndReadNote() {
+	err := s.notesStore.Create(note1)
+	assert.Nil(s.T(), err)
+	err = s.notesStore.Create(note3)
+	assert.Nil(s.T(), err)
+
+	storedContent, err := s.notesStore.Read("alex", "This is a note")
+	assert.Nil(s.T(), err)
+	assert.Equal(s.T(), note1.Content, storedContent)
+}
+
+func (s *NotesStoreTestSuite) TestCreateShouldError() {
+	err := s.notesStore.Create(note1)
+	assert.Nil(s.T(), err)
+
+	err = s.notesStore.Create(note1)
+	assert.ErrorIs(s.T(), err, notes.ErrNoteAlreadyExists)
+}
+
+func (s *NotesStoreTestSuite) TestReadShouldError() {
+	_, err := s.notesStore.Read("someone", "Does not exist")
+	assert.ErrorIs(s.T(), err, notes.ErrNoteDoesNotExist)
+}
+
+func (s *NotesStoreTestSuite) TestShouldListNotes() {
+
+	notesList, err := s.notesStore.List("alex")
+	assert.Nil(s.T(), err)
+	assert.Equal(s.T(), []string{}, notesList)
+
+	err = s.notesStore.Create(note1)
+	assert.Nil(s.T(), err)
+	err = s.notesStore.Create(note2)
+	assert.Nil(s.T(), err)
+	err = s.notesStore.Create(note3)
+	assert.Nil(s.T(), err)
+
+	notesList, err = s.notesStore.List("alex")
+	assert.Nil(s.T(), err)
+	assert.Equal(s.T(), []string{"This is a note", "This is another note"}, notesList)
+}
