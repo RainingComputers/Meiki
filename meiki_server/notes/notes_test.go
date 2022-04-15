@@ -30,7 +30,7 @@ func (s *NotesStoreTestSuite) clean() {
 func (s *NotesStoreTestSuite) SetupTest() {
 	log.Initialize()
 
-	s.ctx, s.cancel = context.WithTimeout(context.Background(), 5000000000000*time.Millisecond)
+	s.ctx, s.cancel = context.WithTimeout(context.Background(), 500*time.Millisecond)
 
 	client, err := mongo.Connect(s.ctx, options.Client().ApplyURI("mongodb://root:example@localhost:27017"))
 
@@ -120,4 +120,17 @@ func (s *NotesStoreTestSuite) TestShouldListNotes() {
 	noteTitleList := []string{noteInfoList[0].Title, noteInfoList[1].Title}
 	assert.Nil(s.T(), err)
 	assert.Equal(s.T(), []string{"This is a note", "This is another note"}, noteTitleList)
+}
+
+func (s *NotesStoreTestSuite) TestShouldUpdateNote() {
+	noteInfo, err := s.notesStore.Create(s.ctx, note1)
+	assert.Nil(s.T(), err)
+
+	err = s.notesStore.Update(s.ctx, noteInfo.ID, "Content has been modified")
+	assert.Nil(s.T(), err)
+
+	content, err := s.notesStore.Read(s.ctx, noteInfo.ID)
+	assert.Nil(s.T(), err)
+
+	assert.Equal(s.T(), "Content has been modified", content)
 }
