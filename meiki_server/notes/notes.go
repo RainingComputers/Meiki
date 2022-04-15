@@ -30,7 +30,6 @@ type NotesStore struct {
 }
 
 var (
-	ErrNotImplemented    = errors.New("not implemented") // TODO: remove this error
 	ErrNoteDoesNotExist  = errors.New("note does not exist")
 	ErrNoteAlreadyExists = errors.New("note already exists")
 	ErrInvalidId         = errors.New("invalid id")
@@ -138,14 +137,14 @@ func (ns NotesStore) Update(ctx context.Context, id string, content string) erro
 		bson.M{"$set": bson.M{"content": content}},
 	)
 
-	if result.MatchedCount == 0 {
-		log.Warn("Note was not found for update request")
-		return ErrNoteDoesNotExist
-	}
-
 	if err != nil {
 		log.Error("Unable to update note")
 		return err
+	}
+
+	if result.MatchedCount == 0 {
+		log.Warn("Note was not found for update request")
+		return ErrNoteDoesNotExist
 	}
 
 	return nil
@@ -161,14 +160,14 @@ func (ns NotesStore) Delete(ctx context.Context, id string) error {
 
 	result, err := ns.coll.DeleteOne(ctx, bson.M{"_id": docID})
 
-	if result.DeletedCount == 0 {
-		log.Warn("Note was not found for delete request")
-		return ErrNoteDoesNotExist
-	}
-
 	if err != nil {
 		log.Error("Unable to delete note")
 		return err
+	}
+
+	if result.DeletedCount == 0 {
+		log.Warn("Note was not found for delete request")
+		return ErrNoteDoesNotExist
 	}
 
 	return nil
