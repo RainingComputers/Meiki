@@ -126,7 +126,29 @@ func (ns NotesStore) Read(ctx context.Context, id string) (string, error) {
 }
 
 func (ns NotesStore) Update(ctx context.Context, id string, content string) error {
-	return ErrNotImplemented
+	docID, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		log.Warn("Invalid id requested on updating note", zap.Error(err))
+		return ErrInvalidId
+	}
+
+	result, err := ns.coll.UpdateOne(ctx,
+		bson.M{"_id": docID},
+		bson.M{"$set": bson.M{"content": content}},
+	)
+
+	if result.MatchedCount == 0 {
+		log.Warn("Note was not found for update request")
+		return ErrNoteDoesNotExist
+	}
+
+	if err != nil {
+		log.Error("Unable to update note")
+		return err
+	}
+
+	return nil
 }
 
 func (ns NotesStore) Delete(ctx context.Context, id string) error {
