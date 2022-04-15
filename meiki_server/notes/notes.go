@@ -6,15 +6,23 @@ import (
 
 	"github.com/RainingComputers/Meiki/log"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.uber.org/zap"
 )
 
 type Note struct {
-	Username string
-	Title    string
-	Content  string
+	ID       primitive.ObjectID `bson:"_id,omitempty"`
+	Username string             `bson:"username"`
+	Title    string             `bson:"title"`
+	Content  string             `bson:"content"`
+}
+
+type NoteInfo struct {
+	ID       string `json:"id"`
+	Username string `json:"username"`
+	Title    string `json:"title"`
 }
 
 type NotesStore struct {
@@ -25,6 +33,7 @@ var (
 	ErrNotImplemented    = errors.New("not implemented") // TODO: remove this error
 	ErrNoteDoesNotExist  = errors.New("note does not exist")
 	ErrNoteAlreadyExists = errors.New("note already exists")
+	ErrInvalidId         = errors.New("invalid id")
 )
 
 func CreateNotesStore(ctx context.Context, coll *mongo.Collection) (NotesStore, error) {
@@ -43,23 +52,27 @@ func CreateNotesStore(ctx context.Context, coll *mongo.Collection) (NotesStore, 
 	return NotesStore{coll}, nil
 }
 
-func (ns NotesStore) Create(ctx context.Context, note Note) error {
-	_, err := ns.coll.InsertOne(ctx, note)
+func (ns NotesStore) Create(ctx context.Context, note Note) (NoteInfo, error) {
+	result, err := ns.coll.InsertOne(ctx, note)
 
 	if mongo.IsDuplicateKeyError(err) {
 		log.Info("Duplicate note create attempt", zap.Error(err))
-		return ErrNoteAlreadyExists
+		return NoteInfo{}, ErrNoteAlreadyExists
 	}
 
 	if err != nil {
 		log.Error("Unable to create note", zap.Error(err))
-		return err
+		return NoteInfo{}, err
 	}
 
-	return nil
+	return NoteInfo{
+		ID:       result.InsertedID.(primitive.ObjectID).Hex(),
+		Title:    note.Title,
+		Username: note.Username,
+	}, nil
 }
 
-func (ns NotesStore) List(ctx context.Context, username string) ([]string, error) {
+func (ns NotesStore) List(ctx context.Context, username string) ([]NoteInfo, error) {
 	cursor, err := ns.coll.Find(ctx, bson.M{"username": username})
 
 	if err != nil {
@@ -67,7 +80,7 @@ func (ns NotesStore) List(ctx context.Context, username string) ([]string, error
 		return nil, err
 	}
 
-	notesList := []string{}
+	noteInfoList := []NoteInfo{}
 
 	for cursor.Next(ctx) {
 		var note Note
@@ -79,15 +92,26 @@ func (ns NotesStore) List(ctx context.Context, username string) ([]string, error
 			return nil, err
 		}
 
-		notesList = append(notesList, note.Title)
+		noteInfoList = append(noteInfoList, NoteInfo{
+			ID:       note.ID.String(),
+			Title:    note.Title,
+			Username: note.Username,
+		})
 	}
 
-	return notesList, nil
+	return noteInfoList, nil
 }
 
-func (ns NotesStore) Read(ctx context.Context, username string, title string) (string, error) {
+func (ns NotesStore) Read(ctx context.Context, id string) (string, error) {
+	docID, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		log.Warn("Invalid id requested on reading note", zap.Error(err))
+		return "", ErrInvalidId
+	}
+
 	var note Note
-	err := ns.coll.FindOne(ctx, bson.M{"username": username}).Decode(&note)
+	err = ns.coll.FindOne(ctx, bson.M{"_id": docID}).Decode(&note)
 
 	if errors.Is(err, mongo.ErrNoDocuments) {
 		return "", ErrNoteDoesNotExist

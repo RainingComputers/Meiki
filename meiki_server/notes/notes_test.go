@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -29,7 +30,7 @@ func (s *NotesStoreTestSuite) clean() {
 func (s *NotesStoreTestSuite) SetupTest() {
 	log.Initialize()
 
-	s.ctx, s.cancel = context.WithTimeout(context.Background(), 500*time.Millisecond)
+	s.ctx, s.cancel = context.WithTimeout(context.Background(), 5000000000000*time.Millisecond)
 
 	client, err := mongo.Connect(s.ctx, options.Client().ApplyURI("mongodb://root:example@localhost:27017"))
 
@@ -38,7 +39,7 @@ func (s *NotesStoreTestSuite) SetupTest() {
 	}
 
 	notes_db := client.Database("notes")
-	s.coll = notes_db.Collection("users")
+	s.coll = notes_db.Collection("notes")
 
 	s.notesStore, err = notes.CreateNotesStore(s.ctx, s.coll)
 	assert.Nil(s.T(), err)
@@ -54,61 +55,65 @@ func TestNotesStoreTestSuite(t *testing.T) {
 }
 
 var note1 = notes.Note{
+	ID:       primitive.NilObjectID,
 	Username: "alex",
 	Title:    "This is a note",
 	Content:  "This is a test note, so it does not have many words in it",
 }
 
 var note2 = notes.Note{
+	ID:       primitive.NilObjectID,
 	Username: "alex",
 	Title:    "This is another note",
 	Content:  "You don't need to read this tho",
 }
 
 var note3 = notes.Note{
+	ID:       primitive.NilObjectID,
 	Username: "shnoo",
 	Title:    "This is shnoo's note",
 	Content:  "What is my purpose?; You are a dummy for this test; Oh my god",
 }
 
 func (s *NotesStoreTestSuite) TestShouldCreateAndReadNote() {
-	err := s.notesStore.Create(s.ctx, note1)
+	noteInfo1, err := s.notesStore.Create(s.ctx, note1)
 	assert.Nil(s.T(), err)
-	err = s.notesStore.Create(s.ctx, note3)
+	_, err = s.notesStore.Create(s.ctx, note3)
 	assert.Nil(s.T(), err)
 
-	storedContent, err := s.notesStore.Read(s.ctx, "alex", "This is a note")
+	storedContent, err := s.notesStore.Read(s.ctx, noteInfo1.ID)
 	assert.Nil(s.T(), err)
 	assert.Equal(s.T(), note1.Content, storedContent)
 }
 
 func (s *NotesStoreTestSuite) TestCreateShouldError() {
-	err := s.notesStore.Create(s.ctx, note1)
+	_, err := s.notesStore.Create(s.ctx, note1)
 	assert.Nil(s.T(), err)
 
-	err = s.notesStore.Create(s.ctx, note1)
+	_, err = s.notesStore.Create(s.ctx, note1)
 	assert.ErrorIs(s.T(), err, notes.ErrNoteAlreadyExists)
 }
 
 func (s *NotesStoreTestSuite) TestReadShouldError() {
-	_, err := s.notesStore.Read(s.ctx, "someone", "Does not exist")
-	assert.ErrorIs(s.T(), err, notes.ErrNoteDoesNotExist)
+	_, err := s.notesStore.Read(s.ctx, "Invalid id")
+	assert.ErrorIs(s.T(), err, notes.ErrInvalidId)
 }
 
 func (s *NotesStoreTestSuite) TestShouldListNotes() {
 
 	notesList, err := s.notesStore.List(s.ctx, "alex")
 	assert.Nil(s.T(), err)
-	assert.Equal(s.T(), []string{}, notesList)
+	assert.Equal(s.T(), []notes.NoteInfo{}, notesList)
 
-	err = s.notesStore.Create(s.ctx, note1)
+	_, err = s.notesStore.Create(s.ctx, note1)
 	assert.Nil(s.T(), err)
-	err = s.notesStore.Create(s.ctx, note2)
+	_, err = s.notesStore.Create(s.ctx, note2)
 	assert.Nil(s.T(), err)
-	err = s.notesStore.Create(s.ctx, note3)
+	_, err = s.notesStore.Create(s.ctx, note3)
 	assert.Nil(s.T(), err)
 
-	notesList, err = s.notesStore.List(s.ctx, "alex")
+	noteInfoList, err := s.notesStore.List(s.ctx, "alex")
+	noteTitleList := []string{noteInfoList[0].Title, noteInfoList[1].Title}
 	assert.Nil(s.T(), err)
-	assert.Equal(s.T(), []string{"This is a note", "This is another note"}, notesList)
+	assert.Equal(s.T(), []string{"This is a note", "This is another note"}, noteTitleList)
 }
