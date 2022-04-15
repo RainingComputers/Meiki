@@ -134,3 +134,11 @@ func (s *NotesStoreTestSuite) TestShouldUpdateNote() {
 
 	assert.Equal(s.T(), "Content has been modified", content)
 }
+
+func (s *NotesStoreTestSuite) TestUpdateShouldError() {
+	err := s.notesStore.Update(s.ctx, "Invalid id", "Testing")
+	assert.ErrorIs(s.T(), err, notes.ErrInvalidId)
+
+	err = s.notesStore.Update(s.ctx, primitive.NewObjectID().Hex(), "Testing")
+	assert.ErrorIs(s.T(), err, notes.ErrNoteDoesNotExist)
+}
