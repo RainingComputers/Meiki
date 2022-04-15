@@ -2,6 +2,7 @@ package notes_test
 
 import (
 	"context"
+	"testing"
 	"time"
 
 	"github.com/RainingComputers/Meiki/log"
@@ -48,6 +49,10 @@ func (s *NotesStoreTestSuite) TearDownTest() {
 	s.clean()
 }
 
+func TestNotesStoreTestSuite(t *testing.T) {
+	suite.Run(t, new(NotesStoreTestSuite))
+}
+
 var note1 = notes.Note{
 	Username: "alex",
 	Title:    "This is a note",
@@ -67,43 +72,43 @@ var note3 = notes.Note{
 }
 
 func (s *NotesStoreTestSuite) TestShouldCreateAndReadNote() {
-	err := s.notesStore.Create(note1)
+	err := s.notesStore.Create(s.ctx, note1)
 	assert.Nil(s.T(), err)
-	err = s.notesStore.Create(note3)
+	err = s.notesStore.Create(s.ctx, note3)
 	assert.Nil(s.T(), err)
 
-	storedContent, err := s.notesStore.Read("alex", "This is a note")
+	storedContent, err := s.notesStore.Read(s.ctx, "alex", "This is a note")
 	assert.Nil(s.T(), err)
 	assert.Equal(s.T(), note1.Content, storedContent)
 }
 
 func (s *NotesStoreTestSuite) TestCreateShouldError() {
-	err := s.notesStore.Create(note1)
+	err := s.notesStore.Create(s.ctx, note1)
 	assert.Nil(s.T(), err)
 
-	err = s.notesStore.Create(note1)
+	err = s.notesStore.Create(s.ctx, note1)
 	assert.ErrorIs(s.T(), err, notes.ErrNoteAlreadyExists)
 }
 
 func (s *NotesStoreTestSuite) TestReadShouldError() {
-	_, err := s.notesStore.Read("someone", "Does not exist")
+	_, err := s.notesStore.Read(s.ctx, "someone", "Does not exist")
 	assert.ErrorIs(s.T(), err, notes.ErrNoteDoesNotExist)
 }
 
 func (s *NotesStoreTestSuite) TestShouldListNotes() {
 
-	notesList, err := s.notesStore.List("alex")
+	notesList, err := s.notesStore.List(s.ctx, "alex")
 	assert.Nil(s.T(), err)
 	assert.Equal(s.T(), []string{}, notesList)
 
-	err = s.notesStore.Create(note1)
+	err = s.notesStore.Create(s.ctx, note1)
 	assert.Nil(s.T(), err)
-	err = s.notesStore.Create(note2)
+	err = s.notesStore.Create(s.ctx, note2)
 	assert.Nil(s.T(), err)
-	err = s.notesStore.Create(note3)
+	err = s.notesStore.Create(s.ctx, note3)
 	assert.Nil(s.T(), err)
 
-	notesList, err = s.notesStore.List("alex")
+	notesList, err = s.notesStore.List(s.ctx, "alex")
 	assert.Nil(s.T(), err)
 	assert.Equal(s.T(), []string{"This is a note", "This is another note"}, notesList)
 }
