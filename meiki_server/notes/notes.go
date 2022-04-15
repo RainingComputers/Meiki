@@ -152,5 +152,24 @@ func (ns NotesStore) Update(ctx context.Context, id string, content string) erro
 }
 
 func (ns NotesStore) Delete(ctx context.Context, id string) error {
-	return ErrNotImplemented
+	docID, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		log.Warn("Invalid id requested on deleting note", zap.Error(err))
+		return ErrInvalidId
+	}
+
+	result, err := ns.coll.DeleteOne(ctx, bson.M{"_id": docID})
+
+	if result.DeletedCount == 0 {
+		log.Warn("Note was not found for delete request")
+		return ErrNoteDoesNotExist
+	}
+
+	if err != nil {
+		log.Error("Unable to delete note")
+		return err
+	}
+
+	return nil
 }
