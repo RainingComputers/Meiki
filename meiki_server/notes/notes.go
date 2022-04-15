@@ -125,7 +125,7 @@ func (ns NotesStore) Read(ctx context.Context, id string) (string, error) {
 	return note.Content, nil
 }
 
-func (ns NotesStore) Update(ctx context.Context, id string) error {
+func (ns NotesStore) Update(ctx context.Context, id string, content string) error {
 	return ErrNotImplemented
 }
 
