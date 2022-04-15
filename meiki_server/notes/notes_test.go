@@ -142,3 +142,27 @@ func (s *NotesStoreTestSuite) TestUpdateShouldError() {
 	err = s.notesStore.Update(s.ctx, primitive.NewObjectID().Hex(), "Testing")
 	assert.ErrorIs(s.T(), err, notes.ErrNoteDoesNotExist)
 }
+
+func (s *NotesStoreTestSuite) TestShouldDeleteNote() {
+	noteInfo1, err := s.notesStore.Create(s.ctx, note1)
+	assert.Nil(s.T(), err)
+
+	noteInfo2, err := s.notesStore.Create(s.ctx, note2)
+	assert.Nil(s.T(), err)
+
+	s.notesStore.Delete(s.ctx, noteInfo1.ID)
+
+	_, err = s.notesStore.Read(s.ctx, noteInfo1.ID)
+	assert.ErrorIs(s.T(), err, notes.ErrNoteDoesNotExist)
+
+	_, err = s.notesStore.Read(s.ctx, noteInfo2.ID)
+	assert.Nil(s.T(), err)
+}
+
+func (s *NotesStoreTestSuite) TestDeleteShouldError() {
+	err := s.notesStore.Delete(s.ctx, "Invalid id")
+	assert.ErrorIs(s.T(), err, notes.ErrInvalidId)
+
+	err = s.notesStore.Delete(s.ctx, primitive.NewObjectID().Hex())
+	assert.ErrorIs(s.T(), err, notes.ErrNoteDoesNotExist)
+}
