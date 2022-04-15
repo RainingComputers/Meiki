@@ -97,6 +97,10 @@ func (s *NotesStoreTestSuite) TestCreateShouldError() {
 func (s *NotesStoreTestSuite) TestReadShouldError() {
 	_, err := s.notesStore.Read(s.ctx, "Invalid id")
 	assert.ErrorIs(s.T(), err, notes.ErrInvalidId)
+
+	_, err = s.notesStore.Read(s.ctx, primitive.NewObjectID().Hex())
+	assert.ErrorIs(s.T(), err, notes.ErrNoteDoesNotExist)
+
 }
 
 func (s *NotesStoreTestSuite) TestShouldListNotes() {
