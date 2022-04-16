@@ -4,8 +4,8 @@
     export let checkable: boolean = false
     export let name: string = ""
     export let label: string = ""
+    export let isButtonChecked: boolean = false
 
-    let isButtonChecked: boolean = true
 
     const dispatch = createEventDispatcher()
 

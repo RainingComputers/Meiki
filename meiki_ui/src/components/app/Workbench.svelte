@@ -2,8 +2,10 @@
     import Editor from "$cmp/Editor.svelte"
     import Renderer from "$cmp/Renderer.svelte"
 
-    let showRenderer = true
-    let showEditor = true
+    import Logo from "./Logo.svelte"
+
+    let showRenderer = false
+    let showEditor = false
 
     export function toggleRenderer() {
         showRenderer = !showRenderer
@@ -28,5 +30,10 @@
     {#if showRenderer && showEditor}
         <div class=" bg-green-100 flex-1"><Editor /></div>
         <div class=" bg-red-100 flex-1"><Renderer /></div>
+    {/if}
+    {#if !showRenderer && !showEditor}
+        <div class="opacity-5 flex justify-center items-center">
+            <Logo width="70%" />
+        </div>
     {/if}
 </div>
