@@ -1,6 +1,7 @@
 <script lang="ts">
     import Editor from "$cmp/Editor.svelte"
     import Renderer from "$cmp/Renderer.svelte"
+
     import Logo from "./Logo.svelte"
 
     let showRenderer = false
