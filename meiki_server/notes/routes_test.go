@@ -15,6 +15,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -65,6 +66,8 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 	testhelpers.AssertResponse(s.T(), s.router, req, 400, "Invalid id")
 
 	// delete valid id but does not exist TODO
+	req, _ = http.NewRequest("POST", "/delete/"+primitive.NewObjectID().Hex(), nil)
+	testhelpers.AssertResponse(s.T(), s.router, req, 400, "Note does not exist")
 
 	// create note and assert read
 	createRequest, _ := json.Marshal(notes.CreateRequest{
@@ -105,9 +108,19 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 	assert.Nil(s.T(), err)
 	assert.Equal(s.T(), len(listResponse2), 2)
 	assert.Equal(s.T(), listResponse2[0].Title, "This is a new note")
-	assert.Equal(s.T(), listResponse2[1].Title, "This is another note")
+	assert.Equal(s.T(), listResponse2[1].Title, "This is another note") // TODO extract this to function and make it sort before
 
 	// update note note and assert read TODO
+	updateRequest, _ := json.Marshal(notes.UpdateRequest{
+		Content: "A content has been added to this note",
+	})
+
+	req, _ = http.NewRequest("POST", "/update/"+listResponse2[0].ID, bytes.NewBuffer(updateRequest))
+	testhelpers.AssertResponse(s.T(), s.router, req, 200, "Updated note")
+
+	// read the note and assert updated content
+	req, _ = http.NewRequest("GET", "/read/"+listResponse2[0].ID, nil)
+	testhelpers.AssertResponse(s.T(), s.router, req, 200, "A content has been added to this note") // TODO: make this response notes response instead of string
 
 	// delete note and assert read note does not exist
 	req, _ = http.NewRequest("POST", "/delete/"+listResponse2[0].ID, nil)
@@ -125,4 +138,6 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 	assert.Equal(s.T(), listResponse3[0].Title, "This is another note")
 
 	// assert read other note exists
+	req, _ = http.NewRequest("GET", "/read/"+listResponse2[0].ID, nil)
+	testhelpers.AssertResponse(s.T(), s.router, req, 400, "Note does not exist")
 }
