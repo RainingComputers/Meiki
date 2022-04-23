@@ -8,7 +8,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.uber.org/zap"
 )
 
@@ -17,12 +16,14 @@ type Note struct {
 	Username string             `bson:"username"`
 	Title    string             `bson:"title"`
 	Content  string             `bson:"content"`
+	// TODO: Add useful timestamps
 }
 
-type NoteInfo struct {
+type NoteResponse struct {
 	ID       string `json:"id"`
 	Username string `json:"username"`
 	Title    string `json:"title"`
+	// TODO: Add useful timestamps
 }
 
 type NotesStore struct {
@@ -31,47 +32,29 @@ type NotesStore struct {
 
 var (
 	ErrNoteDoesNotExist  = errors.New("note does not exist")
-	ErrNoteAlreadyExists = errors.New("note already exists")
 	ErrInvalidId         = errors.New("invalid id")
 )
 
 func CreateNotesStore(ctx context.Context, coll *mongo.Collection) (NotesStore, error) {
-	mod := mongo.IndexModel{
-		Keys:    bson.D{{Key: "username", Value: 1}, {Key: "title", Value: 1}},
-		Options: options.Index().SetUnique(true),
-	}
-
-	_, err := coll.Indexes().CreateOne(ctx, mod)
-
-	if err != nil {
-		log.Error("Unable to create unique index in notes collection", zap.Error(err))
-		return NotesStore{}, err
-	}
-
 	return NotesStore{coll}, nil
 }
 
-func (ns NotesStore) Create(ctx context.Context, note Note) (NoteInfo, error) {
+func (ns NotesStore) Create(ctx context.Context, note Note) (NoteResponse, error) {
 	result, err := ns.coll.InsertOne(ctx, note)
-
-	if mongo.IsDuplicateKeyError(err) {
-		log.Info("Duplicate note create attempt", zap.Error(err))
-		return NoteInfo{}, ErrNoteAlreadyExists
-	}
 
 	if err != nil {
 		log.Error("Unable to create note", zap.Error(err))
-		return NoteInfo{}, err
+		return NoteResponse{}, err
 	}
 
-	return NoteInfo{
+	return NoteResponse{
 		ID:       result.InsertedID.(primitive.ObjectID).Hex(),
 		Title:    note.Title,
 		Username: note.Username,
 	}, nil
 }
 
-func (ns NotesStore) List(ctx context.Context, username string) ([]NoteInfo, error) {
+func (ns NotesStore) List(ctx context.Context, username string) ([]NoteResponse, error) {
 	cursor, err := ns.coll.Find(ctx, bson.M{"username": username})
 
 	if err != nil {
@@ -79,7 +62,7 @@ func (ns NotesStore) List(ctx context.Context, username string) ([]NoteInfo, err
 		return nil, err
 	}
 
-	noteInfoList := []NoteInfo{}
+	noteInfoList := []NoteResponse{}
 
 	for cursor.Next(ctx) {
 		var note Note
@@ -91,7 +74,7 @@ func (ns NotesStore) List(ctx context.Context, username string) ([]NoteInfo, err
 			return nil, err
 		}
 
-		noteInfoList = append(noteInfoList, NoteInfo{
+		noteInfoList = append(noteInfoList, NoteResponse{
 			ID:       note.ID.String(),
 			Title:    note.Title,
 			Username: note.Username,

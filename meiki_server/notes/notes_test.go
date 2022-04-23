@@ -91,7 +91,7 @@ func (s *NotesStoreTestSuite) TestCreateShouldError() {
 	assert.Nil(s.T(), err)
 
 	_, err = s.notesStore.Create(s.ctx, note1)
-	assert.ErrorIs(s.T(), err, notes.ErrNoteAlreadyExists)
+	assert.Nil(s.T(), err)
 
 	s.cancel()
 	_, err = s.notesStore.Create(s.ctx, note3)
@@ -114,7 +114,7 @@ func (s *NotesStoreTestSuite) TestShouldListNotes() {
 
 	notesList, err := s.notesStore.List(s.ctx, "alex")
 	assert.Nil(s.T(), err)
-	assert.Equal(s.T(), []notes.NoteInfo{}, notesList)
+	assert.Equal(s.T(), []notes.NoteResponse{}, notesList)
 
 	_, err = s.notesStore.Create(s.ctx, note1)
 	assert.Nil(s.T(), err)
