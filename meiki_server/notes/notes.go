@@ -31,8 +31,8 @@ type NotesStore struct {
 }
 
 var (
-	ErrNoteDoesNotExist  = errors.New("note does not exist")
-	ErrInvalidId         = errors.New("invalid id")
+	ErrNoteDoesNotExist = errors.New("note does not exist")
+	ErrInvalidId        = errors.New("invalid id")
 )
 
 func CreateNotesStore(ctx context.Context, coll *mongo.Collection) (NotesStore, error) {
@@ -75,7 +75,7 @@ func (ns NotesStore) List(ctx context.Context, username string) ([]NoteResponse,
 		}
 
 		noteInfoList = append(noteInfoList, NoteResponse{
-			ID:       note.ID.String(),
+			ID:       note.ID.Hex(),
 			Title:    note.Title,
 			Username: note.Username,
 		})

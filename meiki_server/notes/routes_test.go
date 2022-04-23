@@ -64,20 +64,16 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 	req, _ := http.NewRequest("POST", "/delete/invalidID", nil)
 	testhelpers.AssertResponse(s.T(), s.router, req, 400, "Invalid id")
 
+	// delete valid id but does not exist TODO
+
 	// create note and assert read
 	createRequest, _ := json.Marshal(notes.CreateRequest{
 		Title: "This is a new note",
 	})
 
-	req, err := http.NewRequest("POST", "/create", bytes.NewBuffer(createRequest))
-	if err != nil {
-		panic("shnoo says this should never happen!")
-	}
-
+	req, _ = http.NewRequest("POST", "/create", bytes.NewBuffer(createRequest))
 	w := testhelpers.GetResponse(s.T(), s.router, req)
 	assert.Equal(s.T(), w.Code, 200)
-
-	//testhelpers.AssertResponse(s.T(), s.router, req, 200, "")
 
 	// assert create using list
 	req, _ = http.NewRequest("GET", "/list", nil)
@@ -85,18 +81,48 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 
 	assert.Equal(s.T(), 200, w.Code)
 	var listResponse []notes.NoteResponse
-	err = json.Unmarshal(w.Body.Bytes(), &listResponse)
+	err := json.Unmarshal(w.Body.Bytes(), &listResponse)
 	assert.Nil(s.T(), err)
 	assert.Equal(s.T(), len(listResponse), 1)
 	assert.Equal(s.T(), listResponse[0].Title, "This is a new note")
 
 	// create note and assert read
+	createRequest2, _ := json.Marshal(notes.CreateRequest{
+		Title: "This is another note",
+	})
 
-	// list notes and assert
+	req, _ = http.NewRequest("POST", "/create", bytes.NewBuffer(createRequest2))
+	w = testhelpers.GetResponse(s.T(), s.router, req)
+	assert.Equal(s.T(), w.Code, 200)
 
-	// update note note and assert read
+	// assert create using list
+	req, _ = http.NewRequest("GET", "/list", nil)
+	w = testhelpers.GetResponse(s.T(), s.router, req)
 
-	//  delete note and assert read note does not exist
+	assert.Equal(s.T(), 200, w.Code)
+	var listResponse2 []notes.NoteResponse
+	err = json.Unmarshal(w.Body.Bytes(), &listResponse2)
+	assert.Nil(s.T(), err)
+	assert.Equal(s.T(), len(listResponse2), 2)
+	assert.Equal(s.T(), listResponse2[0].Title, "This is a new note")
+	assert.Equal(s.T(), listResponse2[1].Title, "This is another note")
+
+	// update note note and assert read TODO
+
+	// delete note and assert read note does not exist
+	req, _ = http.NewRequest("POST", "/delete/"+listResponse2[0].ID, nil)
+	testhelpers.AssertResponse(s.T(), s.router, req, 200, "Deleted note")
+
+	// assert create using list
+	req, _ = http.NewRequest("GET", "/list", nil)
+	w = testhelpers.GetResponse(s.T(), s.router, req)
+
+	assert.Equal(s.T(), 200, w.Code)
+	var listResponse3 []notes.NoteResponse
+	err = json.Unmarshal(w.Body.Bytes(), &listResponse3)
+	assert.Nil(s.T(), err)
+	assert.Equal(s.T(), len(listResponse3), 1)
+	assert.Equal(s.T(), listResponse3[0].Title, "This is another note")
 
 	// assert read other note exists
 }
