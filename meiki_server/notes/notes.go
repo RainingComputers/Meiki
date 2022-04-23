@@ -17,6 +17,7 @@ type Note struct {
 	Title    string             `bson:"title"`
 	Content  string             `bson:"content"`
 	// TODO: Add useful timestamps
+	// TODO: Add update title method
 }
 
 type NoteResponse struct {
@@ -85,7 +86,7 @@ func (ns NotesStore) List(ctx context.Context, username string) ([]NoteResponse,
 }
 
 func (ns NotesStore) Read(ctx context.Context, id string) (string, error) {
-	docID, err := primitive.ObjectIDFromHex(id)
+	docID, err := primitive.ObjectIDFromHex(id) // TODO: return notes response
 
 	if err != nil {
 		log.Warn("Invalid id requested on reading note", zap.Error(err))
@@ -108,7 +109,7 @@ func (ns NotesStore) Read(ctx context.Context, id string) (string, error) {
 }
 
 func (ns NotesStore) Update(ctx context.Context, id string, content string) error {
-	docID, err := primitive.ObjectIDFromHex(id)
+	docID, err := primitive.ObjectIDFromHex(id) // TODO: accept a username
 
 	if err != nil {
 		log.Warn("Invalid id requested on updating note", zap.Error(err))
@@ -134,7 +135,7 @@ func (ns NotesStore) Update(ctx context.Context, id string, content string) erro
 }
 
 func (ns NotesStore) Delete(ctx context.Context, id string) error {
-	docID, err := primitive.ObjectIDFromHex(id)
+	docID, err := primitive.ObjectIDFromHex(id) // TODO: shoudl accept username
 
 	if err != nil {
 		log.Warn("Invalid id requested on deleting note", zap.Error(err))

@@ -11,6 +11,10 @@ type CreateRequest struct {
 	Title string
 }
 
+type UpdateRequest struct {
+	Content string
+}
+
 func getCreateHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var createRequest CreateRequest
@@ -50,13 +54,54 @@ func getListHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 
 func getReadHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.JSON(http.StatusInternalServerError, nil)
+		id := c.Param("id")
+
+		content, err := ns.Read(ctx, id)
+
+		if err == ErrNoteDoesNotExist {
+			c.JSON(http.StatusBadRequest, "Note does not exist")
+			return
+		}
+
+		if err == ErrInvalidId {
+			c.JSON(http.StatusBadRequest, "Invalid id")
+			return
+		}
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, "Unable to delete note")
+			return
+		}
+
+		c.JSON(http.StatusOK, content)
 	}
 }
 
 func getUpdateHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.JSON(http.StatusInternalServerError, nil)
+		id := c.Param("id")
+
+		var updateRequest UpdateRequest
+		c.BindJSON(&updateRequest)
+
+		err := ns.Update(ctx, id, updateRequest.Content)
+
+		if err == ErrNoteDoesNotExist {
+			c.JSON(http.StatusBadRequest, "Note does not exist") // TODO: DRY these if statements
+			return
+		}
+
+		if err == ErrInvalidId {
+			c.JSON(http.StatusBadRequest, "Invalid id")
+			return
+		}
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, "Unable to delete note")
+			return
+		}
+
+		c.JSON(http.StatusOK, "Updated note")
 	}
 }
 
@@ -67,7 +112,7 @@ func getDeleteHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 		err := ns.Delete(ctx, id) // TODO add username
 
 		if err == ErrNoteDoesNotExist {
-			c.JSON(http.StatusBadRequest, "Note does note exist")
+			c.JSON(http.StatusBadRequest, "Note does not exist")
 			return
 		}
 
@@ -88,7 +133,7 @@ func getDeleteHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 func CreateRoutes(router *gin.RouterGroup, ctx context.Context, ns NotesStore) {
 	router.POST("/create", getCreateHandler(ctx, ns))
 	router.GET("/list", getListHandler(ctx, ns))
-	router.GET("/read", getReadHandler(ctx, ns))
-	router.POST("/update", getUpdateHandler(ctx, ns))
+	router.GET("/read/:id", getReadHandler(ctx, ns))
+	router.POST("/update/:id", getUpdateHandler(ctx, ns))
 	router.POST("/delete/:id", getDeleteHandler(ctx, ns))
 }
