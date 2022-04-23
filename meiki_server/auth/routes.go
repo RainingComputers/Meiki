@@ -216,7 +216,7 @@ func getAuthStatus(ctx context.Context, a Auth) gin.HandlerFunc {
 	}
 }
 
-func CreateRoutes(router *gin.Engine, ctx context.Context, auth Auth) {
+func CreateRoutes(router *gin.RouterGroup, ctx context.Context, auth Auth) {
 	router.POST("/create", getCreateHandler(ctx, auth))
 	router.POST("/delete", getDeleteHandler(ctx, auth))
 	router.POST("/login", getLoginHandler(ctx, auth))

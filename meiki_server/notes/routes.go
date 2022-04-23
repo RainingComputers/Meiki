@@ -37,10 +37,10 @@ func getDeleteHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 	}
 }
 
-func CreateRoutes(router *gin.Engine, ctx context.Context, ns NotesStore) {
+func CreateRoutes(router *gin.RouterGroup, ctx context.Context, ns NotesStore) {
 	router.POST("/create", getCreateHandler(ctx, ns))
-	router.POST("/list", getListHandler(ctx, ns))
-	router.POST("/read", getReadHandler(ctx, ns))
+	router.GET("/list", getListHandler(ctx, ns))
+	router.GET("/read", getReadHandler(ctx, ns))
 	router.POST("/update", getUpdateHandler(ctx, ns))
-	router.GET("/delete", getDeleteHandler(ctx, ns))
+	router.POST("/delete/:id", getDeleteHandler(ctx, ns))
 }
