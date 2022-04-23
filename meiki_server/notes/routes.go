@@ -81,7 +81,7 @@ func getDeleteHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, "Delete note")
+		c.JSON(http.StatusOK, "Deleted note")
 	}
 }
 
