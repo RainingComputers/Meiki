@@ -44,7 +44,8 @@ func run() error {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	auth.CreateRoutes(router, ctx, authCtx)
+	authRouter := router.Group("/auth")
+	auth.CreateRoutes(authRouter, ctx, authCtx)
 
 	err = router.Run()
 
