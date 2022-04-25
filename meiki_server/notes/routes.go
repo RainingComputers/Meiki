@@ -11,7 +11,8 @@ const MSG_UNABLE_TO_CREATE_NOTE = "Unable to create note"
 const MSG_PARSE_ERROR = "Unable to parse request body"
 
 type CreateRequest struct {
-	Title string `json:"title"`
+	Title    string `json:"title"`
+	UserName string `json:"username"`
 }
 
 type UpdateRequest struct {
@@ -29,7 +30,7 @@ func getCreateHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 		}
 
 		note := Note{
-			Username: "shnoo", // TODO: add middleware to get this
+			Username: createRequest.UserName, // TODO: add middleware to get this
 			Title:    createRequest.Title,
 			Content:  "",
 		}
@@ -47,7 +48,7 @@ func getCreateHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 
 func getListHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		username := "shnoo" // TODO: add middleware to get this
+		username := c.GetHeader("X-Username")
 
 		notesResponseList, err := ns.List(ctx, username)
 

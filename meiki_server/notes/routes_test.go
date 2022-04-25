@@ -71,7 +71,8 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 
 	// create note and assert read
 	createRequest, _ := json.Marshal(notes.CreateRequest{
-		Title: "This is a new note",
+		Title:    "This is a new note",
+		UserName: "testUser",
 	})
 
 	req, _ = http.NewRequest("POST", "/create", bytes.NewBuffer(createRequest))
@@ -80,6 +81,7 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 
 	// assert create using list
 	req, _ = http.NewRequest("GET", "/list", nil)
+	req.Header.Set("X-Username", "testUser")
 	w = testhelpers.GetResponse(s.T(), s.router, req)
 
 	assert.Equal(s.T(), 200, w.Code)
@@ -91,8 +93,11 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 
 	// create note and assert read
 	createRequest2, _ := json.Marshal(notes.CreateRequest{
-		Title: "This is another note",
+		Title:    "This is another note",
+		UserName: "testUser",
 	})
+
+	// TODO: Add notes by another user and test that filter is working fine
 
 	req, _ = http.NewRequest("POST", "/create", bytes.NewBuffer(createRequest2))
 	w = testhelpers.GetResponse(s.T(), s.router, req)
@@ -100,6 +105,7 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 
 	// assert create using list
 	req, _ = http.NewRequest("GET", "/list", nil)
+	req.Header.Set("X-Username", "testUser")
 	w = testhelpers.GetResponse(s.T(), s.router, req)
 
 	assert.Equal(s.T(), 200, w.Code)
@@ -128,6 +134,7 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 
 	// assert create using list
 	req, _ = http.NewRequest("GET", "/list", nil)
+	req.Header.Set("X-Username", "testUser")
 	w = testhelpers.GetResponse(s.T(), s.router, req)
 
 	assert.Equal(s.T(), 200, w.Code)
