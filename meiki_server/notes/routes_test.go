@@ -44,7 +44,7 @@ func (s *NotesRoutesTestSuite) SetupTest() {
 		panic("unable to connect to mongo for notes test suite")
 	}
 
-	notes_db := client.Database("notes")
+	notes_db := client.Database("notesTest")
 	s.coll = notes_db.Collection("notes")
 
 	s.notesStore, err = notes.CreateNotesStore(s.ctx, s.coll)
@@ -140,4 +140,10 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 	// assert read other note exists
 	req, _ = http.NewRequest("GET", "/read/"+listResponse2[0].ID, nil)
 	testhelpers.AssertResponse(s.T(), s.router, req, 400, "Note does not exist")
+}
+
+func (s *NotesRoutesTestSuite) TestRoutesParseError() {
+
+	req, _ := http.NewRequest("POST", "/create", bytes.NewBuffer([]byte("test")))
+	testhelpers.AssertResponse(s.T(), s.router, req, 400, notes.MSG_PARSE_ERROR)
 }

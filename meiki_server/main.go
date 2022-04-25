@@ -6,6 +6,7 @@ import (
 
 	"github.com/RainingComputers/Meiki/auth"
 	"github.com/RainingComputers/Meiki/log"
+	"github.com/RainingComputers/Meiki/notes"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -24,11 +25,17 @@ func run() error {
 		panic("unable to connect to mongo for test suite")
 	}
 
-	auth_db := client.Database("auth")
-	userColl := auth_db.Collection("users")
-	tokenColl := auth_db.Collection("tokens")
+	meiki_db := client.Database("meiki")
+	userColl := meiki_db.Collection("users")
+	tokenColl := meiki_db.Collection("tokens")
+	notesColl := meiki_db.Collection("notes")
 
-	authCtx, err := auth.CreateAuth(ctx, tokenColl, userColl)
+	authController, err := auth.CreateAuth(ctx, tokenColl, userColl)
+	if err != nil {
+		return err
+	}
+
+	notesStoreController, err := notes.CreateNotesStore(ctx, notesColl)
 
 	if err != nil {
 		return err
@@ -45,7 +52,10 @@ func run() error {
 	}))
 
 	authRouter := router.Group("/auth")
-	auth.CreateRoutes(authRouter, ctx, authCtx)
+	auth.CreateRoutes(authRouter, ctx, authController)
+
+	notesRouter := router.Group("/notes")
+	notes.CreateRoutes(notesRouter, ctx, notesStoreController)
 
 	err = router.Run()
 

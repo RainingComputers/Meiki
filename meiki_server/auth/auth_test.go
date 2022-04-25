@@ -40,7 +40,7 @@ func (s *AuthTestSuite) SetupTest() {
 		panic("unable to connect to mongo for auth test suite")
 	}
 
-	auth_db := client.Database("auth")
+	auth_db := client.Database("authTest")
 	s.user_coll = auth_db.Collection("users")
 	s.token_coll = auth_db.Collection("tokens")
 

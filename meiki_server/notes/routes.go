@@ -7,18 +7,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const MSG_UNABLE_TO_CREATE_NOTE = "Unable to create note"
+const MSG_PARSE_ERROR = "Unable to parse request body"
+
 type CreateRequest struct {
-	Title string
+	Title string `json:"title"`
 }
 
 type UpdateRequest struct {
-	Content string
+	Content string `json:"content"`
 }
 
 func getCreateHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var createRequest CreateRequest
-		c.BindJSON(&createRequest)
+		err := c.BindJSON(&createRequest)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, MSG_PARSE_ERROR)
+			return
+		}
 
 		note := Note{
 			Username: "shnoo", // TODO: add middleware to get this
@@ -29,7 +37,7 @@ func getCreateHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 		noteResponse, err := ns.Create(ctx, note)
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, "Unable to create note")
+			c.JSON(http.StatusInternalServerError, MSG_UNABLE_TO_CREATE_NOTE)
 			return
 		}
 
