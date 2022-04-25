@@ -6,7 +6,6 @@
     export let label: string = ""
     export let isButtonChecked: boolean = false
 
-
     const dispatch = createEventDispatcher()
 
     function onClick() {

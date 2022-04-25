@@ -16,6 +16,8 @@ import (
 	"github.com/stretchr/testify/suite"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+
+	"github.com/RainingComputers/Meiki/testhelpers"
 )
 
 type AuthRoutesTestSuite struct {
@@ -43,18 +45,12 @@ func (s *AuthRoutesTestSuite) SetupTest() {
 	assert.Nil(s.T(), err)
 
 	s.router = gin.Default()
-	auth.CreateRoutes(s.router, s.ctx, s.auth)
+	authRouter := s.router.Group("/")
+	auth.CreateRoutes(authRouter, s.ctx, s.auth)
 }
 
 func TestAuthRoutesTestSuite(t *testing.T) {
 	suite.Run(t, new(AuthRoutesTestSuite))
-}
-
-func (s *AuthRoutesTestSuite) assertResponse(req *http.Request, expectedStatus int, expectedText string) {
-	w := httptest.NewRecorder()
-	s.router.ServeHTTP(w, req)
-	assert.Equal(s.T(), expectedStatus, w.Code)
-	assert.Equal(s.T(), "\""+expectedText+"\"", w.Body.String())
 }
 
 func (s *AuthRoutesTestSuite) assertSessionCredentials(req *http.Request, expectedUsername string) string {
@@ -85,11 +81,11 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	})
 
 	req, _ := http.NewRequest("POST", "/create", bytes.NewBuffer(credentialsBody))
-	s.assertResponse(req, 200, "User successfully created")
+	testhelpers.AssertResponse(s.T(), s.router, req, 200, "User successfully created")
 
 	// test create existing user
 	req, _ = http.NewRequest("POST", "/create", bytes.NewBuffer(credentialsBody))
-	s.assertResponse(req, 400, "User already exists")
+	testhelpers.AssertResponse(s.T(), s.router, req, 400, "User already exists")
 
 	// test login with wrong password
 	badCredentialsBody1, _ := json.Marshal(auth.Credentials{
@@ -98,7 +94,7 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	})
 
 	req, _ = http.NewRequest("POST", "/login", bytes.NewBuffer(badCredentialsBody1))
-	s.assertResponse(req, 401, "Password does not match")
+	testhelpers.AssertResponse(s.T(), s.router, req, 401, "Password does not match")
 
 	// test login username does not exist
 	badCredentialsBody2, _ := json.Marshal(auth.Credentials{
@@ -107,13 +103,13 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	})
 
 	req, _ = http.NewRequest("POST", "/login", bytes.NewBuffer(badCredentialsBody2))
-	s.assertResponse(req, 401, "User does not exist")
+	testhelpers.AssertResponse(s.T(), s.router, req, 401, "User does not exist")
 
 	// check auth status is false before logging in
 	req, _ = http.NewRequest("GET", "/authStatus", nil)
 	req.Header.Set("X-Username", "alex")
 	req.Header.Set("X-Token", "randomToken")
-	s.assertResponse(req, 401, "User token does not exist")
+	testhelpers.AssertResponse(s.T(), s.router, req, 401, "User token does not exist")
 
 	// login and assert returned token headers and username
 	req, _ = http.NewRequest("POST", "/login", bytes.NewBuffer(credentialsBody))
@@ -123,37 +119,37 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	req, _ = http.NewRequest("GET", "/authStatus", nil)
 	req.Header.Set("X-Username", "alex")
 	req.Header.Set("X-Token", token)
-	s.assertResponse(req, 200, "alex")
+	testhelpers.AssertResponse(s.T(), s.router, req, 200, "alex")
 
 	// test logout with bad token
 	req, _ = http.NewRequest("POST", "/logout", nil)
 	req.Header.Set("X-Username", "alex")
 	req.Header.Set("X-Token", "badToken")
-	s.assertResponse(req, 400, "User token does not exist")
+	testhelpers.AssertResponse(s.T(), s.router, req, 400, "User token does not exist")
 
 	// test logout with good token should log out
 	req, _ = http.NewRequest("POST", "/logout", nil)
 	req.Header.Set("X-Username", "alex")
 	req.Header.Set("X-Token", token)
-	s.assertResponse(req, 200, "User logged out successfully")
+	testhelpers.AssertResponse(s.T(), s.router, req, 200, "User logged out successfully")
 
 	// auth status should now return unauthorized
 	req, _ = http.NewRequest("GET", "/authStatus", nil)
 	req.Header.Set("X-Username", "alex")
 	req.Header.Set("X-Token", token)
-	s.assertResponse(req, 401, "Invalid or wrong credentials")
+	testhelpers.AssertResponse(s.T(), s.router, req, 401, "Invalid or wrong credentials")
 
 	// delete user with bad creds should not delete anything
 	req, _ = http.NewRequest("POST", "/delete", bytes.NewBuffer(badCredentialsBody1))
-	s.assertResponse(req, 401, "Password does not match")
+	testhelpers.AssertResponse(s.T(), s.router, req, 401, "Password does not match")
 
 	// delete user with good creds should delete user
 	req, _ = http.NewRequest("POST", "/delete", bytes.NewBuffer(credentialsBody))
-	s.assertResponse(req, 200, "User deleted user successfully")
+	testhelpers.AssertResponse(s.T(), s.router, req, 200, "User deleted user successfully")
 
 	// delete user which doesn't exist should give 400
 	req, _ = http.NewRequest("POST", "/delete", bytes.NewBuffer(credentialsBody))
-	s.assertResponse(req, 400, "User does not exist")
+	testhelpers.AssertResponse(s.T(), s.router, req, 400, "User does not exist")
 }
 
 func (s *AuthRoutesTestSuite) TestRoutesInputValidation() {
@@ -163,10 +159,10 @@ func (s *AuthRoutesTestSuite) TestRoutesInputValidation() {
 	})
 
 	req, _ := http.NewRequest("POST", "/login", bytes.NewBuffer(badUsernameCredentials))
-	s.assertResponse(req, 400, auth.MSG_INVALID_USERNAME)
+	testhelpers.AssertResponse(s.T(), s.router, req, 400, auth.MSG_INVALID_USERNAME)
 
 	req, _ = http.NewRequest("POST", "/create", bytes.NewBuffer(badUsernameCredentials))
-	s.assertResponse(req, 400, auth.MSG_INVALID_USERNAME)
+	testhelpers.AssertResponse(s.T(), s.router, req, 400, auth.MSG_INVALID_USERNAME)
 
 	badPasswordCredentials, _ := json.Marshal(auth.Credentials{
 		Username: "shnoo",
@@ -174,8 +170,8 @@ func (s *AuthRoutesTestSuite) TestRoutesInputValidation() {
 	})
 
 	req, _ = http.NewRequest("POST", "/login", bytes.NewBuffer(badPasswordCredentials))
-	s.assertResponse(req, 400, auth.MSG_INVALID_PASSWORD)
+	testhelpers.AssertResponse(s.T(), s.router, req, 400, auth.MSG_INVALID_PASSWORD)
 
 	req, _ = http.NewRequest("POST", "/create", bytes.NewBuffer(badPasswordCredentials))
-	s.assertResponse(req, 400, auth.MSG_INVALID_PASSWORD)
+	testhelpers.AssertResponse(s.T(), s.router, req, 400, auth.MSG_INVALID_PASSWORD)
 }

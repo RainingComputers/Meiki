@@ -14,6 +14,8 @@ import (
 )
 
 func run() error {
+	// TODO: Make config env variables and use same db for auth and notes
+
 	ctx := context.Background()
 
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://root:example@localhost:27017"))
@@ -42,7 +44,8 @@ func run() error {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	auth.CreateRoutes(router, ctx, authCtx)
+	authRouter := router.Group("/auth")
+	auth.CreateRoutes(authRouter, ctx, authCtx)
 
 	err = router.Run()
 
