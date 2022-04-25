@@ -1,29 +1,34 @@
 import { makeRequest } from "./request"
 
+const AUTH_ROUTE_PREFIX = "auth"
 export async function createUser(username: string, password: string) {
     const body = { username, password }
-    await makeRequest("/create", "POST", body)
+    await makeRequest(`${AUTH_ROUTE_PREFIX}/create`, "POST", body)
 }
 
 export async function login(username: string, password: string) {
     const body = { username, password }
-    const response = await makeRequest("/login", "POST", body)
+    const response = await makeRequest(
+        `${AUTH_ROUTE_PREFIX}/login`,
+        "POST",
+        body
+    )
 
     localStorage.setItem("username", response.username)
     localStorage.setItem("token", response.token)
 }
 
 export async function authStatus() {
-    await makeRequest("/authStatus", "GET")
+    await makeRequest(`${AUTH_ROUTE_PREFIX}/authStatus`, "GET")
 }
 
 export async function deleteUser(username: string, password: string) {
     const body = { username, password }
-    await makeRequest("/delete", "POST", body)
+    await makeRequest(`${AUTH_ROUTE_PREFIX}/delete`, "POST", body)
 }
 
 export async function logout() {
-    await makeRequest("/logout", "POST")
+    await makeRequest(`${AUTH_ROUTE_PREFIX}/logout`, "POST")
     localStorage.clear()
 }
 
