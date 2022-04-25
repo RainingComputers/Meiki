@@ -3,6 +3,8 @@
     import Renderer from "$cmp/Renderer.svelte"
     import Logo from "./Logo.svelte"
 
+    import Logo from "./Logo.svelte"
+
     let showRenderer = false
     let showEditor = false
 
