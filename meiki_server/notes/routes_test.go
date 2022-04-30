@@ -147,7 +147,7 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 
 	// read the note and assert updated content
 	req = newReqWithUserHeader("GET", "/read/"+listResponse[0].ID, nil)
-	testhelpers.AssertResponseString(s.T(), s.router, req, 200, "A content has been added to this note") // TODO: make this response notes response instead of string
+	testhelpers.AssertResponseString(s.T(), s.router, req, 200, "A content has been added to this note")
 
 	// delete note and assert read note does not exist
 	req = newReqWithUserHeader("POST", "/delete/"+listResponse[0].ID, nil)
@@ -159,6 +159,15 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 	// assert read other note exists
 	req, _ = http.NewRequest("GET", "/read/"+listResponse[0].ID, nil)
 	testhelpers.AssertResponseString(s.T(), s.router, req, 400, "Note does not exist")
+}
+
+func (s *NotesRoutesTestSuite) TestRoutesInputValidation() {
+	createRequest, _ := json.Marshal(notes.CreateRequest{
+		Title: "",
+	})
+
+	req := newReqWithUserHeader("POST", "/create", bytes.NewBuffer(createRequest))
+	testhelpers.AssertResponseString(s.T(), s.router, req, 400, "Invalid note title")
 }
 
 func (s *NotesRoutesTestSuite) TestRoutesParseError() {
