@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func AssertResponse(T *testing.T, router *gin.Engine, req *http.Request, expectedStatus int, expectedText string) {
+func AssertResponseString(T *testing.T, router *gin.Engine, req *http.Request, expectedStatus int, expectedText string) {
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 	assert.Equal(T, expectedStatus, w.Code)

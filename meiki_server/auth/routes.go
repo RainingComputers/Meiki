@@ -43,7 +43,7 @@ func getCreateHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 
 		var newUser Credentials
 
-		c.BindJSON(&newUser)
+		c.BindJSON(&newUser) // TODO check err
 
 		err := a.Create(ctx, newUser.Username, newUser.Password)
 
@@ -74,7 +74,7 @@ func getCreateHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 func getDeleteHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var creds Credentials
-		c.BindJSON(&creds)
+		c.BindJSON(&creds) // TODO: Check error
 
 		match, err := a.PasswordMatches(ctx, creds.Username, creds.Password)
 
@@ -108,7 +108,7 @@ func getLoginHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var creds Credentials
 
-		c.BindJSON(&creds)
+		c.BindJSON(&creds) // TODO: check error
 
 		token, err := a.Login(ctx, creds.Username, creds.Password)
 
