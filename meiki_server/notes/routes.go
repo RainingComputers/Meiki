@@ -62,6 +62,23 @@ func getListHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 	}
 }
 
+func errorToResponse(c *gin.Context, err error) {
+	if err == ErrNoteDoesNotExist {
+		c.JSON(http.StatusBadRequest, "Note does not exist")
+		return
+	}
+
+	if err == ErrInvalidId {
+		c.JSON(http.StatusBadRequest, "Invalid id")
+		return
+	}
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, "Unable to delete note")
+		return
+	}
+}
+
 func getReadHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param("id")
@@ -69,18 +86,8 @@ func getReadHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 
 		content, err := ns.Read(ctx, id, username)
 
-		if err == ErrNoteDoesNotExist {
-			c.JSON(http.StatusBadRequest, "Note does not exist")
-			return
-		}
-
-		if err == ErrInvalidId {
-			c.JSON(http.StatusBadRequest, "Invalid id")
-			return
-		}
-
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, "Unable to delete note")
+			errorToResponse(c, err)
 			return
 		}
 
@@ -103,19 +110,8 @@ func getUpdateHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 
 		err = ns.Update(ctx, id, username, updateRequest.Content)
 
-		if err == ErrNoteDoesNotExist {
-			c.JSON(http.StatusBadRequest, "Note does not exist") // TODO: DRY these if statements
-			return
-		}
-
-		if err == ErrInvalidId {
-			c.JSON(http.StatusBadRequest, "Invalid id")
-			return
-		}
-
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, "Unable to delete note")
-			return
+			errorToResponse(c, err)
 		}
 
 		c.JSON(http.StatusOK, "Updated note")
@@ -129,18 +125,8 @@ func getDeleteHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 
 		err := ns.Delete(ctx, id, username)
 
-		if err == ErrNoteDoesNotExist {
-			c.JSON(http.StatusBadRequest, "Note does not exist")
-			return
-		}
-
-		if err == ErrInvalidId {
-			c.JSON(http.StatusBadRequest, "Invalid id")
-			return
-		}
-
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, "Unable to delete note")
+			errorToResponse(c, err)
 			return
 		}
 
