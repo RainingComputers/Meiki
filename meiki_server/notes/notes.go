@@ -41,6 +41,8 @@ func CreateNotesStore(ctx context.Context, coll *mongo.Collection) (NotesStore, 
 }
 
 func (ns NotesStore) Create(ctx context.Context, note Note) (NoteResponse, error) {
+	// TODO: Add input validation
+
 	result, err := ns.coll.InsertOne(ctx, note)
 
 	if err != nil {
@@ -135,7 +137,7 @@ func (ns NotesStore) Update(ctx context.Context, id string, username string, con
 }
 
 func (ns NotesStore) Delete(ctx context.Context, id string, username string) error {
-	docID, err := primitive.ObjectIDFromHex(id) // TODO: shoudl accept username
+	docID, err := primitive.ObjectIDFromHex(id)
 
 	if err != nil {
 		log.Warn("Invalid id requested on deleting note", zap.Error(err))

@@ -11,8 +11,7 @@ const MSG_UNABLE_TO_CREATE_NOTE = "Unable to create note"
 const MSG_PARSE_ERROR = "Unable to parse request body"
 
 type CreateRequest struct {
-	Title    string `json:"title"`
-	UserName string `json:"username"`
+	Title string `json:"title"`
 }
 
 type UpdateRequest struct {
@@ -29,8 +28,10 @@ func getCreateHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 			return
 		}
 
+		username := c.GetHeader("X-Username")
+
 		note := Note{
-			Username: createRequest.UserName, // TODO: add middleware to get this
+			Username: username,
 			Title:    createRequest.Title,
 			Content:  "",
 		}
@@ -89,13 +90,18 @@ func getReadHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 
 func getUpdateHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		var updateRequest UpdateRequest
+		err := c.BindJSON(&updateRequest)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, MSG_PARSE_ERROR)
+			return
+		}
+
 		id := c.Param("id")
 		username := c.GetHeader("X-Username")
 
-		var updateRequest UpdateRequest
-		c.BindJSON(&updateRequest)
-
-		err := ns.Update(ctx, id, updateRequest.Content, username)
+		err = ns.Update(ctx, id, updateRequest.Content, username)
 
 		if err == ErrNoteDoesNotExist {
 			c.JSON(http.StatusBadRequest, "Note does not exist") // TODO: DRY these if statements
