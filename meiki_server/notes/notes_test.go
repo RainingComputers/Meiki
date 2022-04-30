@@ -153,6 +153,30 @@ func (s *NotesStoreTestSuite) TestUpdateShouldError() {
 	assert.ErrorIs(s.T(), err, context.Canceled)
 }
 
+func (s *NotesStoreTestSuite) TestShouldRenameNote() {
+	noteInfo, err := s.notesStore.Create(s.ctx, note1)
+	assert.Nil(s.T(), err)
+
+	err = s.notesStore.Rename(s.ctx, noteInfo.ID, noteInfo.Username, "Note title has been modified")
+	assert.Nil(s.T(), err)
+
+	notesList, err := s.notesStore.List(s.ctx, noteInfo.Username)
+	assert.Nil(s.T(), err)
+	assert.Equal(s.T(), "Note title has been modified", notesList[0].Title)
+
+	err = s.notesStore.Update(s.ctx, noteInfo.ID, "differentUser", "Note title has been modified")
+	assert.ErrorIs(s.T(), err, notes.ErrNoteDoesNotExist)
+}
+
+func (s *NotesStoreTestSuite) TestRenameShouldError() {
+	err := s.notesStore.Rename(s.ctx, "Invalid id", "testUser", "Testing")
+	assert.ErrorIs(s.T(), err, notes.ErrInvalidId)
+
+	s.cancel()
+	err = s.notesStore.Rename(s.ctx, primitive.NewObjectID().Hex(), "testUser", "Testing")
+	assert.ErrorIs(s.T(), err, context.Canceled)
+}
+
 func (s *NotesStoreTestSuite) TestShouldDeleteNote() {
 	noteInfo1, err := s.notesStore.Create(s.ctx, note1)
 	assert.Nil(s.T(), err)

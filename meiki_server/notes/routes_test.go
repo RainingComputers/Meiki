@@ -145,6 +145,16 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 	req = newReqWithUserHeader("POST", "/update/"+listResponse[0].ID, bytes.NewBuffer(updateRequest))
 	testhelpers.AssertResponseString(s.T(), s.router, req, 200, "Updated note")
 
+	// rename note and assert list response
+	renameRequest, _ := json.Marshal(notes.RenameRequest{
+		Title: "This is a new note with modified title",
+	})
+
+	req = newReqWithUserHeader("POST", "/rename/"+listResponse[0].ID, bytes.NewBuffer(renameRequest))
+	testhelpers.AssertResponseString(s.T(), s.router, req, 200, "Renamed note")
+
+	s.AssertAndGetListResponse([]string{"This is a new note with modified title", "This is another note"})
+
 	// read the note and assert updated content
 	req = newReqWithUserHeader("GET", "/read/"+listResponse[0].ID, nil)
 	testhelpers.AssertResponseString(s.T(), s.router, req, 200, "A content has been added to this note")
@@ -168,10 +178,20 @@ func (s *NotesRoutesTestSuite) TestRoutesInputValidation() {
 
 	req := newReqWithUserHeader("POST", "/create", bytes.NewBuffer(createRequest))
 	testhelpers.AssertResponseString(s.T(), s.router, req, 400, "Invalid note title")
+
+	renameRequest, _ := json.Marshal(notes.RenameRequest{
+		Title: "",
+	})
+
+	req = newReqWithUserHeader("POST", "/rename/"+primitive.NewObjectID().Hex(), bytes.NewBuffer(renameRequest))
+	testhelpers.AssertResponseString(s.T(), s.router, req, 400, "Invalid note title")
 }
 
 func (s *NotesRoutesTestSuite) TestRoutesParseError() {
 	req, _ := http.NewRequest("POST", "/create", bytes.NewBuffer([]byte("test")))
+	testhelpers.AssertResponseString(s.T(), s.router, req, 400, notes.MSG_PARSE_ERROR)
+
+	req, _ = http.NewRequest("POST", "/rename/1234", bytes.NewBuffer([]byte("test")))
 	testhelpers.AssertResponseString(s.T(), s.router, req, 400, notes.MSG_PARSE_ERROR)
 
 	req, _ = http.NewRequest("POST", "/update/1234", bytes.NewBuffer([]byte("test")))

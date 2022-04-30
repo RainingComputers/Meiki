@@ -15,6 +15,8 @@ type CreateRequest struct {
 	Title string `json:"title"`
 }
 
+type RenameRequest = CreateRequest
+
 type UpdateRequest struct {
 	Content string `json:"content"`
 }
@@ -79,8 +81,13 @@ func errorToResponse(c *gin.Context, err error) {
 		return
 	}
 
+	if err == ErrInvalidTitle {
+		c.JSON(http.StatusBadRequest, MSG_INVALID_TITLE)
+		return
+	}
+
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, "Unable to delete note")
+		c.JSON(http.StatusInternalServerError, "Unable perform requested action")
 		return
 	}
 }
@@ -125,6 +132,30 @@ func getUpdateHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 	}
 }
 
+func genRenameHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var renameRequest RenameRequest
+		err := c.BindJSON(&renameRequest)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, MSG_PARSE_ERROR)
+			return
+		}
+
+		id := c.Param("id")
+		username := c.GetHeader("X-Username")
+
+		err = ns.Rename(ctx, id, username, renameRequest.Title)
+
+		if err != nil {
+			errorToResponse(c, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, "Renamed note")
+	}
+}
+
 func getDeleteHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param("id")
@@ -146,5 +177,6 @@ func CreateRoutes(router *gin.RouterGroup, ctx context.Context, ns NotesStore) {
 	router.GET("/list", getListHandler(ctx, ns))
 	router.GET("/read/:id", getReadHandler(ctx, ns))
 	router.POST("/update/:id", getUpdateHandler(ctx, ns))
+	router.POST("/rename/:id", genRenameHandler(ctx, ns))
 	router.POST("/delete/:id", getDeleteHandler(ctx, ns))
 }
