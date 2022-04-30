@@ -10,6 +10,9 @@ import (
 const MSG_UNABLE_TO_CREATE_NOTE = "Unable to create note, please try again later"
 const MSG_PARSE_ERROR = "Unable to parse request body"
 const MSG_INVALID_TITLE = "Invalid note title"
+const MSG_NOTE_DOES_NOT_EXIST = "Note does not exist"
+const MSG_INVALID_ID = "Invalid id"
+const MSG_UNABLE_TO_PERFORM_ACTION = "Unable perform requested action"
 
 type CreateRequest struct {
 	Title string `json:"title"`
@@ -19,6 +22,28 @@ type RenameRequest = CreateRequest
 
 type UpdateRequest struct {
 	Content string `json:"content"`
+}
+
+func errorToResponse(c *gin.Context, err error) {
+	if err == ErrNoteDoesNotExist {
+		c.JSON(http.StatusBadRequest, MSG_NOTE_DOES_NOT_EXIST)
+		return
+	}
+
+	if err == ErrInvalidId {
+		c.JSON(http.StatusBadRequest, MSG_INVALID_ID)
+		return
+	}
+
+	if err == ErrInvalidTitle {
+		c.JSON(http.StatusBadRequest, MSG_INVALID_TITLE)
+		return
+	}
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, MSG_UNABLE_TO_PERFORM_ACTION)
+		return
+	}
 }
 
 func getCreateHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
@@ -41,13 +66,8 @@ func getCreateHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 
 		noteResponse, err := ns.Create(ctx, note)
 
-		if err == ErrInvalidTitle {
-			c.JSON(http.StatusBadRequest, MSG_INVALID_TITLE)
-			return
-		}
-
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, MSG_UNABLE_TO_CREATE_NOTE)
+			errorToResponse(c, err)
 			return
 		}
 
@@ -62,33 +82,11 @@ func getListHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 		notesResponseList, err := ns.List(ctx, username)
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, "Unable to list notes")
+			errorToResponse(c, err)
 			return
 		}
 
 		c.JSON(http.StatusOK, notesResponseList)
-	}
-}
-
-func errorToResponse(c *gin.Context, err error) {
-	if err == ErrNoteDoesNotExist {
-		c.JSON(http.StatusBadRequest, "Note does not exist")
-		return
-	}
-
-	if err == ErrInvalidId {
-		c.JSON(http.StatusBadRequest, "Invalid id")
-		return
-	}
-
-	if err == ErrInvalidTitle {
-		c.JSON(http.StatusBadRequest, MSG_INVALID_TITLE)
-		return
-	}
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, "Unable perform requested action")
-		return
 	}
 }
 
