@@ -90,14 +90,13 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 	req, _ := http.NewRequest("POST", "/delete/invalidID", nil)
 	testhelpers.AssertResponseString(s.T(), s.router, req, 400, "Invalid id")
 
-	// delete valid id but does not exist TODO
+	// delete valid id but does not exist
 	req, _ = http.NewRequest("POST", "/delete/"+primitive.NewObjectID().Hex(), nil)
 	testhelpers.AssertResponseString(s.T(), s.router, req, 400, "Note does not exist")
 
 	// create note and assert read
 	createRequest, _ := json.Marshal(notes.CreateRequest{
-		Title:    "This is a new note",
-		UserName: "testUser",
+		Title: "This is a new note",
 	})
 
 	req, _ = http.NewRequest("POST", "/create", bytes.NewBuffer(createRequest))
@@ -109,8 +108,7 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 
 	// create note and assert read
 	createRequest2, _ := json.Marshal(notes.CreateRequest{
-		Title:    "This is another note",
-		UserName: "testUser",
+		Title: "This is another note",
 	})
 
 	// TODO: Add notes by another user and test that filter is working fine
@@ -148,5 +146,8 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 
 func (s *NotesRoutesTestSuite) TestRoutesParseError() {
 	req, _ := http.NewRequest("POST", "/create", bytes.NewBuffer([]byte("test")))
+	testhelpers.AssertResponseString(s.T(), s.router, req, 400, notes.MSG_PARSE_ERROR)
+
+	req, _ = http.NewRequest("POST", "/update/1234", bytes.NewBuffer([]byte("test")))
 	testhelpers.AssertResponseString(s.T(), s.router, req, 400, notes.MSG_PARSE_ERROR)
 }
