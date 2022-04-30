@@ -81,9 +81,12 @@ func (s *NotesStoreTestSuite) TestShouldCreateAndReadNote() {
 	_, err = s.notesStore.Create(s.ctx, note3)
 	assert.Nil(s.T(), err)
 
-	storedContent, err := s.notesStore.Read(s.ctx, noteInfo1.ID)
+	storedContent, err := s.notesStore.Read(s.ctx, noteInfo1.ID, noteInfo1.Username)
 	assert.Nil(s.T(), err)
 	assert.Equal(s.T(), note1.Content, storedContent)
+
+	_, err = s.notesStore.Read(s.ctx, noteInfo1.ID, "differentUser")
+	assert.ErrorIs(s.T(), err, notes.ErrNoteDoesNotExist)
 }
 
 func (s *NotesStoreTestSuite) TestCreateShouldError() {
@@ -99,14 +102,11 @@ func (s *NotesStoreTestSuite) TestCreateShouldError() {
 }
 
 func (s *NotesStoreTestSuite) TestReadShouldError() {
-	_, err := s.notesStore.Read(s.ctx, "Invalid id")
+	_, err := s.notesStore.Read(s.ctx, "Invalid id", "testUser")
 	assert.ErrorIs(s.T(), err, notes.ErrInvalidId)
 
-	_, err = s.notesStore.Read(s.ctx, primitive.NewObjectID().Hex())
-	assert.ErrorIs(s.T(), err, notes.ErrNoteDoesNotExist)
-
 	s.cancel()
-	_, err = s.notesStore.Read(s.ctx, primitive.NewObjectID().Hex())
+	_, err = s.notesStore.Read(s.ctx, primitive.NewObjectID().Hex(), "testUser")
 	assert.ErrorIs(s.T(), err, context.Canceled)
 }
 
@@ -133,24 +133,23 @@ func (s *NotesStoreTestSuite) TestShouldUpdateNote() {
 	noteInfo, err := s.notesStore.Create(s.ctx, note1)
 	assert.Nil(s.T(), err)
 
-	_ = s.notesStore.Update(s.ctx, noteInfo.ID, "Content has been modified")
+	err = s.notesStore.Update(s.ctx, noteInfo.ID, noteInfo.Username, "Content has been modified")
 	assert.Nil(s.T(), err)
 
-	content, err := s.notesStore.Read(s.ctx, noteInfo.ID)
+	content, err := s.notesStore.Read(s.ctx, noteInfo.ID, noteInfo.Username)
 	assert.Nil(s.T(), err)
-
 	assert.Equal(s.T(), "Content has been modified", content)
+
+	err = s.notesStore.Update(s.ctx, noteInfo.ID, "differentUser", "Content has been modified")
+	assert.ErrorIs(s.T(), err, notes.ErrNoteDoesNotExist)
 }
 
 func (s *NotesStoreTestSuite) TestUpdateShouldError() {
-	err := s.notesStore.Update(s.ctx, "Invalid id", "Testing")
+	err := s.notesStore.Update(s.ctx, "Invalid id", "testUser", "Testing")
 	assert.ErrorIs(s.T(), err, notes.ErrInvalidId)
 
-	err = s.notesStore.Update(s.ctx, primitive.NewObjectID().Hex(), "Testing")
-	assert.ErrorIs(s.T(), err, notes.ErrNoteDoesNotExist)
-
 	s.cancel()
-	err = s.notesStore.Update(s.ctx, primitive.NewObjectID().Hex(), "Testing")
+	err = s.notesStore.Update(s.ctx, primitive.NewObjectID().Hex(), "testUser", "Testing")
 	assert.ErrorIs(s.T(), err, context.Canceled)
 }
 
@@ -161,23 +160,24 @@ func (s *NotesStoreTestSuite) TestShouldDeleteNote() {
 	noteInfo2, err := s.notesStore.Create(s.ctx, note2)
 	assert.Nil(s.T(), err)
 
-	s.notesStore.Delete(s.ctx, noteInfo1.ID)
-
-	_, err = s.notesStore.Read(s.ctx, noteInfo1.ID)
+	err = s.notesStore.Delete(s.ctx, noteInfo1.ID, "differentUser")
 	assert.ErrorIs(s.T(), err, notes.ErrNoteDoesNotExist)
 
-	_, err = s.notesStore.Read(s.ctx, noteInfo2.ID)
+	err = s.notesStore.Delete(s.ctx, noteInfo1.ID, noteInfo1.Username)
+	assert.Nil(s.T(), err)
+
+	_, err = s.notesStore.Read(s.ctx, noteInfo1.ID, noteInfo1.Username)
+	assert.ErrorIs(s.T(), err, notes.ErrNoteDoesNotExist)
+
+	_, err = s.notesStore.Read(s.ctx, noteInfo2.ID, noteInfo2.Username)
 	assert.Nil(s.T(), err)
 }
 
 func (s *NotesStoreTestSuite) TestDeleteShouldError() {
-	err := s.notesStore.Delete(s.ctx, "Invalid id")
+	err := s.notesStore.Delete(s.ctx, "Invalid id", "testUser")
 	assert.ErrorIs(s.T(), err, notes.ErrInvalidId)
 
-	err = s.notesStore.Delete(s.ctx, primitive.NewObjectID().Hex())
-	assert.ErrorIs(s.T(), err, notes.ErrNoteDoesNotExist)
-
 	s.cancel()
-	err = s.notesStore.Delete(s.ctx, primitive.NewObjectID().Hex())
+	err = s.notesStore.Delete(s.ctx, primitive.NewObjectID().Hex(), "testUser")
 	assert.ErrorIs(s.T(), err, context.Canceled)
 }
