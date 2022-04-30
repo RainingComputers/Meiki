@@ -34,14 +34,28 @@ type NotesStore struct {
 var (
 	ErrNoteDoesNotExist = errors.New("note does not exist")
 	ErrInvalidId        = errors.New("invalid id")
+	ErrInvalidTitle     = errors.New("invalid title")
 )
 
 func CreateNotesStore(ctx context.Context, coll *mongo.Collection) (NotesStore, error) {
 	return NotesStore{coll}, nil
 }
 
+func validateNoteTitle(title string) error {
+	if len(title) == 0 {
+		return ErrInvalidTitle
+	}
+
+	return nil
+}
+
 func (ns NotesStore) Create(ctx context.Context, note Note) (NoteResponse, error) {
-	// TODO: Add input validation
+	err := validateNoteTitle(note.Title)
+
+	if err != nil {
+		log.Error("Invalid note", zap.Error(err))
+		return NoteResponse{}, err
+	}
 
 	result, err := ns.coll.InsertOne(ctx, note)
 
@@ -88,7 +102,7 @@ func (ns NotesStore) List(ctx context.Context, username string) ([]NoteResponse,
 }
 
 func (ns NotesStore) Read(ctx context.Context, id string, username string) (string, error) {
-	docID, err := primitive.ObjectIDFromHex(id) // TODO: return notes response
+	docID, err := primitive.ObjectIDFromHex(id)
 
 	if err != nil {
 		log.Warn("Invalid id requested on reading note", zap.Error(err))

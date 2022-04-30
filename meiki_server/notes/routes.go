@@ -7,8 +7,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const MSG_UNABLE_TO_CREATE_NOTE = "Unable to create note"
+const MSG_UNABLE_TO_CREATE_NOTE = "Unable to create note, please try again later"
 const MSG_PARSE_ERROR = "Unable to parse request body"
+const MSG_INVALID_TITLE = "Invalid note title"
 
 type CreateRequest struct {
 	Title string `json:"title"`
@@ -37,6 +38,11 @@ func getCreateHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 		}
 
 		noteResponse, err := ns.Create(ctx, note)
+
+		if err == ErrInvalidTitle {
+			c.JSON(http.StatusBadRequest, MSG_INVALID_TITLE)
+			return
+		}
 
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, MSG_UNABLE_TO_CREATE_NOTE)
