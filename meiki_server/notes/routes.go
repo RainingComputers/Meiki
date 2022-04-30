@@ -64,8 +64,9 @@ func getListHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 func getReadHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param("id")
+		username := c.GetHeader("X-Username")
 
-		content, err := ns.Read(ctx, id)
+		content, err := ns.Read(ctx, id, username)
 
 		if err == ErrNoteDoesNotExist {
 			c.JSON(http.StatusBadRequest, "Note does not exist")
@@ -89,11 +90,12 @@ func getReadHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 func getUpdateHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param("id")
+		username := c.GetHeader("X-Username")
 
 		var updateRequest UpdateRequest
 		c.BindJSON(&updateRequest)
 
-		err := ns.Update(ctx, id, updateRequest.Content)
+		err := ns.Update(ctx, id, updateRequest.Content, username)
 
 		if err == ErrNoteDoesNotExist {
 			c.JSON(http.StatusBadRequest, "Note does not exist") // TODO: DRY these if statements
@@ -117,8 +119,9 @@ func getUpdateHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 func getDeleteHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param("id")
+		username := c.GetHeader("X-Username")
 
-		err := ns.Delete(ctx, id) // TODO add username
+		err := ns.Delete(ctx, id, username)
 
 		if err == ErrNoteDoesNotExist {
 			c.JSON(http.StatusBadRequest, "Note does not exist")

@@ -85,7 +85,7 @@ func (ns NotesStore) List(ctx context.Context, username string) ([]NoteResponse,
 	return noteInfoList, nil
 }
 
-func (ns NotesStore) Read(ctx context.Context, id string) (string, error) {
+func (ns NotesStore) Read(ctx context.Context, id string, username string) (string, error) {
 	docID, err := primitive.ObjectIDFromHex(id) // TODO: return notes response
 
 	if err != nil {
@@ -94,7 +94,7 @@ func (ns NotesStore) Read(ctx context.Context, id string) (string, error) {
 	}
 
 	var note Note
-	err = ns.coll.FindOne(ctx, bson.M{"_id": docID}).Decode(&note)
+	err = ns.coll.FindOne(ctx, bson.M{"_id": docID, "username": username}).Decode(&note)
 
 	if errors.Is(err, mongo.ErrNoDocuments) {
 		return "", ErrNoteDoesNotExist
@@ -108,8 +108,8 @@ func (ns NotesStore) Read(ctx context.Context, id string) (string, error) {
 	return note.Content, nil
 }
 
-func (ns NotesStore) Update(ctx context.Context, id string, content string) error {
-	docID, err := primitive.ObjectIDFromHex(id) // TODO: accept a username
+func (ns NotesStore) Update(ctx context.Context, id string, username string, content string) error {
+	docID, err := primitive.ObjectIDFromHex(id)
 
 	if err != nil {
 		log.Warn("Invalid id requested on updating note", zap.Error(err))
@@ -117,7 +117,7 @@ func (ns NotesStore) Update(ctx context.Context, id string, content string) erro
 	}
 
 	result, err := ns.coll.UpdateOne(ctx,
-		bson.M{"_id": docID},
+		bson.M{"_id": docID, "username": username},
 		bson.M{"$set": bson.M{"content": content}},
 	)
 
@@ -134,7 +134,7 @@ func (ns NotesStore) Update(ctx context.Context, id string, content string) erro
 	return nil
 }
 
-func (ns NotesStore) Delete(ctx context.Context, id string) error {
+func (ns NotesStore) Delete(ctx context.Context, id string, username string) error {
 	docID, err := primitive.ObjectIDFromHex(id) // TODO: shoudl accept username
 
 	if err != nil {
@@ -142,7 +142,7 @@ func (ns NotesStore) Delete(ctx context.Context, id string) error {
 		return ErrInvalidId
 	}
 
-	result, err := ns.coll.DeleteOne(ctx, bson.M{"_id": docID})
+	result, err := ns.coll.DeleteOne(ctx, bson.M{"_id": docID, "username": username})
 
 	if err != nil {
 		log.Error("Unable to delete note")
