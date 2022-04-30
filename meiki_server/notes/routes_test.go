@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 	"time"
 
@@ -68,7 +69,7 @@ func newReqWithUserHeader(method string, route string, body io.Reader) *http.Req
 	return req
 }
 
-func (s *NotesRoutesTestSuite) AssertListResponse(expectedTitleList []string) []notes.NoteResponse {
+func (s *NotesRoutesTestSuite) assertListResponse(expectedTitleList []string) []notes.NoteResponse {
 	req := newReqWithUserHeader("GET", "/list", nil)
 	w := testhelpers.GetResponse(s.T(), s.router, req)
 
@@ -87,9 +88,19 @@ func (s *NotesRoutesTestSuite) AssertListResponse(expectedTitleList []string) []
 	return listResponse
 }
 
-func (s *NotesRoutesTestSuite) AssertAndGetListResponse(expectedTitleList []string) []notes.NoteResponse {
+func (s *NotesRoutesTestSuite) assertAndGetListResponse(expectedTitleList []string) []notes.NoteResponse {
 	// function exists for syntactic sugar
-	return s.AssertListResponse(expectedTitleList)
+	return s.assertListResponse(expectedTitleList)
+}
+
+func (s *NotesRoutesTestSuite) assertCreateResponse(w *httptest.ResponseRecorder) {
+	assert.Equal(s.T(), w.Code, 200)
+
+	var noteResponse notes.NoteResponse
+	err := json.Unmarshal(w.Body.Bytes(), &noteResponse)
+	assert.Nil(s.T(), err)
+
+	assert.True(s.T(), len(noteResponse.ID) > 5)
 }
 
 func (s *NotesRoutesTestSuite) TestRoutesScenario() {
@@ -120,10 +131,10 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 
 	req = newReqWithUserHeader("POST", "/create", bytes.NewBuffer(createRequest))
 	w := testhelpers.GetResponse(s.T(), s.router, req)
-	assert.Equal(s.T(), w.Code, 200)
+	s.assertCreateResponse(w)
 
 	// assert create using list
-	s.AssertListResponse([]string{"This is a new note"})
+	s.assertListResponse([]string{"This is a new note"})
 
 	// create note and assert read
 	createRequest2, _ := json.Marshal(notes.CreateRequest{
@@ -132,10 +143,10 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 
 	req = newReqWithUserHeader("POST", "/create", bytes.NewBuffer(createRequest2))
 	w = testhelpers.GetResponse(s.T(), s.router, req)
-	assert.Equal(s.T(), w.Code, 200)
+	s.assertCreateResponse(w)
 
 	// assert create using list
-	listResponse := s.AssertAndGetListResponse([]string{"This is a new note", "This is another note"})
+	listResponse := s.assertAndGetListResponse([]string{"This is a new note", "This is another note"})
 
 	// update note note and assert read
 	updateRequest, _ = json.Marshal(notes.UpdateRequest{
@@ -153,7 +164,7 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 	req = newReqWithUserHeader("POST", "/rename/"+listResponse[0].ID, bytes.NewBuffer(renameRequest))
 	testhelpers.AssertResponseString(s.T(), s.router, req, 200, "Renamed note")
 
-	s.AssertAndGetListResponse([]string{"This is a new note with modified title", "This is another note"})
+	s.assertAndGetListResponse([]string{"This is a new note with modified title", "This is another note"})
 
 	// read the note and assert updated content
 	req = newReqWithUserHeader("GET", "/read/"+listResponse[0].ID, nil)
@@ -164,7 +175,7 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 	testhelpers.AssertResponseString(s.T(), s.router, req, 200, "Deleted note")
 
 	// assert create using list
-	s.AssertListResponse([]string{"This is another note"})
+	s.assertListResponse([]string{"This is another note"})
 
 	// assert read other note exists
 	req, _ = http.NewRequest("GET", "/read/"+listResponse[0].ID, nil)
