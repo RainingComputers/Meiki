@@ -112,6 +112,7 @@ func getUpdateHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 
 		if err != nil {
 			errorToResponse(c, err)
+			return
 		}
 
 		c.JSON(http.StatusOK, "Updated note")
