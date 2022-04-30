@@ -101,7 +101,7 @@ func getUpdateHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 		id := c.Param("id")
 		username := c.GetHeader("X-Username")
 
-		err = ns.Update(ctx, id, updateRequest.Content, username)
+		err = ns.Update(ctx, id, username, updateRequest.Content)
 
 		if err == ErrNoteDoesNotExist {
 			c.JSON(http.StatusBadRequest, "Note does not exist") // TODO: DRY these if statements

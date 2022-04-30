@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"io"
 	"net/http"
 	"testing"
 	"time"
@@ -36,7 +37,7 @@ func (s *NotesRoutesTestSuite) clean() {
 func (s *NotesRoutesTestSuite) SetupTest() {
 	log.Initialize()
 
-	s.ctx, s.cancel = context.WithTimeout(context.Background(), 500*time.Millisecond)
+	s.ctx, s.cancel = context.WithTimeout(context.Background(), 5000000000*time.Millisecond)
 
 	client, err := mongo.Connect(s.ctx, options.Client().ApplyURI("mongodb://root:example@localhost:27017"))
 
@@ -60,9 +61,15 @@ func TestNotesRoutesTestSuite(t *testing.T) {
 	suite.Run(t, new(NotesRoutesTestSuite))
 }
 
+func newReqWithUserHeader(method string, route string, body io.Reader) *http.Request {
+	req, _ := http.NewRequest(method, route, body)
+	req.Header.Set("X-Username", "alex")
+
+	return req
+}
+
 func (s *NotesRoutesTestSuite) AssertListResponse(expectedTitleList []string) []notes.NoteResponse {
-	req, _ := http.NewRequest("GET", "/list", nil)
-	req.Header.Set("X-Username", "testUser")
+	req := newReqWithUserHeader("GET", "/list", nil)
 	w := testhelpers.GetResponse(s.T(), s.router, req)
 
 	assert.Equal(s.T(), 200, w.Code)
@@ -86,12 +93,12 @@ func (s *NotesRoutesTestSuite) AssertAndGetListResponse(expectedTitleList []stri
 }
 
 func (s *NotesRoutesTestSuite) TestRoutesScenario() {
-	// delete note assert does not exist
-	req, _ := http.NewRequest("POST", "/delete/invalidID", nil)
+	// delete note invalid id
+	req := newReqWithUserHeader("POST", "/delete/invalidID", nil)
 	testhelpers.AssertResponseString(s.T(), s.router, req, 400, "Invalid id")
 
 	// delete valid id but does not exist
-	req, _ = http.NewRequest("POST", "/delete/"+primitive.NewObjectID().Hex(), nil)
+	req = newReqWithUserHeader("POST", "/delete/"+primitive.NewObjectID().Hex(), nil)
 	testhelpers.AssertResponseString(s.T(), s.router, req, 400, "Note does not exist")
 
 	// create note and assert read
@@ -99,7 +106,7 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 		Title: "This is a new note",
 	})
 
-	req, _ = http.NewRequest("POST", "/create", bytes.NewBuffer(createRequest))
+	req = newReqWithUserHeader("POST", "/create", bytes.NewBuffer(createRequest))
 	w := testhelpers.GetResponse(s.T(), s.router, req)
 	assert.Equal(s.T(), w.Code, 200)
 
@@ -111,9 +118,7 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 		Title: "This is another note",
 	})
 
-	// TODO: Add notes by another user and test that filter is working fine
-
-	req, _ = http.NewRequest("POST", "/create", bytes.NewBuffer(createRequest2))
+	req = newReqWithUserHeader("POST", "/create", bytes.NewBuffer(createRequest2))
 	w = testhelpers.GetResponse(s.T(), s.router, req)
 	assert.Equal(s.T(), w.Code, 200)
 
@@ -125,15 +130,15 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 		Content: "A content has been added to this note",
 	})
 
-	req, _ = http.NewRequest("POST", "/update/"+listResponse[0].ID, bytes.NewBuffer(updateRequest))
+	req = newReqWithUserHeader("POST", "/update/"+listResponse[0].ID, bytes.NewBuffer(updateRequest))
 	testhelpers.AssertResponseString(s.T(), s.router, req, 200, "Updated note")
 
 	// read the note and assert updated content
-	req, _ = http.NewRequest("GET", "/read/"+listResponse[0].ID, nil)
+	req = newReqWithUserHeader("GET", "/read/"+listResponse[0].ID, nil)
 	testhelpers.AssertResponseString(s.T(), s.router, req, 200, "A content has been added to this note") // TODO: make this response notes response instead of string
 
 	// delete note and assert read note does not exist
-	req, _ = http.NewRequest("POST", "/delete/"+listResponse[0].ID, nil)
+	req = newReqWithUserHeader("POST", "/delete/"+listResponse[0].ID, nil)
 	testhelpers.AssertResponseString(s.T(), s.router, req, 200, "Deleted note")
 
 	// assert create using list
