@@ -101,6 +101,18 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 	req = newReqWithUserHeader("POST", "/delete/"+primitive.NewObjectID().Hex(), nil)
 	testhelpers.AssertResponseString(s.T(), s.router, req, 400, "Note does not exist")
 
+	// update valid id but does not exist
+	updateRequest, _ := json.Marshal(notes.UpdateRequest{
+		Content: "Modify the content",
+	})
+
+	req = newReqWithUserHeader("POST", "/update/"+primitive.NewObjectID().Hex(), bytes.NewBuffer(updateRequest))
+	testhelpers.AssertResponseString(s.T(), s.router, req, 400, "Note does not exist")
+
+	// read valid id but does not exist
+	req = newReqWithUserHeader("GET", "/read/"+primitive.NewObjectID().Hex(), nil)
+	testhelpers.AssertResponseString(s.T(), s.router, req, 400, "Note does not exist")
+
 	// create note and assert read
 	createRequest, _ := json.Marshal(notes.CreateRequest{
 		Title: "This is a new note",
@@ -126,7 +138,7 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 	listResponse := s.AssertAndGetListResponse([]string{"This is a new note", "This is another note"})
 
 	// update note note and assert read
-	updateRequest, _ := json.Marshal(notes.UpdateRequest{
+	updateRequest, _ = json.Marshal(notes.UpdateRequest{
 		Content: "A content has been added to this note",
 	})
 
