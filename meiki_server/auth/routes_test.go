@@ -175,3 +175,14 @@ func (s *AuthRoutesTestSuite) TestRoutesInputValidation() {
 	req, _ = http.NewRequest("POST", "/create", bytes.NewBuffer(badPasswordCredentials))
 	testhelpers.AssertResponseString(s.T(), s.router, req, 400, auth.MSG_INVALID_PASSWORD)
 }
+
+func (s *AuthRoutesTestSuite) TestRoutesParseError() {
+	req, _ := http.NewRequest("POST", "/create", bytes.NewBuffer([]byte("test")))
+	testhelpers.AssertResponseString(s.T(), s.router, req, 400, auth.MSG_UNABLE_TO_PARSE_CREDENTIALS)
+
+	req, _ = http.NewRequest("POST", "/delete", bytes.NewBuffer([]byte("test")))
+	testhelpers.AssertResponseString(s.T(), s.router, req, 400, auth.MSG_UNABLE_TO_PARSE_CREDENTIALS)
+
+	req, _ = http.NewRequest("POST", "/login", bytes.NewBuffer([]byte("test")))
+	testhelpers.AssertResponseString(s.T(), s.router, req, 400, auth.MSG_UNABLE_TO_PARSE_CREDENTIALS)
+}
