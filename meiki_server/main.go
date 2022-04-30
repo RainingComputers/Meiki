@@ -22,13 +22,14 @@ func run() error {
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://root:example@localhost:27017"))
 
 	if err != nil {
-		panic("unable to connect to mongo for test suite")
+		log.Error("Unable to connect to mongo", zap.Error(err))
+		return err
 	}
 
-	meiki_db := client.Database("meiki")
-	userColl := meiki_db.Collection("users")
-	tokenColl := meiki_db.Collection("tokens")
-	notesColl := meiki_db.Collection("notes")
+	meikiDb := client.Database("meiki")
+	userColl := meikiDb.Collection("users")
+	tokenColl := meikiDb.Collection("tokens")
+	notesColl := meikiDb.Collection("notes")
 
 	authController, err := auth.CreateAuth(ctx, tokenColl, userColl)
 	if err != nil {
@@ -36,7 +37,6 @@ func run() error {
 	}
 
 	notesStoreController, err := notes.CreateNotesStore(ctx, notesColl)
-
 	if err != nil {
 		return err
 	}
@@ -58,7 +58,6 @@ func run() error {
 	notes.CreateRoutes(notesRouter, ctx, notesStoreController)
 
 	err = router.Run()
-
 	if err != nil {
 		return err
 	}

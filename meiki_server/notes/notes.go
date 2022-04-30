@@ -17,7 +17,6 @@ type Note struct {
 	Title    string             `bson:"title"`
 	Content  string             `bson:"content"`
 	// TODO: Add useful timestamps
-	// TODO: Add update title method
 }
 
 type NoteResponse struct {
