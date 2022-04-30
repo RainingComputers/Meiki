@@ -150,6 +150,39 @@ func (ns NotesStore) Update(ctx context.Context, id string, username string, con
 	return nil
 }
 
+func (ns NotesStore) Rename(ctx context.Context, id string, username string, title string) error {
+	docID, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		log.Warn("Invalid id requested on updating note", zap.Error(err))
+		return ErrInvalidId
+	}
+
+	err = validateNoteTitle(title)
+
+	if err != nil {
+		log.Error("Invalid note", zap.Error(err))
+		return err
+	}
+
+	result, err := ns.coll.UpdateOne(ctx,
+		bson.M{"_id": docID, "username": username},
+		bson.M{"$set": bson.M{"title": title}},
+	)
+
+	if err != nil {
+		log.Error("Unable to update note title")
+		return err
+	}
+
+	if result.MatchedCount == 0 {
+		log.Warn("Note was not found for rename request")
+		return ErrNoteDoesNotExist
+	}
+
+	return nil
+}
+
 func (ns NotesStore) Delete(ctx context.Context, id string, username string) error {
 	docID, err := primitive.ObjectIDFromHex(id)
 
