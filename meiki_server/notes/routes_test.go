@@ -37,7 +37,7 @@ func (s *NotesRoutesTestSuite) clean() {
 func (s *NotesRoutesTestSuite) SetupTest() {
 	log.Initialize()
 
-	s.ctx, s.cancel = context.WithTimeout(context.Background(), 5000000000*time.Millisecond)
+	s.ctx, s.cancel = context.WithTimeout(context.Background(), 500*time.Millisecond)
 
 	client, err := mongo.Connect(s.ctx, options.Client().ApplyURI("mongodb://root:example@localhost:27017"))
 
