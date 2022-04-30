@@ -75,6 +75,13 @@ var note3 = notes.Note{
 	Content:  "What is my purpose?; You are a dummy for this test; Oh my god",
 }
 
+var invalidNote = notes.Note{
+	ID:       primitive.NilObjectID,
+	Username: "shnoo",
+	Title:    "",
+	Content:  "This is an invalid note",
+}
+
 func (s *NotesStoreTestSuite) TestShouldCreateAndReadNote() {
 	noteInfo1, err := s.notesStore.Create(s.ctx, note1)
 	assert.Nil(s.T(), err)
@@ -95,6 +102,9 @@ func (s *NotesStoreTestSuite) TestCreateShouldError() {
 
 	_, err = s.notesStore.Create(s.ctx, note1)
 	assert.Nil(s.T(), err)
+
+	_, err = s.notesStore.Create(s.ctx, invalidNote)
+	assert.ErrorIs(s.T(), err, notes.ErrInvalidTitle)
 
 	s.cancel()
 	_, err = s.notesStore.Create(s.ctx, note3)
@@ -171,6 +181,9 @@ func (s *NotesStoreTestSuite) TestShouldRenameNote() {
 func (s *NotesStoreTestSuite) TestRenameShouldError() {
 	err := s.notesStore.Rename(s.ctx, "Invalid id", "testUser", "Testing")
 	assert.ErrorIs(s.T(), err, notes.ErrInvalidId)
+
+	err = s.notesStore.Rename(s.ctx, primitive.NewObjectID().Hex(), "testUser", "")
+	assert.ErrorIs(s.T(), err, notes.ErrInvalidTitle)
 
 	s.cancel()
 	err = s.notesStore.Rename(s.ctx, primitive.NewObjectID().Hex(), "testUser", "Testing")
