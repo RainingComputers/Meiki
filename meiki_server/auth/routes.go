@@ -35,6 +35,7 @@ const MSG_UNABLE_TO_LOGOUT = "Unable to logout, please try again later"
 const MSG_USER_LOGGED_OUT = "User logged out successfully"
 const MSG_UNABLE_TO_AUTHENTICATE = "Unable to authenticate, please try again later"
 const MSG_INVALID_OR_WRONG_CREDENTIALS = "Invalid or wrong credentials"
+const MSG_UNABLE_TO_PARSE_CREDENTIALS = "Unable to parse credentials in request body json"
 
 func getCreateHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -42,10 +43,14 @@ func getCreateHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 		defer cancel()
 
 		var newUser Credentials
+		err := c.BindJSON(&newUser)
 
-		c.BindJSON(&newUser) // TODO check err
+		if err != nil {
+			c.JSON(http.StatusBadRequest, MSG_UNABLE_TO_PARSE_CREDENTIALS)
+			return
+		}
 
-		err := a.Create(ctx, newUser.Username, newUser.Password)
+		err = a.Create(ctx, newUser.Username, newUser.Password)
 
 		if err == ErrInvalidUsername {
 			c.JSON(http.StatusBadRequest, MSG_INVALID_USERNAME)
@@ -74,7 +79,12 @@ func getCreateHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 func getDeleteHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var creds Credentials
-		c.BindJSON(&creds) // TODO: Check error
+		err := c.BindJSON(&creds)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, MSG_UNABLE_TO_PARSE_CREDENTIALS)
+			return
+		}
 
 		match, err := a.PasswordMatches(ctx, creds.Username, creds.Password)
 
@@ -107,8 +117,12 @@ func getDeleteHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 func getLoginHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var creds Credentials
+		err := c.BindJSON(&creds)
 
-		c.BindJSON(&creds) // TODO: check error
+		if err != nil {
+			c.JSON(http.StatusBadRequest, MSG_UNABLE_TO_PARSE_CREDENTIALS)
+			return
+		}
 
 		token, err := a.Login(ctx, creds.Username, creds.Password)
 
