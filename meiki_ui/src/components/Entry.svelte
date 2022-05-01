@@ -5,7 +5,7 @@
 
     let inputEl: HTMLInputElement
     const type: string = password ? "password" : "text"
-    
+
     const id: string = label.toLowerCase().replace(" ", "")
 
     function onKeyDown(event: any) {
@@ -24,7 +24,7 @@
 
     <input
         bind:this={inputEl}
-        id={id}
+        {id}
         class=" bg-gray-200 focus:outline-none focus:border-blue-500 focus:ring-blue-500 focus:ring-2 rounded-lg p-2"
         {type}
         required
