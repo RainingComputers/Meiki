@@ -27,7 +27,7 @@ const MSG_USER_CREATED = "User successfully created"
 const MSG_USER_DOES_NOT_EXIST = "User does not exist"
 const MSG_UNABLE_TO_DELETE_USER = "Unable to delete user, please try again later"
 const MSG_PASSWORD_DOES_NOT_MATCH = "Password does not match"
-const MSG_USER_DELETED = "User deleted user successfully"
+const MSG_USER_DELETED = "User deleted successfully"
 const MSG_UNABLE_TO_LOGIN = "Unable to login, please try again later"
 const MSG_USER_NOT_LOGGED_IN = "User not logged in"
 const MSG_TOKEN_DOES_NOT_EXIST = "User token does not exist"
@@ -106,7 +106,7 @@ func getDeleteHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 		err = a.Delete(ctx, creds.Username)
 
 		if err != nil {
-			c.JSON(http.StatusBadRequest, MSG_UNABLE_TO_CREATE_USER)
+			c.JSON(http.StatusBadRequest, MSG_UNABLE_TO_DELETE_USER)
 			return
 		}
 
