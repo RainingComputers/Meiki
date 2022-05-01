@@ -1,6 +1,0 @@
-POST http://localhost:8080/auth/logout HTTP/1.1
-content-type: application/json
-{
-    "username": "alex",
-    "password": "thisIsAVeryUnsafePassword"
-}

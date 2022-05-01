@@ -1,0 +1,3 @@
+GET http://localhost:8080/notes/read/:id HTTP/1.1
+X-Token: token
+X-Username: alex
