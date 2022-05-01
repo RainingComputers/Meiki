@@ -1,8 +1,8 @@
-const serverUrl = "http://localhost:8080/"
+const serverUrl = "http://localhost:8080"
 
-Cypress.Commands.add("testRequest", (command, failOnStatusCode) => {
+Cypress.Commands.add("testRequest", (method, command, failOnStatusCode) => {
     const options = {
-        method: "POST",
+        method: method,
         url: `${serverUrl}${command}`,
         failOnStatusCode: failOnStatusCode,
         body: {
@@ -12,7 +12,7 @@ Cypress.Commands.add("testRequest", (command, failOnStatusCode) => {
     }
 
     const response = cy.request(options).then((response) => {
-        if (command !== "login") return
+        if (command !== "/auth/login") return
         localStorage.setItem("username", response.body.username)
         localStorage.setItem("token", response.body.token)
     })

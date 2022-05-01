@@ -2,7 +2,7 @@
 
 describe("HeroFlow Test", () => {
     beforeEach(() => {
-        cy.testRequest("delete", false)
+        cy.testRequest("DELETE", "/auth/delete", false)
         cy.clearLocalStorage()
     })
 
@@ -22,8 +22,8 @@ describe("HeroFlow Test", () => {
     })
 
     it("Hero page redirects to app if logged in", () => {
-        cy.testRequest("create", true)
-        cy.testRequest("login", true)
+        cy.testRequest("POST", "/auth/create", true)
+        cy.testRequest("POST", "/auth/login", true)
         cy.visit("/")
 
         // goes to app if already logged in
