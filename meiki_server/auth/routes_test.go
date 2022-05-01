@@ -140,15 +140,15 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	testhelpers.AssertResponseString(s.T(), s.router, req, 401, "Invalid or wrong credentials")
 
 	// delete user with bad creds should not delete anything
-	req, _ = http.NewRequest("POST", "/delete", bytes.NewBuffer(badCredentialsBody1))
+	req, _ = http.NewRequest("DELETE", "/delete", bytes.NewBuffer(badCredentialsBody1))
 	testhelpers.AssertResponseString(s.T(), s.router, req, 401, "Password does not match")
 
 	// delete user with good creds should delete user
-	req, _ = http.NewRequest("POST", "/delete", bytes.NewBuffer(credentialsBody))
+	req, _ = http.NewRequest("DELETE", "/delete", bytes.NewBuffer(credentialsBody))
 	testhelpers.AssertResponseString(s.T(), s.router, req, 200, "User deleted user successfully")
 
 	// delete user which doesn't exist should give 400
-	req, _ = http.NewRequest("POST", "/delete", bytes.NewBuffer(credentialsBody))
+	req, _ = http.NewRequest("DELETE", "/delete", bytes.NewBuffer(credentialsBody))
 	testhelpers.AssertResponseString(s.T(), s.router, req, 400, "User does not exist")
 }
 
@@ -180,7 +180,7 @@ func (s *AuthRoutesTestSuite) TestRoutesParseError() {
 	req, _ := http.NewRequest("POST", "/create", bytes.NewBuffer([]byte("test")))
 	testhelpers.AssertResponseString(s.T(), s.router, req, 400, auth.MSG_UNABLE_TO_PARSE_CREDENTIALS)
 
-	req, _ = http.NewRequest("POST", "/delete", bytes.NewBuffer([]byte("test")))
+	req, _ = http.NewRequest("DELETE", "/delete", bytes.NewBuffer([]byte("test")))
 	testhelpers.AssertResponseString(s.T(), s.router, req, 400, auth.MSG_UNABLE_TO_PARSE_CREDENTIALS)
 
 	req, _ = http.NewRequest("POST", "/login", bytes.NewBuffer([]byte("test")))
