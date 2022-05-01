@@ -145,7 +145,7 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 
 	// delete user with good creds should delete user
 	req, _ = http.NewRequest("DELETE", "/delete", bytes.NewBuffer(credentialsBody))
-	testhelpers.AssertResponseString(s.T(), s.router, req, 200, "User deleted user successfully")
+	testhelpers.AssertResponseString(s.T(), s.router, req, 200, "User deleted successfully")
 
 	// delete user which doesn't exist should give 400
 	req, _ = http.NewRequest("DELETE", "/delete", bytes.NewBuffer(credentialsBody))
