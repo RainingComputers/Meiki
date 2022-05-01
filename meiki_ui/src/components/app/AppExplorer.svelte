@@ -1,12 +1,9 @@
 <script lang="ts">
-    import itemList from "$data/itemList.json"
+    import { onMount } from "svelte"
+    import { listNotes, NoteInfo } from "$lib/api/notes"
     import Panel from "$cmp/explorer/Panel.svelte"
     import Item from "$cmp/explorer/Item.svelte"
     import Empty from "$cmp/explorer/Empty.svelte"
-
-    import { makeRequest } from "$lib/api/request"
-    import { listNotes, NoteInfo } from "$lib/api/notes"
-    import { onMount } from "svelte"
 
     let itemList: Array<NoteInfo> = []
 
