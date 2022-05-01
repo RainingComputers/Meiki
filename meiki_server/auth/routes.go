@@ -176,7 +176,7 @@ func getLogoutHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 			return
 		}
 
-		err := a.Logout(ctx, username, []byte(token))
+		err := a.Logout(ctx, username, token)
 
 		if err == ErrMissingUserTokens {
 			fmt.Println(token)
@@ -209,7 +209,7 @@ func getAuthStatus(ctx context.Context, a Auth) gin.HandlerFunc {
 			return
 		}
 
-		loggedIn, err := a.Authenticate(ctx, username, []byte(token))
+		loggedIn, err := a.Authenticate(ctx, username, token)
 
 		if err == ErrMissingUserTokens {
 			c.JSON(http.StatusUnauthorized, MSG_TOKEN_DOES_NOT_EXIST)

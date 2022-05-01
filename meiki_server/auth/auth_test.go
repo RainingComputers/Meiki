@@ -245,17 +245,17 @@ func (s *AuthTestSuite) TestShouldAuthenticateUser() {
 	assert.Nil(s.T(), err)
 	assert.True(s.T(), authenticated)
 
-	authenticated, err = s.auth.Authenticate(s.ctx, "shnoo", []byte{})
+	authenticated, err = s.auth.Authenticate(s.ctx, "shnoo", "")
 	assert.Nil(s.T(), err)
 	assert.False(s.T(), authenticated)
 }
 
 func (s *AuthTestSuite) TestAuthenticateShouldError() {
-	_, err := s.auth.Authenticate(s.ctx, "does-not-exist", []byte{})
+	_, err := s.auth.Authenticate(s.ctx, "does-not-exist", "")
 	assert.ErrorIs(s.T(), err, auth.ErrMissingUserTokens)
 
 	s.cancel()
-	_, err = s.auth.Authenticate(s.ctx, "shnoo", []byte{})
+	_, err = s.auth.Authenticate(s.ctx, "shnoo", "")
 	assert.ErrorIs(s.T(), err, context.Canceled)
 }
 
@@ -291,7 +291,7 @@ func (s *AuthTestSuite) TestLogoutShouldError() {
 	err = s.auth.Logout(s.ctx, "doesNotExist", token1)
 	assert.ErrorIs(s.T(), err, auth.ErrMissingUserTokens)
 
-	err = s.auth.Logout(s.ctx, "alex", []byte("random"))
+	err = s.auth.Logout(s.ctx, "alex", "random")
 	assert.ErrorIs(s.T(), err, auth.ErrMissingUserTokens)
 
 	s.cancel()

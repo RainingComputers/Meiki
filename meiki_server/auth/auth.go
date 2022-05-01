@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"bytes"
 	"context"
 	"errors"
 	"regexp"
@@ -28,7 +27,7 @@ type User struct {
 
 type UserTokens struct {
 	Username string   `bson:"username"`
-	Tokens   [][]byte `bson:"tokens"`
+	Tokens   []string `bson:"tokens"`
 }
 
 var (
@@ -43,8 +42,8 @@ var (
 
 var usernameRegex = regexp.MustCompile(`^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$`)
 
-func getToken() []byte {
-	return []byte(uuid.NewString())
+func getToken() string {
+	return uuid.NewString()
 }
 
 func CreateAuth(ctx context.Context, token_coll *mongo.Collection, user_coll *mongo.Collection) (Auth, error) {
@@ -217,61 +216,61 @@ func (a Auth) PasswordMatches(ctx context.Context, username, password string) (b
 	return true, nil
 }
 
-func (a Auth) CreateToken(ctx context.Context, username string) ([]byte, error) {
+func (a Auth) CreateToken(ctx context.Context, username string) (string, error) {
 	newToken := getToken()
 
 	result, err := a.token_coll.UpdateOne(ctx, bson.M{"username": username}, bson.M{"$push": bson.M{"tokens": newToken}})
 
 	if err != nil {
 		log.Error("unable to update token into DB", zap.Error(err))
-		return nil, err
+		return "", err
 	}
 
 	if result.MatchedCount == 0 {
 		newUserTokens := UserTokens{
 			Username: username,
-			Tokens:   [][]byte{newToken},
+			Tokens:   []string{newToken},
 		}
 
 		_, err := a.token_coll.InsertOne(ctx, newUserTokens)
 
 		if err != nil {
 			log.Error("unable to insert token into DB", zap.Error(err))
-			return nil, err
+			return "", err
 		}
 	}
 
 	return newToken, nil
 }
 
-func (a Auth) Login(ctx context.Context, username string, password string) ([]byte, error) {
+func (a Auth) Login(ctx context.Context, username string, password string) (string, error) {
 	err := validateCredentials(username, password)
 
 	if err != nil {
 		log.Info("abort login because invalid credentials", zap.Error(err))
-		return nil, err
+		return "", err
 	}
 
 	match, err := a.PasswordMatches(ctx, username, password)
 
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	if !match {
-		return []byte{}, ErrPasswordMismatch
+		return "", ErrPasswordMismatch
 	}
 
 	token, err := a.CreateToken(ctx, username)
 
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	return token, nil
 }
 
-func (a Auth) ReadTokensFromDB(ctx context.Context, username string) ([][]byte, error) {
+func (a Auth) ReadTokensFromDB(ctx context.Context, username string) ([]string, error) {
 	var userTokens UserTokens
 	err := a.token_coll.FindOne(ctx, bson.M{"username": username}).Decode(&userTokens)
 
@@ -286,7 +285,7 @@ func (a Auth) ReadTokensFromDB(ctx context.Context, username string) ([][]byte, 
 	return userTokens.Tokens, nil
 }
 
-func (a Auth) Authenticate(ctx context.Context, username string, token []byte) (bool, error) {
+func (a Auth) Authenticate(ctx context.Context, username string, token string) (bool, error) {
 
 	existingTokens, err := a.ReadTokensFromDB(ctx, username)
 
@@ -295,7 +294,7 @@ func (a Auth) Authenticate(ctx context.Context, username string, token []byte) (
 	}
 
 	for _, t := range existingTokens {
-		if bytes.Equal(t, token) {
+		if t == token {
 			return true, nil
 		}
 	}
@@ -303,7 +302,7 @@ func (a Auth) Authenticate(ctx context.Context, username string, token []byte) (
 	return false, nil
 }
 
-func (a Auth) deleteSingleTokenFromDB(ctx context.Context, username string, token []byte) error {
+func (a Auth) deleteSingleTokenFromDB(ctx context.Context, username string, token string) error {
 	result, err := a.token_coll.UpdateOne(ctx, bson.M{"username": username}, bson.M{"$pull": bson.M{"tokens": token}})
 
 	if err != nil {
@@ -318,7 +317,7 @@ func (a Auth) deleteSingleTokenFromDB(ctx context.Context, username string, toke
 	return nil
 }
 
-func (a Auth) Logout(ctx context.Context, username string, token []byte) error {
+func (a Auth) Logout(ctx context.Context, username string, token string) error {
 	err := a.deleteSingleTokenFromDB(ctx, username, token)
 
 	if err != nil {
