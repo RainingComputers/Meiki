@@ -2,7 +2,7 @@
 
 describe("UserFlow Test", () => {
     before(() => {
-        cy.testRequest("delete", false)
+        cy.testRequest("DELETE", "/auth/delete", false)
         cy.clearLocalStorage()
     })
 

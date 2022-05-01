@@ -2,10 +2,10 @@
 
 describe("Layout Test", () => {
     beforeEach(() => {
-        cy.testRequest("delete", false)
+        cy.testRequest("DELETE", "/auth/delete", false)
         cy.clearLocalStorage()
-        cy.testRequest("create", true)
-        cy.testRequest("login", true)
+        cy.testRequest("POST", "/auth/create", true)
+        cy.testRequest("POST", "/auth/login", true)
     })
 
     it("App should have proper layout", () => {
