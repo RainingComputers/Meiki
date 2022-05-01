@@ -10,6 +10,11 @@
     let userForm: UserForm
 
     async function onClick() {
+        if (userForm.getPassword() != userForm.getConfirmPassword()) {
+            error = "Passwords do not match"
+            return
+        }
+
         try {
             await createUser(userForm.getUsername(), userForm.getPassword())
             dispatch("userCreated")
@@ -20,7 +25,7 @@
             }
 
             error =
-                "An error has occured while creating the account, please try again later"
+                "An error has occured while creating the account, unable to connet to server"
         }
     }
 </script>
@@ -30,4 +35,5 @@
     {error}
     {onClick}
     buttonLabel={"Create Meiki account"}
+    confirmPassword={true}
 />

@@ -8,9 +8,11 @@
     export let error: string
     export let buttonLabel: string
     export let onClick: any
+    export let confirmPassword: boolean = false
 
     let usernameEntry: Entry
     let passwordEntry: Entry
+    let confirmPasswordEntry: Entry
 
     export function getUsername() {
         return usernameEntry.getValue()
@@ -18,6 +20,10 @@
 
     export function getPassword() {
         return passwordEntry.getValue()
+    }
+
+    export function getConfirmPassword() {
+        return confirmPasswordEntry.getValue()
     }
 </script>
 
@@ -30,8 +36,25 @@
                     {error}
                 </Error>
             {/if}
-            <Entry label="Username" bind:this={usernameEntry} />
-            <Entry label="Password" bind:this={passwordEntry} password={true} />
+            <Entry
+                label="Username"
+                bind:this={usernameEntry}
+                onEnter={onClick}
+            />
+            <Entry
+                label="Password"
+                bind:this={passwordEntry}
+                password={true}
+                onEnter={onClick}
+            />
+            {#if confirmPassword}
+                <Entry
+                    label="Confirm password"
+                    bind:this={confirmPasswordEntry}
+                    password={true}
+                    onEnter={onClick}
+                />
+            {/if}
         </div>
 
         <Button {onClick} fullWidth={true} label={buttonLabel} />
