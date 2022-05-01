@@ -20,7 +20,7 @@
             }
 
             error =
-                "An error has occured while logging in, please try again later"
+                "An error has occured while logging in, unable to connect to server"
         }
     }
 </script>
