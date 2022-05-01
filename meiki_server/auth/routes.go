@@ -2,7 +2,6 @@ package auth
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -18,24 +17,6 @@ type SessionCredentials struct {
 	Username string `json:"username"`
 	Token    string `json:"token"`
 }
-
-const MSG_INVALID_USERNAME = "Username should not contain any special characters other than '-' and '_'"
-const MSG_INVALID_PASSWORD = "Password should have minimum five characters"
-const MSG_USER_EXISTS = "User already exists"
-const MSG_UNABLE_TO_CREATE_USER = "Unable to create user, please try again later"
-const MSG_USER_CREATED = "User successfully created"
-const MSG_USER_DOES_NOT_EXIST = "User does not exist"
-const MSG_UNABLE_TO_DELETE_USER = "Unable to delete user, please try again later"
-const MSG_PASSWORD_DOES_NOT_MATCH = "Password does not match"
-const MSG_USER_DELETED = "User deleted successfully"
-const MSG_UNABLE_TO_LOGIN = "Unable to login, please try again later"
-const MSG_USER_NOT_LOGGED_IN = "User not logged in"
-const MSG_TOKEN_DOES_NOT_EXIST = "User token does not exist"
-const MSG_UNABLE_TO_LOGOUT = "Unable to logout, please try again later"
-const MSG_USER_LOGGED_OUT = "User logged out successfully"
-const MSG_UNABLE_TO_AUTHENTICATE = "Unable to authenticate, please try again later"
-const MSG_INVALID_OR_WRONG_CREDENTIALS = "Invalid or wrong credentials"
-const MSG_UNABLE_TO_PARSE_CREDENTIALS = "Unable to parse credentials in request body json"
 
 func getCreateHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -163,26 +144,8 @@ func getLoginHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 func getLogoutHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.GetHeader("X-Token")
-
-		if token == "" {
-			c.JSON(http.StatusUnauthorized, MSG_USER_NOT_LOGGED_IN)
-			return
-		}
-
 		username := c.GetHeader("X-Username")
-
-		if username == "" {
-			c.JSON(http.StatusUnauthorized, MSG_USER_NOT_LOGGED_IN)
-			return
-		}
-
 		err := a.Logout(ctx, username, token)
-
-		if err == ErrMissingUserTokens {
-			fmt.Println(token)
-			c.JSON(http.StatusBadRequest, MSG_TOKEN_DOES_NOT_EXIST)
-			return
-		}
 
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, MSG_UNABLE_TO_LOGOUT)
@@ -195,45 +158,18 @@ func getLogoutHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 
 func getAuthStatus(ctx context.Context, a Auth) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token := c.GetHeader("X-Token")
-
-		if token == "" {
-			c.JSON(http.StatusUnauthorized, MSG_USER_NOT_LOGGED_IN)
-			return
-		}
-
-		username := c.GetHeader("X-Username")
-
-		if username == "" {
-			c.JSON(http.StatusUnauthorized, MSG_USER_NOT_LOGGED_IN)
-			return
-		}
-
-		loggedIn, err := a.Authenticate(ctx, username, token)
-
-		if err == ErrMissingUserTokens {
-			c.JSON(http.StatusUnauthorized, MSG_TOKEN_DOES_NOT_EXIST)
-			return
-		}
-
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, MSG_UNABLE_TO_AUTHENTICATE)
-			return
-		}
-
-		if !loggedIn {
-			c.JSON(http.StatusUnauthorized, MSG_INVALID_OR_WRONG_CREDENTIALS)
-			return
-		}
-
-		c.JSON(http.StatusOK, username)
+		c.JSON(200, "Authorized")
 	}
 }
 
 func CreateRoutes(router *gin.RouterGroup, ctx context.Context, auth Auth) {
-	router.POST("/create", getCreateHandler(ctx, auth))
-	router.DELETE("/delete", getDeleteHandler(ctx, auth))
-	router.POST("/login", getLoginHandler(ctx, auth))
-	router.POST("/logout", getLogoutHandler(ctx, auth))
-	router.GET("/authStatus", getAuthStatus(ctx, auth))
+	unauthorizedRouter := router.Group("/")
+	unauthorizedRouter.POST("/create", getCreateHandler(ctx, auth))
+	unauthorizedRouter.DELETE("/delete", getDeleteHandler(ctx, auth))
+	unauthorizedRouter.POST("/login", getLoginHandler(ctx, auth))
+
+	authorizedRouter := router.Group("/")
+	authorizedRouter.Use(GetAuthMiddleware(ctx, auth))
+	authorizedRouter.POST("/logout", getLogoutHandler(ctx, auth))
+	authorizedRouter.GET("/authStatus", getAuthStatus(ctx, auth))
 }
