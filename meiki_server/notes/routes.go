@@ -176,5 +176,5 @@ func CreateRoutes(router *gin.RouterGroup, ctx context.Context, ns NotesStore) {
 	router.GET("/read/:id", getReadHandler(ctx, ns))
 	router.POST("/update/:id", getUpdateHandler(ctx, ns))
 	router.POST("/rename/:id", genRenameHandler(ctx, ns))
-	router.POST("/delete/:id", getDeleteHandler(ctx, ns))
+	router.DELETE("/delete/:id", getDeleteHandler(ctx, ns))
 }

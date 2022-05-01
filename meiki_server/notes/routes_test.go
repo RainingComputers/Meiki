@@ -105,11 +105,11 @@ func (s *NotesRoutesTestSuite) assertCreateResponse(w *httptest.ResponseRecorder
 
 func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 	// delete note invalid id
-	req := newReqWithUserHeader("POST", "/delete/invalidID", nil)
+	req := newReqWithUserHeader("DELETE", "/delete/invalidID", nil)
 	testhelpers.AssertResponseString(s.T(), s.router, req, 400, "Invalid id")
 
 	// delete valid id but does not exist
-	req = newReqWithUserHeader("POST", "/delete/"+primitive.NewObjectID().Hex(), nil)
+	req = newReqWithUserHeader("DELETE", "/delete/"+primitive.NewObjectID().Hex(), nil)
 	testhelpers.AssertResponseString(s.T(), s.router, req, 400, "Note does not exist")
 
 	// update valid id but does not exist
@@ -171,7 +171,7 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 	testhelpers.AssertResponseString(s.T(), s.router, req, 200, "A content has been added to this note")
 
 	// delete note and assert read note does not exist
-	req = newReqWithUserHeader("POST", "/delete/"+listResponse[0].ID, nil)
+	req = newReqWithUserHeader("DELETE", "/delete/"+listResponse[0].ID, nil)
 	testhelpers.AssertResponseString(s.T(), s.router, req, 200, "Deleted note")
 
 	// assert create using list

@@ -1,6 +1,7 @@
 import { makeRequest } from "./request"
 
 const AUTH_ROUTE_PREFIX = "auth"
+
 export async function createUser(username: string, password: string) {
     const body = { username, password }
     await makeRequest(`${AUTH_ROUTE_PREFIX}/create`, "POST", body)
