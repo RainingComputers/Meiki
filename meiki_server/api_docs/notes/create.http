@@ -1,5 +1,7 @@
 POST http://localhost:8080/notes/create HTTP/1.1
 content-type: application/json
+X-Token: token
+X-Username: alex
 
 {
     "title": "This is a new note"
