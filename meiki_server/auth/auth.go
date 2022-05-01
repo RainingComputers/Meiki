@@ -169,6 +169,11 @@ func (a Auth) Delete(ctx context.Context, username string) error {
 
 	err = a.deleteUserTokensInDB(ctx, username)
 
+	if err == ErrMissingUserTokens {
+		log.Warn("new user deleted without ever logging in")
+		return nil
+	}
+
 	if err != nil {
 		log.Error("unable to delete user tokens", zap.Error(err))
 		return err

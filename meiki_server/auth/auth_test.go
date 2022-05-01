@@ -113,6 +113,17 @@ func (s *AuthTestSuite) TestShouldDeleteUser() {
 	assert.Equal(s.T(), 0, len(storedUserToken.Username))
 }
 
+func (s *AuthTestSuite) TestShouldDeleteUserWithoutTokens() {
+	err := s.auth.Create(s.ctx, "shnoo", "thisisveryunsafe")
+	assert.Nil(s.T(), err)
+
+	err = s.auth.Delete(s.ctx, "shnoo")
+	assert.Nil(s.T(), err)
+
+	findResult := s.user_coll.FindOne(s.ctx, bson.M{"username": "shnoo"})
+	assert.ErrorIs(s.T(), findResult.Err(), mongo.ErrNoDocuments)
+}
+
 func (s *AuthTestSuite) TestDeleteShouldError() {
 	err := s.auth.Delete(s.ctx, "shnoo")
 	assert.ErrorIs(s.T(), err, auth.ErrMissingUser)
