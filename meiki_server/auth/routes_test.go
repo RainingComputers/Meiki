@@ -31,7 +31,7 @@ type AuthRoutesTestSuite struct {
 func (s *AuthRoutesTestSuite) SetupTest() {
 	log.Initialize()
 
-	s.ctx, s.cancel = context.WithTimeout(context.Background(), 500*time.Millisecond)
+	s.ctx, s.cancel = context.WithTimeout(context.Background(), 50000000*time.Millisecond)
 
 	client, err := mongo.Connect(s.ctx, options.Client().ApplyURI("mongodb://root:example@localhost:27017"))
 
@@ -119,13 +119,13 @@ func (s *AuthRoutesTestSuite) TestRoutesScenario() {
 	req, _ = http.NewRequest("GET", "/authStatus", nil)
 	req.Header.Set("X-Username", "alex")
 	req.Header.Set("X-Token", token)
-	testhelpers.AssertResponseString(s.T(), s.router, req, 200, "alex")
+	testhelpers.AssertResponseString(s.T(), s.router, req, 200, "Authorized")
 
 	// test logout with bad token
 	req, _ = http.NewRequest("POST", "/logout", nil)
 	req.Header.Set("X-Username", "alex")
 	req.Header.Set("X-Token", "badToken")
-	testhelpers.AssertResponseString(s.T(), s.router, req, 400, "User token does not exist")
+	testhelpers.AssertResponseString(s.T(), s.router, req, 401, "Invalid or wrong credentials")
 
 	// test logout with good token should log out
 	req, _ = http.NewRequest("POST", "/logout", nil)
