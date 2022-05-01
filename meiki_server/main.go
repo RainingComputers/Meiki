@@ -55,6 +55,7 @@ func run() error {
 	auth.CreateRoutes(authRouter, ctx, authController)
 
 	notesRouter := router.Group("/notes")
+	notesRouter.Use(auth.GetAuthMiddleware(ctx, authController))
 	notes.CreateRoutes(notesRouter, ctx, notesStoreController)
 
 	err = router.Run()
