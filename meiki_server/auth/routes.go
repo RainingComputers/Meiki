@@ -97,6 +97,7 @@ func getDeleteHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 
 func getLoginHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		// TODO: make parsing creds into a middleware or somehow DRY?
 		var creds Credentials
 		err := c.BindJSON(&creds)
 
