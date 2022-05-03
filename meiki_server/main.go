@@ -26,10 +26,10 @@ func run() error {
 		return err
 	}
 
-	meikiDb := client.Database("meiki")
-	userColl := meikiDb.Collection("users")
-	tokenColl := meikiDb.Collection("tokens")
-	notesColl := meikiDb.Collection("notes")
+	meikiDB := client.Database("meiki")
+	userColl := meikiDB.Collection("users")
+	tokenColl := meikiDB.Collection("tokens")
+	notesColl := meikiDB.Collection("notes")
 
 	authController, err := auth.CreateAuth(ctx, tokenColl, userColl)
 	if err != nil {
