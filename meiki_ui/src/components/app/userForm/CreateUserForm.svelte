@@ -25,7 +25,7 @@
             }
 
             error =
-                "An error has occured while creating the account, unable to connet to server"
+                "An error has occurred while creating the account, unable to connect to server"
         }
     }
 </script>
