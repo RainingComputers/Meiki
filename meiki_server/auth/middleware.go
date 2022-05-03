@@ -10,7 +10,6 @@ import (
 func GetAuthMiddleware(ctx context.Context, a Auth) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.GetHeader("X-Token")
-
 		if token == "" {
 			c.JSON(http.StatusUnauthorized, MSG_USER_NOT_LOGGED_IN)
 			c.Abort()
@@ -18,7 +17,6 @@ func GetAuthMiddleware(ctx context.Context, a Auth) gin.HandlerFunc {
 		}
 
 		username := c.GetHeader("X-Username")
-
 		if username == "" {
 			c.JSON(http.StatusUnauthorized, MSG_USER_NOT_LOGGED_IN)
 			c.Abort()
