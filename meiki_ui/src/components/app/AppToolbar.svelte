@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { createEventDispatcher } from "svelte"
     import { getUsername } from "$lib/api/user"
     import Toolbar from "$cmp/toolbar/Toolbar.svelte"
     import ToolbarButton from "$cmp/toolbar/Button.svelte"
@@ -11,6 +12,8 @@
     import ToolBarAction from "$cmp/toolbar/Action.svelte"
 
     const username = getUsername()
+    const dispatchEvent = createEventDispatcher()
+
 </script>
 
 <Toolbar>
@@ -33,7 +36,7 @@
         <TrashIcon />
     </ToolbarButton>
     <ToolbarTitle title="Meiki" />
-    <ToolBarAction label="Create" />
+    <ToolBarAction label="Create" onClick={() => dispatchEvent("create")}/>
     <span class="px-0.5" />
     <ToolbarButton checkable={false} name="profile" label={username} on:profile>
         <UserIcon />

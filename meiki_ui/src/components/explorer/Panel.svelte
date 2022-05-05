@@ -10,5 +10,6 @@
     data-cy="explorer"
     transition:fly|local={{ x: -400, duration: 200, opacity: 1 }}
 >
+    <!-- TODO: Make this scroll -->
     <slot />
 </div>

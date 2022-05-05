@@ -9,3 +9,7 @@ export type NoteInfo = {
 export async function listNotes(): Promise<Array<NoteInfo>> {
     return await makeRequest("/notes/list", "GET")
 }
+
+export async function createNote(title: string) {
+    await makeRequest("/notes/create", "POST", {title})
+}

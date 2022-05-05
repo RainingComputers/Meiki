@@ -10,6 +10,10 @@
     export function showModal() {
         showOverlay = true
     }
+
+    export function closeModal() {
+        showOverlay = false
+    }
 </script>
 
 {#if showOverlay}
