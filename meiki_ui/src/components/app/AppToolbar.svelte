@@ -32,7 +32,7 @@
     <ToolbarButton checkable={true} name="render" on:render>
         <PreviewIcon />
     </ToolbarButton>
-    <ToolbarButton checkable={false}>
+    <ToolbarButton checkable={false} name="delete" on:delete>
         <TrashIcon />
     </ToolbarButton>
     <ToolbarTitle title="Meiki" />

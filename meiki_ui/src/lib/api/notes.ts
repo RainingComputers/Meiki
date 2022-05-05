@@ -13,3 +13,7 @@ export async function listNotes(): Promise<Array<NoteInfo>> {
 export async function createNote(title: string) {
     await makeRequest("/notes/create", "POST", {title})
 }
+
+export async function deleteNote(id: string) {
+    await makeRequest(`/notes/delete/${id}`, "DELETE")
+}
