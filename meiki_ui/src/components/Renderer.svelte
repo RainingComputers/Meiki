@@ -1,4 +1,5 @@
 <script lang="ts">
+    import currentNoteText from "$lib/stores/currentNoteText"
 </script>
 
-<div data-cy="renderer">Render</div>
+<pre class="p-2">{$currentNoteText}</pre>
