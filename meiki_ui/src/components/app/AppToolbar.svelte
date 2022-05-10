@@ -13,7 +13,6 @@
 
     const username = getUsername()
     const dispatchEvent = createEventDispatcher()
-
 </script>
 
 <Toolbar>
@@ -36,7 +35,7 @@
         <TrashIcon />
     </ToolbarButton>
     <ToolbarTitle title="Meiki" />
-    <ToolBarAction label="Create" onClick={() => dispatchEvent("create")}/>
+    <ToolBarAction label="Create" onClick={() => dispatchEvent("create")} />
     <span class="px-0.5" />
     <ToolbarButton checkable={false} name="profile" label={username} on:profile>
         <UserIcon />

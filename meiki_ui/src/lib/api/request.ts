@@ -30,7 +30,7 @@ export async function makeRequest(url: string, method: string, body: any = {}) {
         credentials: "include",
     }
 
-    if (method === "POST") {
+    if (["POST", "PUT"].includes(method)) {
         requestOptions.body = JSON.stringify(body)
     }
 
