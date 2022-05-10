@@ -1,4 +1,4 @@
-POST http://localhost:8080/notes/update/:id HTTP/1.1
+PUT http://localhost:8080/notes/update/:id HTTP/1.1
 content-type: application/json
 X-Token: token
 X-Username: alex
