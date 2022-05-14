@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte"
-    import { listNotes, NoteInfo } from "$lib/api/notes"
+    import { listNotes, NoteInfo, readNoteContent } from "$lib/api/notes"
+    import currentNoteText from "$lib/stores/currentNoteText"
     import currentNote from "$lib/stores/currentNote"
     import Panel from "$cmp/explorer/Panel.svelte"
     import Item from "$cmp/explorer/Item.svelte"
@@ -20,13 +21,28 @@
         }
     }
 
-    function selectNote(id: string) {
-        if ($currentNote == id) currentNote.set("")
-        else currentNote.set(id)
+    function delselectAllNotes() {
+        currentNote.set("")
+    }
+
+    async function selectNote(id: string) {
+        if ($currentNote == id) {
+            delselectAllNotes()
+            return
+        }
+
+        currentNote.set(id)
+
+        try {
+            const noteContent = await readNoteContent(id)
+            currentNoteText.set(noteContent)
+        } catch {
+            // TODO: handle this error
+        }
     }
 </script>
 
-<Panel width="20%">
+<Panel width="20%" onClick={delselectAllNotes}>
     {#each itemList as item (item.id)}
         {#if item.id == $currentNote}
             <Item
