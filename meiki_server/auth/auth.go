@@ -55,14 +55,14 @@ func CreateAuth(ctx context.Context, token_coll *mongo.Collection, user_coll *mo
 	_, err := user_coll.Indexes().CreateOne(ctx, mod)
 
 	if err != nil {
-		log.Error("Unable to create unique index in user collection", zap.Error(err))
+		log.Error("unable to create unique index in user collection", zap.Error(err))
 		return Auth{}, err
 	}
 
 	_, err = token_coll.Indexes().CreateOne(ctx, mod)
 
 	if err != nil {
-		log.Error("Unable to create unique index in token collection", zap.Error(err))
+		log.Error("unable to create unique index in token collection", zap.Error(err))
 		return Auth{}, err
 	}
 
@@ -86,12 +86,12 @@ func (a Auth) storeCredentialsInDB(ctx context.Context, user User) error {
 	_, err := a.user_coll.InsertOne(ctx, user)
 
 	if mongo.IsDuplicateKeyError(err) {
-		log.Error("User already exists", zap.Error(err))
+		log.Error("user already exists", zap.Error(err))
 		return ErrUserAlreadyExists
 	}
 
 	if err != nil {
-		log.Error("Could not store credentials in DB", zap.Error(err))
+		log.Error("could not store credentials in DB", zap.Error(err))
 		return err
 	}
 
