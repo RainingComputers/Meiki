@@ -13,7 +13,6 @@
             dispatchEvent("deleted")
         } catch {
             // TODO: Error handling
-            // TODO: make this a modal
         }
     }
 
@@ -22,9 +21,10 @@
     }
 </script>
 
+<!-- TODO: note title here in the are you sure message -->
 <ConfirmModal
     {error}
-    message={`Are you sure you want to delete ${$currentNote}`}
+    message={`Are you sure you want to delete ${$currentNote}?`}
     onYes={deleteCurrentNote}
     onNo={cancelDelete}
 />

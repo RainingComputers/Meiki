@@ -24,7 +24,7 @@
 </script>
 
 <div class=" flex flex-col w-full gap-1">
-    <label for={id} class=" text-sm">{label}</label>
+    <label for={id} class="text-sm px-1">{label}</label>
 
     <input
         bind:this={inputEl}
