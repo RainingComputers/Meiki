@@ -3,7 +3,6 @@ package auth
 import (
 	"context"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,9 +19,6 @@ type SessionCredentials struct {
 
 func getCreateHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		ctx, cancel := context.WithTimeout(ctx, 500*time.Millisecond)
-		defer cancel()
-
 		var newUser Credentials
 		err := c.BindJSON(&newUser)
 
@@ -97,7 +93,6 @@ func getDeleteHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 
 func getLoginHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// TODO: make parsing creds into a middleware or somehow DRY?
 		var creds Credentials
 		err := c.BindJSON(&creds)
 

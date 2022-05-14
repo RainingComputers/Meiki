@@ -22,7 +22,7 @@ func run() error {
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://root:example@localhost:27017"))
 
 	if err != nil {
-		log.Error("Unable to connect to mongo", zap.Error(err))
+		log.Error("unable to connect to mongo", zap.Error(err))
 		return err
 	}
 
@@ -70,5 +70,5 @@ func run() error {
 
 func main() {
 	log.Initialize()
-	log.Fatal("An error has occurred has in initializing the app", zap.Error(run()))
+	log.Fatal("an error has occurred has in initializing the app", zap.Error(run()))
 }

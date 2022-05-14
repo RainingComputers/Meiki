@@ -52,14 +52,14 @@ func (ns NotesStore) Create(ctx context.Context, note Note) (NoteResponse, error
 	err := validateNoteTitle(note.Title)
 
 	if err != nil {
-		log.Error("Invalid note", zap.Error(err))
+		log.Error("invalid note", zap.Error(err))
 		return NoteResponse{}, err
 	}
 
 	result, err := ns.coll.InsertOne(ctx, note)
 
 	if err != nil {
-		log.Error("Unable to create note", zap.Error(err))
+		log.Error("unable to create note", zap.Error(err))
 		return NoteResponse{}, err
 	}
 
@@ -74,7 +74,7 @@ func (ns NotesStore) List(ctx context.Context, username string) ([]NoteResponse,
 	cursor, err := ns.coll.Find(ctx, bson.M{"username": username})
 
 	if err != nil {
-		log.Error("Unable to list notes", zap.Error(err))
+		log.Error("unable to list notes", zap.Error(err))
 		return nil, err
 	}
 
@@ -86,7 +86,7 @@ func (ns NotesStore) List(ctx context.Context, username string) ([]NoteResponse,
 		err := cursor.Decode(&note)
 
 		if err != nil {
-			log.Error("Unable to retrive note", zap.Error(err))
+			log.Error("unable to retrive note", zap.Error(err))
 			return nil, err
 		}
 
@@ -104,7 +104,7 @@ func (ns NotesStore) Read(ctx context.Context, id string, username string) (stri
 	docID, err := primitive.ObjectIDFromHex(id)
 
 	if err != nil {
-		log.Warn("Invalid id requested on reading note", zap.Error(err))
+		log.Warn("invalid id requested on reading note", zap.Error(err))
 		return "", ErrInvalidId
 	}
 
@@ -116,7 +116,7 @@ func (ns NotesStore) Read(ctx context.Context, id string, username string) (stri
 	}
 
 	if err != nil {
-		log.Error("Unable to read note", zap.Error(err))
+		log.Error("unable to read note", zap.Error(err))
 		return "", err
 	}
 
@@ -127,7 +127,7 @@ func (ns NotesStore) Update(ctx context.Context, id string, username string, con
 	docID, err := primitive.ObjectIDFromHex(id)
 
 	if err != nil {
-		log.Warn("Invalid id requested on updating note", zap.Error(err))
+		log.Warn("invalid id requested on updating note", zap.Error(err))
 		return ErrInvalidId
 	}
 
@@ -137,12 +137,12 @@ func (ns NotesStore) Update(ctx context.Context, id string, username string, con
 	)
 
 	if err != nil {
-		log.Error("Unable to update note")
+		log.Error("unable to update note")
 		return err
 	}
 
 	if result.MatchedCount == 0 {
-		log.Warn("Note was not found for update request")
+		log.Warn("note was not found for update request")
 		return ErrNoteDoesNotExist
 	}
 
@@ -153,14 +153,14 @@ func (ns NotesStore) Rename(ctx context.Context, id string, username string, tit
 	docID, err := primitive.ObjectIDFromHex(id)
 
 	if err != nil {
-		log.Warn("Invalid id requested on updating note", zap.Error(err))
+		log.Warn("invalid id requested on updating note", zap.Error(err))
 		return ErrInvalidId
 	}
 
 	err = validateNoteTitle(title)
 
 	if err != nil {
-		log.Error("Invalid note", zap.Error(err))
+		log.Error("invalid note", zap.Error(err))
 		return err
 	}
 
@@ -170,12 +170,12 @@ func (ns NotesStore) Rename(ctx context.Context, id string, username string, tit
 	)
 
 	if err != nil {
-		log.Error("Unable to update note title")
+		log.Error("unable to update note title")
 		return err
 	}
 
 	if result.MatchedCount == 0 {
-		log.Warn("Note was not found for rename request")
+		log.Warn("note was not found for rename request")
 		return ErrNoteDoesNotExist
 	}
 
@@ -186,19 +186,19 @@ func (ns NotesStore) Delete(ctx context.Context, id string, username string) err
 	docID, err := primitive.ObjectIDFromHex(id)
 
 	if err != nil {
-		log.Warn("Invalid id requested on deleting note", zap.Error(err))
+		log.Warn("invalid id requested on deleting note", zap.Error(err))
 		return ErrInvalidId
 	}
 
 	result, err := ns.coll.DeleteOne(ctx, bson.M{"_id": docID, "username": username})
 
 	if err != nil {
-		log.Error("Unable to delete note")
+		log.Error("unable to delete note")
 		return err
 	}
 
 	if result.DeletedCount == 0 {
-		log.Warn("Note was not found for delete request")
+		log.Warn("note was not found for delete request")
 		return ErrNoteDoesNotExist
 	}
 
