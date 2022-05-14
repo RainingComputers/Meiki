@@ -1,7 +1,7 @@
 <script lang="ts">
     import { afterUpdate } from "svelte"
-    import Editor from "$cmp/Editor.svelte"
-    import Renderer from "$cmp/Renderer.svelte"
+    import Editor from "./Editor.svelte"
+    import Renderer from "./Renderer.svelte"
     import Logo from "./Logo.svelte"
 
     export let fontSize = 18
