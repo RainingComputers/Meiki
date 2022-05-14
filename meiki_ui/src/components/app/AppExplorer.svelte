@@ -21,13 +21,13 @@
         }
     }
 
-    function delselectAllNotes() {
+    function deselectAllNotes() {
         currentNote.set("")
     }
 
     async function selectNote(id: string) {
         if ($currentNote == id) {
-            delselectAllNotes()
+            deselectAllNotes()
             return
         }
 
@@ -42,7 +42,7 @@
     }
 </script>
 
-<Panel width="20%" onClick={delselectAllNotes}>
+<Panel width="20%" onClick={deselectAllNotes}>
     {#each itemList as item (item.id)}
         {#if item.id == $currentNote}
             <Item
