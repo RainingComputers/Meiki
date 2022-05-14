@@ -1,34 +1,25 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte"
     import { createNote } from "$lib/api/notes"
-    import Entry from "$cmp/Entry.svelte"
-    import Button from "$cmp/Button.svelte"
-    import Error from "$cmp/toast/Error.svelte"
+    import EntryModal from "$cmp/modal/EntryModal.svelte"
 
-    let entry: Entry
-    let error: string = ""
-
+    export let error: string = ""
     const dispatchEvent = createEventDispatcher()
 
-    async function create() {
+    async function create(noteName: string) {
         try {
-            await createNote(entry.getValue())
+            await createNote(noteName)
             error = ""
             dispatchEvent("noteCreated")
         } catch {
-            error = "Unable to create note, please try again later"
+            error = "Unable to create note, unable to connect to server"
         }
     }
 </script>
 
-<div
-    class="w-96 max-h-fit m-auto bg-gray-50 border-gray-200 rounded-xl flex flex-col py-5 px-6"
->
-    <div class="flex flex-col gap-5">
-        {#if error}
-            <Error>{error}</Error>
-        {/if}
-        <Entry label="Enter note name" onEnter={create} bind:this={entry} />
-        <Button label="Create note" onClick={create} />
-    </div>
-</div>
+<EntryModal
+    {error}
+    onValue={create}
+    buttonLabel="Create note"
+    entryLabel="Enter note name"
+/>
