@@ -21,6 +21,7 @@
     export let label: string
     export let onClick: any = undefined
     export let fullWidth: boolean = false
+    export let expand: boolean = false
     export let type: ButtonType = ButtonType.PRIMARY
 
     const buttonClass = getButtonClass(type)
@@ -30,6 +31,7 @@
     on:click={onClick}
     class="drop-shadow-card font-bold rounded-xl {buttonClass}"
     class:w-full={fullWidth}
+    class:flex-grow={expand}
 >
     <span>{label}</span>
 </button>

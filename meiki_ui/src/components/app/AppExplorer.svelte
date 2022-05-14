@@ -13,7 +13,11 @@
     })
 
     export async function updateItems() {
-        itemList = await listNotes()
+        try {
+            itemList = await listNotes()
+        } catch {
+            // TODO: handle this error
+        }
     }
 
     function selectNote(id: string) {

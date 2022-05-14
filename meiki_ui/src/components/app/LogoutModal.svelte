@@ -5,7 +5,12 @@
     import Logo from "./Logo.svelte"
 
     async function logoutUser() {
-        await logout()
+        try {
+            await logout()
+        } catch {
+            // TODO: handle this error
+        }
+
         goto("/login")
     }
 </script>

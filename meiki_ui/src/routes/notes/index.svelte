@@ -1,9 +1,9 @@
 <script lang="ts">
     import { onMount } from "svelte"
-    import { deleteNote, updateNote } from "$lib/api/notes"
-    import { debounce } from "$lib/utils/debouncer"
+    import { updateNote } from "$lib/api/notes"
     import currentNote from "$lib/stores/currentNote"
     import currentNoteText from "$lib/stores/currentNoteText"
+    import { debounce } from "$lib/utils/debouncer"
     import App from "$cmp/App.svelte"
     import AppExplorer from "$cmp/app/AppExplorer.svelte"
     import AppToolbar from "$cmp/app/AppToolbar.svelte"
@@ -11,28 +11,20 @@
     import ModalOverlay from "$cmp/modal/ModalOverlay.svelte"
     import LogoutModal from "$cmp/app/LogoutModal.svelte"
     import CreateModal from "$cmp/app/CreateModal.svelte"
+    import DeleteModal from "$cmp/app/DeleteModal.svelte"
 
     let showExplorer: boolean = true
 
     let workbench: Workbench
     let logoutModalOverlay: ModalOverlay
     let createModalOverlay: ModalOverlay
+    let deleteModalOverlay: ModalOverlay
     let explorer: AppExplorer
 
     export const debouncedUpdateNote = debounce(updateNote)
 
     function toggleExplorer() {
         showExplorer = !showExplorer
-    }
-
-    async function deleteCurrentNote() {
-        try {
-            await deleteNote($currentNote)
-            explorer.updateItems()
-        } catch {
-            // TODO: Error handling
-            // TODO: make this a modal
-        }
     }
 
     async function syncCurrentNote() {
@@ -52,6 +44,18 @@
 
 <ModalOverlay bind:this={logoutModalOverlay}>
     <LogoutModal />
+</ModalOverlay>
+
+<ModalOverlay bind:this={deleteModalOverlay}>
+    <DeleteModal
+        on:deleted={() => {
+            explorer.updateItems()
+            deleteModalOverlay.closeModal()
+        }}
+        on:deleteCancelled={() => {
+            deleteModalOverlay.closeModal()
+        }}
+    />
 </ModalOverlay>
 
 <ModalOverlay bind:this={createModalOverlay}>
@@ -79,7 +83,7 @@
             logoutModalOverlay.showModal()
         }}
         on:delete={() => {
-            deleteCurrentNote()
+            deleteModalOverlay.showModal()
         }}
     />
     <div class="flex flex-row flex-grow w-full">

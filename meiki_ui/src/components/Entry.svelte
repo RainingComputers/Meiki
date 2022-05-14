@@ -17,6 +17,10 @@
     export function getValue() {
         return inputEl.value
     }
+
+    export function focus() {
+        inputEl.focus()
+    }
 </script>
 
 <div class=" flex flex-col w-full gap-1">
