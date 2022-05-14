@@ -1,9 +1,9 @@
-// TODO: figure out typing
+type VoidReturnAsyncFunc = (...args: any[]) => Promise<void>
 
 export function debounce(
-    func: (...args: any[]) => Promise<any>,
+    func: VoidReturnAsyncFunc,
     threshold: number = 5000
-): any {
+): VoidReturnAsyncFunc {
     let lastCall = new Date()
 
     return async function (...args: any[]) {

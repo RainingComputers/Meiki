@@ -1,5 +1,4 @@
 import { makeRequest } from "./request"
-import { debounce } from "$lib/utils/debouncer"
 
 export type NoteInfo = {
     id: string
@@ -22,5 +21,3 @@ export async function deleteNote(id: string) {
 export async function updateNote(id: string, content: string) {
     await makeRequest(`/notes/update/${id}`, "PUT", { content })
 }
-
-export const debouncedUpdateNote = debounce(updateNote)
