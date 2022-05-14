@@ -18,7 +18,7 @@
         editor.setFontSize(fontSize)
         editor.setShowPrintMargin(false)
         editor.setHighlightActiveLine(false)
-        editor.setValue($currentNoteText, 1)
+        editor.setValue($currentNoteText, 1) // TODO: move this out from the generic component
         editor.getSession().on("change", () => {
             currentNoteText.set(editor.getValue())
         })
