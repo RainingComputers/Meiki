@@ -11,6 +11,8 @@
     import UserIcon from "$cmp/icons/UserIcon.svelte"
     import ToolBarAction from "$cmp/toolbar/Action.svelte"
 
+    export let showNoteActions: boolean = false
+
     const username = getUsername()
     const dispatchEvent = createEventDispatcher()
 </script>
@@ -24,17 +26,27 @@
     >
         <SidebarIcon />
     </ToolbarButton>
-    <span class="px-2" />
-    <ToolbarButton checkable={true} name="edit" on:edit>
-        <EditIcon />
-    </ToolbarButton>
-    <ToolbarButton checkable={true} name="render" on:render>
-        <PreviewIcon />
-    </ToolbarButton>
-    <ToolbarButton checkable={false} name="delete" on:delete>
-        <TrashIcon />
-    </ToolbarButton>
+
+    {#if showNoteActions}
+        <span class="px-2" />
+        <ToolbarButton checkable={true} name="edit" on:edit>
+            <EditIcon />
+        </ToolbarButton>
+        <ToolbarButton
+            isButtonChecked={true}
+            checkable={true}
+            name="render"
+            on:render
+        >
+            <PreviewIcon />
+        </ToolbarButton>
+        <ToolbarButton checkable={false} name="delete" on:delete>
+            <TrashIcon />
+        </ToolbarButton>
+    {/if}
+
     <ToolbarTitle title="Meiki" />
+
     <ToolBarAction label="Create" onClick={() => dispatchEvent("create")} />
     <span class="px-0.5" />
     <ToolbarButton checkable={false} name="profile" label={username} on:profile>

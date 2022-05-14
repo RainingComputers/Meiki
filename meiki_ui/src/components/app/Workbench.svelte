@@ -5,9 +5,9 @@
     import Logo from "./Logo.svelte"
 
     export let fontSize = 18
+    export let showRenderer = false
+    export let showEditor = false
 
-    let showRenderer = false
-    let showEditor = false
     let editor: Editor
     let splitEditor: Editor
 
