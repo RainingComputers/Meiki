@@ -1,9 +1,9 @@
 <script lang="ts">
     import { onMount } from "svelte"
+    import { deleteNote, updateNote } from "$lib/api/notes"
+    import { debounce } from "$lib/utils/debouncer"
     import currentNote from "$lib/stores/currentNote"
     import currentNoteText from "$lib/stores/currentNoteText"
-    import { deleteNote, debouncedUpdateNote } from "$lib/api/notes"
-
     import App from "$cmp/App.svelte"
     import AppExplorer from "$cmp/app/AppExplorer.svelte"
     import AppToolbar from "$cmp/app/AppToolbar.svelte"
@@ -18,6 +18,8 @@
     let logoutModalOverlay: ModalOverlay
     let createModalOverlay: ModalOverlay
     let explorer: AppExplorer
+
+    export const debouncedUpdateNote = debounce(updateNote)
 
     function toggleExplorer() {
         showExplorer = !showExplorer
@@ -35,7 +37,6 @@
 
     async function syncCurrentNote() {
         try {
-            console.log("Syncing")
             await debouncedUpdateNote($currentNote, $currentNoteText)
         } catch {
             // TODO: Error handling, how to show this toast
