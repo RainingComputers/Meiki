@@ -8,7 +8,7 @@
     import AppExplorer from "$cmp/app/AppExplorer.svelte"
     import AppToolbar from "$cmp/app/AppToolbar.svelte"
     import Workbench from "$cmp/app/Workbench.svelte"
-    import ModalOverlay from "$cmp/ModalOverlay.svelte"
+    import ModalOverlay from "$cmp/modal/ModalOverlay.svelte"
     import LogoutModal from "$cmp/app/LogoutModal.svelte"
     import CreateModal from "$cmp/app/CreateModal.svelte"
 
