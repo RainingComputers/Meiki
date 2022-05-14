@@ -92,8 +92,6 @@
             <AppExplorer bind:this={explorer} />
         {/if}
 
-        {#if $currentNote}
-            <Workbench showRenderer={true} bind:this={workbench} />
-        {/if}
+        <Workbench showRenderer={true} bind:this={workbench} />
     </div>
 </App>

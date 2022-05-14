@@ -20,6 +20,9 @@ module.exports = {
             dropShadow: {
                 card: "0 0px 2px rgb(0 0 0 / 0.1)",
             },
+            opacity: {
+                4: ".04",
+            },
         },
     },
     variants: {},
