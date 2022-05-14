@@ -69,6 +69,7 @@
 
 <App>
     <AppToolbar
+        showNoteActions={!!$currentNote}
         on:sidebar={toggleExplorer}
         on:edit={() => {
             workbench.toggleEditor()
@@ -90,6 +91,9 @@
         {#if showExplorer}
             <AppExplorer bind:this={explorer} />
         {/if}
-        <Workbench bind:this={workbench} />
+
+        {#if $currentNote}
+            <Workbench showRenderer={true} bind:this={workbench} />
+        {/if}
     </div>
 </App>
