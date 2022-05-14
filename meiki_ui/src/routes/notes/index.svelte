@@ -29,7 +29,9 @@
 
     async function syncCurrentNote() {
         try {
-            await debouncedUpdateNote($currentNote, $currentNoteText)
+            if ($currentNote) {
+                await debouncedUpdateNote($currentNote, $currentNoteText)
+            }
         } catch {
             // TODO: Error handling, how to show this toast
         }
