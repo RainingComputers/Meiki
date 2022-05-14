@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { onMount } from "svelte"
     import Entry from "$cmp/Entry.svelte"
     import ActionModal from "$cmp/modal/ActionModal.svelte"
     import Button from "$cmp/Button.svelte"
@@ -9,6 +10,10 @@
     export let onValue: (value: string) => any
 
     let entry: Entry
+
+    onMount(() => {
+        entry.focus()
+    })
 
     function onClickOrOnEnter() {
         onValue(entry.getValue())
