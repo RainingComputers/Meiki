@@ -1,45 +1,43 @@
 <script lang="ts">
     import { onDestroy, onMount } from "svelte"
-    import currentNoteText from "$lib/stores/currentNoteText"
-    import currentNote from "$lib/stores/currentNote"
 
     export let fontSize: number
+    export let editorId: string
+    export let onChange: () => void
+    export let initialText: string
 
-    const editorId: string = $currentNote
-    let editor: any = undefined
+    let aceEditor: any = undefined
 
     onMount(() => {
         // @ts-ignore
         window.ace.config.set("basePath", "/")
         // @ts-ignore
-        editor = window.ace.edit(editorId)
-        editor.setTheme("ace/theme/xcode")
-        editor.session.setMode("ace/mode/markdown")
-        editor.setFontSize(fontSize)
-        editor.setShowPrintMargin(false)
-        editor.setHighlightActiveLine(false)
-        editor.setValue($currentNoteText, 1) // TODO: move this out from the generic component
-        editor.getSession().on("change", () => {
-            currentNoteText.set(editor.getValue())
-        })
+        aceEditor = window.ace.edit(editorId)
+        aceEditor.setTheme("ace/theme/xcode")
+        aceEditor.session.setMode("ace/mode/markdown")
+        aceEditor.setFontSize(fontSize)
+        aceEditor.setShowPrintMargin(false)
+        aceEditor.setHighlightActiveLine(false)
+        aceEditor.setValue(initialText, 1)
+        aceEditor.getSession().on("change", onChange)
     })
 
     onDestroy(() => {
-        if (editor) editor.destroy()
+        if (aceEditor) aceEditor.destroy()
     })
 
     export function focus() {
         // set timeout so the editor does not capture key events like the enter key
         // there is no other way to do this
-        setTimeout(() => editor.focus(), 1)
+        setTimeout(() => aceEditor.focus(), 1)
     }
 
     export function getValue(): string {
-        return editor.getValue()
+        return aceEditor.getValue()
     }
 
     export function setValue(content: string) {
-        editor.setValue(content, 1)
+        aceEditor.setValue(content, 1)
     }
 </script>
 
