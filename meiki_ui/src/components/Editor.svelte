@@ -1,10 +1,11 @@
 <script lang="ts">
     import { onDestroy, onMount } from "svelte"
-    // import currentNoteText from "$lib/stores/currentNoteText" // TODO: sync with current note text
+    import currentNoteText from "$lib/stores/currentNoteText"
+    import currentNote from "$lib/stores/currentNote"
 
     export let fontSize: number
-    export let editorId: string = "testing" // TODO: change this
 
+    const editorId: string = $currentNote
     let editor: any = undefined
 
     onMount(() => {
@@ -17,6 +18,10 @@
         editor.setFontSize(fontSize)
         editor.setShowPrintMargin(false)
         editor.setHighlightActiveLine(false)
+        editor.setValue($currentNoteText, 1)
+        editor.getSession().on("change", () => {
+            currentNoteText.set(editor.getValue())
+        })
     })
 
     onDestroy(() => {
