@@ -4,6 +4,7 @@
 
 <script lang="ts">
     import { onMount } from "svelte"
+    import { goto } from "$app/navigation"
     import { readNoteContent, updateNote } from "$lib/api/notes"
     import { listNotes, NoteInfo } from "$lib/api/notes"
     import App from "$cmp/App.svelte"
@@ -66,12 +67,11 @@
         try {
             currentNoteText = await readNoteContent(id)
             workbench.setText(currentNoteText)
+            startNoteSync()
         } catch {
-            currentNoteText = undefined
+            deselectAllNotes()
             // TODO: handle this error
         }
-
-        startNoteSync()
     }
 
     function deselectAllNotes() {
@@ -80,11 +80,11 @@
         currentNoteText = undefined
     }
 
-    function onTextChange(event: any) {
+    function onTextChange(event: CustomEvent<{ text: string }>) {
         currentNoteText = event.detail.text
     }
 
-    function onNoteCreated(event: any) {
+    function onNoteCreated(event: CustomEvent<{ noteInfo: NoteInfo }>) {
         const noteInfo: NoteInfo = event.detail.noteInfo
         updateNoteList()
         selectNote(noteInfo.id)
@@ -92,7 +92,7 @@
         createModalOverlay.closeModal()
     }
 
-    function onNoteDeleted(event: any) {
+    function onNoteDeleted() {
         updateNoteList()
         deselectAllNotes()
         deleteModalOverlay.closeModal()
@@ -105,7 +105,7 @@
 </script>
 
 <ModalOverlay bind:this={logoutModalOverlay}>
-    <LogoutModal />
+    <LogoutModal on:loggedOut={() => goto("/login")} />
 </ModalOverlay>
 
 <ModalOverlay bind:this={deleteModalOverlay}>

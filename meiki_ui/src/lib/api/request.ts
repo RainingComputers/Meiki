@@ -1,5 +1,5 @@
 export class StatusNotOkError extends Error {
-    constructor(msg: any) {
+    constructor(msg: string) {
         super(msg)
     }
 }

@@ -3,7 +3,7 @@
 
     export let title: string
     export let checked: boolean = false
-    export let onClick: any
+    export let onClick: () => void
 
     $: checkedClass = checked ? "bg-blue-500 text-white stroke-white" : ""
 </script>

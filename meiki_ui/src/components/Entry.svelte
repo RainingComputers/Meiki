@@ -1,7 +1,7 @@
 <script lang="ts">
     export let label: string
     export let password: boolean = false
-    export let onEnter: any = undefined
+    export let onEnter: () => void = undefined
 
     let inputEl: HTMLInputElement
     const type: string = password ? "password" : "text"
