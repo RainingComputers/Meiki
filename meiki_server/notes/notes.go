@@ -20,10 +20,14 @@ type Note struct {
 }
 
 type NoteResponse struct {
-	ID       string `json:"id"`
-	Username string `json:"username"`
-	Title    string `json:"title"`
+	ID    string `json:"id"`
+	Title string `json:"title"`
 	// TODO: Add useful timestamps
+}
+
+type NoteContentResponse struct {
+	Title   string `json:"title"`
+	Content string `json:"content"`
 }
 
 type NotesStore struct {
@@ -48,26 +52,22 @@ func validateNoteTitle(title string) error {
 	return nil
 }
 
-func (ns NotesStore) Create(ctx context.Context, note Note) (NoteResponse, error) {
+func (ns NotesStore) Create(ctx context.Context, note Note) (string, error) {
 	err := validateNoteTitle(note.Title)
 
 	if err != nil {
 		log.Error("invalid note", zap.Error(err))
-		return NoteResponse{}, err
+		return "", err
 	}
 
 	result, err := ns.coll.InsertOne(ctx, note)
 
 	if err != nil {
 		log.Error("unable to create note", zap.Error(err))
-		return NoteResponse{}, err
+		return "", err
 	}
 
-	return NoteResponse{
-		ID:       result.InsertedID.(primitive.ObjectID).Hex(),
-		Title:    note.Title,
-		Username: note.Username,
-	}, nil
+	return result.InsertedID.(primitive.ObjectID).Hex(), nil
 }
 
 func (ns NotesStore) List(ctx context.Context, username string) ([]NoteResponse, error) {
@@ -91,36 +91,38 @@ func (ns NotesStore) List(ctx context.Context, username string) ([]NoteResponse,
 		}
 
 		noteInfoList = append(noteInfoList, NoteResponse{
-			ID:       note.ID.Hex(),
-			Title:    note.Title,
-			Username: note.Username,
+			ID:    note.ID.Hex(),
+			Title: note.Title,
 		})
 	}
 
 	return noteInfoList, nil
 }
 
-func (ns NotesStore) Read(ctx context.Context, id string, username string) (string, error) {
+func (ns NotesStore) Read(ctx context.Context, id string, username string) (NoteContentResponse, error) {
 	docID, err := primitive.ObjectIDFromHex(id)
 
 	if err != nil {
 		log.Warn("invalid id requested on reading note", zap.Error(err))
-		return "", ErrInvalidId
+		return NoteContentResponse{}, ErrInvalidId
 	}
 
 	var note Note
 	err = ns.coll.FindOne(ctx, bson.M{"_id": docID, "username": username}).Decode(&note)
 
 	if errors.Is(err, mongo.ErrNoDocuments) {
-		return "", ErrNoteDoesNotExist
+		return NoteContentResponse{}, ErrNoteDoesNotExist
 	}
 
 	if err != nil {
 		log.Error("unable to read note", zap.Error(err))
-		return "", err
+		return NoteContentResponse{}, err
 	}
 
-	return note.Content, nil
+	return NoteContentResponse{
+		Title:   note.Title,
+		Content: note.Content,
+	}, nil
 }
 
 func (ns NotesStore) Update(ctx context.Context, id string, username string, content string) error {

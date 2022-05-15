@@ -62,14 +62,14 @@ func getCreateHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 			Content:  "",
 		}
 
-		noteResponse, err := ns.Create(ctx, note)
+		id, err := ns.Create(ctx, note)
 
 		if err != nil {
 			errorToResponse(c, err)
 			return
 		}
 
-		c.JSON(http.StatusOK, noteResponse)
+		c.JSON(http.StatusOK, id)
 	}
 }
 

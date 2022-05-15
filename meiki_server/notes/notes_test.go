@@ -83,16 +83,17 @@ var invalidNote = notes.Note{
 }
 
 func (s *NotesStoreTestSuite) TestShouldCreateAndReadNote() {
-	noteInfo1, err := s.notesStore.Create(s.ctx, note1)
+	id, err := s.notesStore.Create(s.ctx, note1)
 	assert.Nil(s.T(), err)
 	_, err = s.notesStore.Create(s.ctx, note3)
 	assert.Nil(s.T(), err)
 
-	storedContent, err := s.notesStore.Read(s.ctx, noteInfo1.ID, noteInfo1.Username)
+	storeNoteContentResp, err := s.notesStore.Read(s.ctx, id, note1.Username)
 	assert.Nil(s.T(), err)
-	assert.Equal(s.T(), note1.Content, storedContent)
+	assert.Equal(s.T(), note1.Content, storeNoteContentResp.Content)
+	assert.Equal(s.T(), note1.Title, storeNoteContentResp.Title)
 
-	_, err = s.notesStore.Read(s.ctx, noteInfo1.ID, "differentUser")
+	_, err = s.notesStore.Read(s.ctx, id, "differentUser")
 	assert.ErrorIs(s.T(), err, notes.ErrNoteDoesNotExist)
 }
 
@@ -140,17 +141,18 @@ func (s *NotesStoreTestSuite) TestShouldListNotes() {
 }
 
 func (s *NotesStoreTestSuite) TestShouldUpdateNote() {
-	noteInfo, err := s.notesStore.Create(s.ctx, note1)
+	id, err := s.notesStore.Create(s.ctx, note1)
 	assert.Nil(s.T(), err)
 
-	err = s.notesStore.Update(s.ctx, noteInfo.ID, noteInfo.Username, "Content has been modified")
+	err = s.notesStore.Update(s.ctx, id, note1.Username, "Content has been modified")
 	assert.Nil(s.T(), err)
 
-	content, err := s.notesStore.Read(s.ctx, noteInfo.ID, noteInfo.Username)
+	contentResponse, err := s.notesStore.Read(s.ctx, id, note1.Username)
 	assert.Nil(s.T(), err)
-	assert.Equal(s.T(), "Content has been modified", content)
+	assert.Equal(s.T(), note1.Title, contentResponse.Title)
+	assert.Equal(s.T(), "Content has been modified", contentResponse.Content)
 
-	err = s.notesStore.Update(s.ctx, noteInfo.ID, "differentUser", "Content has been modified")
+	err = s.notesStore.Update(s.ctx, id, "differentUser", "Content has been modified")
 	assert.ErrorIs(s.T(), err, notes.ErrNoteDoesNotExist)
 }
 
@@ -164,17 +166,17 @@ func (s *NotesStoreTestSuite) TestUpdateShouldError() {
 }
 
 func (s *NotesStoreTestSuite) TestShouldRenameNote() {
-	noteInfo, err := s.notesStore.Create(s.ctx, note1)
+	id, err := s.notesStore.Create(s.ctx, note1)
 	assert.Nil(s.T(), err)
 
-	err = s.notesStore.Rename(s.ctx, noteInfo.ID, noteInfo.Username, "Note title has been modified")
+	err = s.notesStore.Rename(s.ctx, id, note1.Username, "Note title has been modified")
 	assert.Nil(s.T(), err)
 
-	notesList, err := s.notesStore.List(s.ctx, noteInfo.Username)
+	notesList, err := s.notesStore.List(s.ctx, note1.Username)
 	assert.Nil(s.T(), err)
 	assert.Equal(s.T(), "Note title has been modified", notesList[0].Title)
 
-	err = s.notesStore.Update(s.ctx, noteInfo.ID, "differentUser", "Note title has been modified")
+	err = s.notesStore.Update(s.ctx, id, "differentUser", "Note title has been modified")
 	assert.ErrorIs(s.T(), err, notes.ErrNoteDoesNotExist)
 }
 
@@ -191,22 +193,22 @@ func (s *NotesStoreTestSuite) TestRenameShouldError() {
 }
 
 func (s *NotesStoreTestSuite) TestShouldDeleteNote() {
-	noteInfo1, err := s.notesStore.Create(s.ctx, note1)
+	id1, err := s.notesStore.Create(s.ctx, note1)
 	assert.Nil(s.T(), err)
 
-	noteInfo2, err := s.notesStore.Create(s.ctx, note2)
+	id2, err := s.notesStore.Create(s.ctx, note2)
 	assert.Nil(s.T(), err)
 
-	err = s.notesStore.Delete(s.ctx, noteInfo1.ID, "differentUser")
+	err = s.notesStore.Delete(s.ctx, id1, "differentUser")
 	assert.ErrorIs(s.T(), err, notes.ErrNoteDoesNotExist)
 
-	err = s.notesStore.Delete(s.ctx, noteInfo1.ID, noteInfo1.Username)
+	err = s.notesStore.Delete(s.ctx, id1, note1.Username)
 	assert.Nil(s.T(), err)
 
-	_, err = s.notesStore.Read(s.ctx, noteInfo1.ID, noteInfo1.Username)
+	_, err = s.notesStore.Read(s.ctx, id1, note1.Username)
 	assert.ErrorIs(s.T(), err, notes.ErrNoteDoesNotExist)
 
-	_, err = s.notesStore.Read(s.ctx, noteInfo2.ID, noteInfo2.Username)
+	_, err = s.notesStore.Read(s.ctx, id2, note2.Username)
 	assert.Nil(s.T(), err)
 }
 

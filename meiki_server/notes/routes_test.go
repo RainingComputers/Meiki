@@ -96,11 +96,22 @@ func (s *NotesRoutesTestSuite) assertAndGetListResponse(expectedTitleList []stri
 func (s *NotesRoutesTestSuite) assertCreateResponse(w *httptest.ResponseRecorder) {
 	assert.Equal(s.T(), w.Code, 200)
 
-	var noteResponse notes.NoteResponse
-	err := json.Unmarshal(w.Body.Bytes(), &noteResponse)
+	var id string
+	err := json.Unmarshal(w.Body.Bytes(), &id)
 	assert.Nil(s.T(), err)
 
-	assert.True(s.T(), len(noteResponse.ID) > 5)
+	assert.True(s.T(), len(id) > 5)
+}
+
+func (s *NotesRoutesTestSuite) assertReadResponse(w *httptest.ResponseRecorder, title string, content string) {
+	assert.Equal(s.T(), w.Code, 200)
+
+	var contentResponse notes.NoteContentResponse
+	err := json.Unmarshal(w.Body.Bytes(), &contentResponse)
+	assert.Nil(s.T(), err)
+
+	assert.Equal(s.T(), title, contentResponse.Title)
+	assert.Equal(s.T(), content, contentResponse.Content)
 }
 
 func (s *NotesRoutesTestSuite) TestRoutesScenario() {
@@ -168,7 +179,8 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 
 	// read the note and assert updated content
 	req = newReqWithUserHeader("GET", "/read/"+listResponse[0].ID, nil)
-	testhelpers.AssertResponseString(s.T(), s.router, req, 200, "A content has been added to this note")
+	w = testhelpers.GetResponse(s.T(), s.router, req)
+	s.assertReadResponse(w, "This is a new note with modified title", "A content has been added to this note")
 
 	// delete note and assert read note does not exist
 	req = newReqWithUserHeader("DELETE", "/delete/"+listResponse[0].ID, nil)
@@ -177,7 +189,7 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 	// assert create using list
 	s.assertListResponse([]string{"This is another note"})
 
-	// assert read other note exists
+	// assert read other note does not exists
 	req, _ = http.NewRequest("GET", "/read/"+listResponse[0].ID, nil)
 	testhelpers.AssertResponseString(s.T(), s.router, req, 400, "Note does not exist")
 }
