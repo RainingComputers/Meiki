@@ -1,9 +1,11 @@
+<script context="module" lang="ts">
+    const NOTE_SYNC_INTERVAL = 5000
+</script>
+
 <script lang="ts">
     import { onMount } from "svelte"
-    import { updateNote } from "$lib/api/notes"
-    import currentNote from "$lib/stores/currentNote"
-    import currentNoteText from "$lib/stores/currentNoteText"
-    import { debounce } from "$lib/utils/debouncer"
+    import { readNoteContent, updateNote } from "$lib/api/notes"
+    import { listNotes, NoteInfo } from "$lib/api/notes"
     import App from "$cmp/App.svelte"
     import AppExplorer from "$cmp/app/AppExplorer.svelte"
     import AppToolbar from "$cmp/app/AppToolbar.svelte"
@@ -14,33 +16,82 @@
     import DeleteModal from "$cmp/app/DeleteModal.svelte"
 
     let showExplorer: boolean = true
-
     let workbench: Workbench
     let logoutModalOverlay: ModalOverlay
     let createModalOverlay: ModalOverlay
     let deleteModalOverlay: ModalOverlay
-    let explorer: AppExplorer
 
-    export const debouncedUpdateNote = debounce(updateNote)
+    let currentNoteID: string = undefined
+    let currentNoteText: string = undefined
+    let noteList: Array<NoteInfo> = []
+    let syncIntervalID: ReturnType<typeof setInterval> = undefined
 
     function toggleExplorer() {
         showExplorer = !showExplorer
     }
 
+    async function updateNoteList() {
+        try {
+            noteList = await listNotes()
+        } catch {
+            // TODO: handle this error
+        }
+    }
+
     async function syncCurrentNote() {
         try {
-            if ($currentNote) {
-                await debouncedUpdateNote($currentNote, $currentNoteText)
+            if (currentNoteID) {
+                await updateNote(currentNoteID, currentNoteText)
             }
         } catch {
             // TODO: Error handling, how to show this toast
         }
     }
 
-    onMount(() => {
-        setInterval(async () => {
+    function startNoteSync() {
+        syncIntervalID = setInterval(async () => {
             await syncCurrentNote()
-        }, 5000)
+        }, NOTE_SYNC_INTERVAL)
+    }
+
+    function stopNoteSync() {
+        if (syncIntervalID) clearInterval(syncIntervalID)
+    }
+
+    async function selectNote(id: string) {
+        if (id === currentNoteID) {
+            deselectAllNotes()
+            return
+        }
+
+        stopNoteSync()
+
+        currentNoteID = id
+
+        try {
+            currentNoteText = await readNoteContent(id)
+            workbench.setText(currentNoteText)
+        } catch {
+            currentNoteText = undefined
+            // TODO: handle this error
+        }
+
+        startNoteSync()
+    }
+
+    function deselectAllNotes() {
+        stopNoteSync()
+        currentNoteID = undefined
+        currentNoteText = undefined
+    }
+
+    function onTextChange(event: any) {
+        currentNoteText = event.detail.text
+    }
+
+    onMount(async () => {
+        await updateNoteList()
+        startNoteSync()
     })
 </script>
 
@@ -50,8 +101,10 @@
 
 <ModalOverlay bind:this={deleteModalOverlay}>
     <DeleteModal
+        noteID={currentNoteID}
         on:deleted={() => {
-            explorer.updateItems()
+            updateNoteList()
+            deselectAllNotes()
             deleteModalOverlay.closeModal()
         }}
         on:deleteCancelled={() => {
@@ -63,7 +116,7 @@
 <ModalOverlay bind:this={createModalOverlay}>
     <CreateModal
         on:noteCreated={() => {
-            explorer.updateItems()
+            updateNoteList()
             createModalOverlay.closeModal()
         }}
     />
@@ -71,7 +124,7 @@
 
 <App>
     <AppToolbar
-        showNoteActions={!!$currentNote}
+        showNoteActions={!!currentNoteID}
         on:sidebar={toggleExplorer}
         on:edit={() => {
             workbench.toggleEditor()
@@ -91,9 +144,20 @@
     />
     <div class="flex flex-row flex-grow w-full">
         {#if showExplorer}
-            <AppExplorer bind:this={explorer} />
+            <AppExplorer
+                {noteList}
+                selectedNoteID={currentNoteID}
+                on:selectNote={(event) => {
+                    selectNote(event.detail.noteID)
+                }}
+                on:deselectAllNotes={deselectAllNotes}
+            />
         {/if}
 
-        <Workbench showRenderer={true} bind:this={workbench} />
+        <Workbench
+            bind:this={workbench}
+            showEditorAndRenderer={!!currentNoteID}
+            on:textChange={onTextChange}
+        />
     </div>
 </App>

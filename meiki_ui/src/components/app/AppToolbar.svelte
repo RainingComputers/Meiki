@@ -32,12 +32,7 @@
         <ToolbarButton checkable={true} name="edit" on:edit>
             <EditIcon />
         </ToolbarButton>
-        <ToolbarButton
-            isButtonChecked={true}
-            checkable={true}
-            name="render"
-            on:render
-        >
+        <ToolbarButton checkable={true} name="render" on:render>
             <PreviewIcon />
         </ToolbarButton>
         <ToolbarButton checkable={false} name="delete" on:delete>

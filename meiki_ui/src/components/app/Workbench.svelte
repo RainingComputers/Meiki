@@ -15,17 +15,28 @@
 </script>
 
 <script lang="ts">
-    import { afterUpdate } from "svelte"
-    import Editor from "./Editor.svelte"
-    import Renderer from "./Renderer.svelte"
+    import { afterUpdate, createEventDispatcher } from "svelte"
+    import Editor from "$cmp/Editor.svelte"
+    import Renderer from "$cmp/Renderer.svelte"
     import Logo from "$cmp/app/Logo.svelte"
-    import { currentNote } from "$lib/stores/currentNote"
 
     export let fontSize = 18
-    export let showRenderer = false
-    export let showEditor = false
+    export let showEditorAndRenderer: boolean
 
+    let text = ""
     let editor: Editor
+    let showRenderer = false
+    let showEditor = false
+    const dispatchEvent = createEventDispatcher()
+
+    function onEditorChange() {
+        text = editor.getValue()
+        dispatchEvent("textChange", { text })
+    }
+
+    function focus() {
+        if (editor) editor.focus()
+    }
 
     export function toggleRenderer() {
         showRenderer = !showRenderer
@@ -35,8 +46,9 @@
         showEditor = !showEditor
     }
 
-    function focus() {
-        if (editor) editor.focus()
+    export function setText(newText: string) {
+        text = newText
+        editor.setValue(newText)
     }
 
     afterUpdate(focus)
@@ -44,12 +56,18 @@
 
 <div class="flex flex-grow justify-center items-center">
     <div class="flex justify-center h-full w-full">
-        {#if $currentNote}
+        {#if showEditorAndRenderer}
             <div class={getEditorClass(showEditor, showRenderer)}>
-                <Editor {fontSize} bind:this={editor} />
+                <Editor
+                    bind:this={editor}
+                    {fontSize}
+                    onChange={onEditorChange}
+                    editorId="workbenchEditor"
+                    initialText={text}
+                />
             </div>
             <div class={getRendererClass(showEditor, showRenderer)}>
-                <Renderer />
+                <Renderer {text} />
             </div>
         {/if}
     </div>
