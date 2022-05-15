@@ -80,11 +80,11 @@
         currentNoteText = undefined
     }
 
-    function onTextChange(event: CustomEvent<{text:string}>) {
+    function onTextChange(event: CustomEvent<{ text: string }>) {
         currentNoteText = event.detail.text
     }
 
-    function onNoteCreated(event: CustomEvent<{noteInfo: NoteInfo}>) {
+    function onNoteCreated(event: CustomEvent<{ noteInfo: NoteInfo }>) {
         const noteInfo: NoteInfo = event.detail.noteInfo
         updateNoteList()
         selectNote(noteInfo.id)
