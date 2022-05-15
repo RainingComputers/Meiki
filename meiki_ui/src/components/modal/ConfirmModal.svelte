@@ -4,8 +4,8 @@
 
     export let error: string = ""
     export let message: string
-    export let onYes: () => any
-    export let onNo: () => any
+    export let onYes: () => void
+    export let onNo: () => void
 </script>
 
 <ActionModal {error}>

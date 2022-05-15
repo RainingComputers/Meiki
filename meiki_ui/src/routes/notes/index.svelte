@@ -80,11 +80,11 @@
         currentNoteText = undefined
     }
 
-    function onTextChange(event: any) {
+    function onTextChange(event: CustomEvent<{text:string}>) {
         currentNoteText = event.detail.text
     }
 
-    function onNoteCreated(event: any) {
+    function onNoteCreated(event: CustomEvent<{noteInfo: NoteInfo}>) {
         const noteInfo: NoteInfo = event.detail.noteInfo
         updateNoteList()
         selectNote(noteInfo.id)
@@ -92,7 +92,7 @@
         createModalOverlay.closeModal()
     }
 
-    function onNoteDeleted(event: any) {
+    function onNoteDeleted() {
         updateNoteList()
         deselectAllNotes()
         deleteModalOverlay.closeModal()
