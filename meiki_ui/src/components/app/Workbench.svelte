@@ -1,3 +1,19 @@
+<script context="module" lang="ts">
+    function getEditorClass(showEditor: boolean, showRenderer: boolean) {
+        if (showEditor && showRenderer) return "bg-green-100 flex-1"
+        if (showEditor && !showRenderer) return "bg-green-100 w-full"
+
+        return "hidden"
+    }
+
+    function getRendererClass(showEditor: boolean, showRenderer: boolean) {
+        if (showEditor && showRenderer) return "bg-red-100 flex-1"
+        if (showRenderer && !showEditor) return "bg-red-100 w-3/4"
+
+        return "hidden"
+    }
+</script>
+
 <script lang="ts">
     import { afterUpdate } from "svelte"
     import Editor from "./Editor.svelte"
@@ -10,7 +26,6 @@
     export let showEditor = false
 
     let editor: Editor
-    let splitEditor: Editor
 
     export function toggleRenderer() {
         showRenderer = !showRenderer
@@ -22,34 +37,23 @@
 
     function focus() {
         if (editor) editor.focus()
-        if (splitEditor) splitEditor.focus()
     }
 
     afterUpdate(focus)
 </script>
 
-<div class="flex flex-row flex-grow justify-center items-center">
-    <div class="flex flex-row flex-grow justify-center h-full w-full">
+<div class="flex flex-grow justify-center items-center">
+    <div class="flex justify-center h-full w-full">
         {#if $currentNote}
-            {#if showEditor && !showRenderer}
-                <div class=" bg-green-100 w-full">
-                    <Editor {fontSize} bind:this={editor} />
-                </div>
-            {/if}
-            {#if showRenderer && !showEditor}
-                <div class=" bg-red-100 w-4/5">
-                    <Renderer />
-                </div>
-            {/if}
-            {#if showRenderer && showEditor}
-                <div class=" bg-green-100 flex-1">
-                    <Editor {fontSize} bind:this={splitEditor} />
-                </div>
-                <div class=" bg-red-100 flex-1"><Renderer /></div>
-            {/if}
+            <div class={getEditorClass(showEditor, showRenderer)}>
+                <Editor {fontSize} bind:this={editor} />
+            </div>
+            <div class={getRendererClass(showEditor, showRenderer)}>
+                <Renderer />
+            </div>
         {/if}
     </div>
     <div class=" opacity-4 fixed">
-        <Logo width="700em" />
+        <Logo width="900em" />
     </div>
 </div>
