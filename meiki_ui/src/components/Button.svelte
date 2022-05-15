@@ -19,7 +19,7 @@
 
 <script lang="ts">
     export let label: string
-    export let onClick: any = undefined
+    export let onClick: () => void = undefined
     export let fullWidth: boolean = false
     export let expand: boolean = false
     export let type: ButtonType = ButtonType.PRIMARY

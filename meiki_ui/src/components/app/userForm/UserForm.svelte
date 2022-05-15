@@ -7,7 +7,7 @@
 
     export let error: string
     export let buttonLabel: string
-    export let onClick: any
+    export let onClick: () => void
     export let confirmPassword: boolean = false
 
     let usernameEntry: Entry

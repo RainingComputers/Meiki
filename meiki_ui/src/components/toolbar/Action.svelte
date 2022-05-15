@@ -1,6 +1,6 @@
 <script lang="ts">
     export let label: string
-    export let onClick: any = undefined
+    export let onClick: () => void = undefined
 </script>
 
 <button

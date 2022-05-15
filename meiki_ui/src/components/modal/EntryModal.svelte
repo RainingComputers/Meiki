@@ -7,7 +7,7 @@
     export let error: string = ""
     export let entryLabel: string
     export let buttonLabel: string
-    export let onValue: (value: string) => any
+    export let onValue: (value: string) => void
 
     let entry: Entry
 
