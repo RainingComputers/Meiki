@@ -1,8 +1,10 @@
 <script lang="ts">
-    import { goto } from "$app/navigation"
+    import { createEventDispatcher } from "svelte"
     import { logout } from "$lib/api/user"
     import Button, { ButtonType } from "$cmp/Button.svelte"
     import Logo from "./Logo.svelte"
+
+    const dispathEvent = createEventDispatcher()
 
     async function logoutUser() {
         try {
@@ -11,7 +13,7 @@
             // TODO: handle this error
         }
 
-        goto("/login")
+        dispathEvent("loggedOut")
     }
 </script>
 

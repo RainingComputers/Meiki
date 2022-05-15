@@ -4,6 +4,7 @@
 
 <script lang="ts">
     import { onMount } from "svelte"
+    import { goto } from "$app/navigation"
     import { readNoteContent, updateNote } from "$lib/api/notes"
     import { listNotes, NoteInfo } from "$lib/api/notes"
     import App from "$cmp/App.svelte"
@@ -105,7 +106,7 @@
 </script>
 
 <ModalOverlay bind:this={logoutModalOverlay}>
-    <LogoutModal />
+    <LogoutModal on:loggedOut={() => goto("/login")} />
 </ModalOverlay>
 
 <ModalOverlay bind:this={deleteModalOverlay}>
