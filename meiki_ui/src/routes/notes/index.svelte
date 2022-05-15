@@ -59,11 +59,6 @@
     }
 
     async function selectNote(id: string) {
-        if (id === currentNoteID) {
-            deselectAllNotes()
-            return
-        }
-
         stopNoteSync()
 
         currentNoteID = id
@@ -89,6 +84,20 @@
         currentNoteText = event.detail.text
     }
 
+    function onNoteCreated(event: any) {
+        const noteInfo: NoteInfo = event.detail.noteInfo
+        updateNoteList()
+        selectNote(noteInfo.id)
+        workbench.enableEditor()
+        createModalOverlay.closeModal()
+    }
+
+    function onNoteDeleted(event: any) {
+        updateNoteList()
+        deselectAllNotes()
+        deleteModalOverlay.closeModal()
+    }
+
     onMount(async () => {
         await updateNoteList()
         startNoteSync()
@@ -102,11 +111,7 @@
 <ModalOverlay bind:this={deleteModalOverlay}>
     <DeleteModal
         noteID={currentNoteID}
-        on:deleted={() => {
-            updateNoteList()
-            deselectAllNotes()
-            deleteModalOverlay.closeModal()
-        }}
+        on:deleted={onNoteDeleted}
         on:deleteCancelled={() => {
             deleteModalOverlay.closeModal()
         }}
@@ -114,12 +119,7 @@
 </ModalOverlay>
 
 <ModalOverlay bind:this={createModalOverlay}>
-    <CreateModal
-        on:noteCreated={() => {
-            updateNoteList()
-            createModalOverlay.closeModal()
-        }}
-    />
+    <CreateModal on:noteCreated={onNoteCreated} />
 </ModalOverlay>
 
 <App>

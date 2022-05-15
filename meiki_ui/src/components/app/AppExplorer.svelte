@@ -15,6 +15,11 @@
     }
 
     function selectNote(id: string) {
+        if (selectedNoteID === id) {
+            deselectAllNotes()
+            return
+        }
+
         dispatchEvent("selectNote", { noteID: id })
     }
 </script>
