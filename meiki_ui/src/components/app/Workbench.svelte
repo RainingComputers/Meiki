@@ -46,6 +46,10 @@
         showEditor = !showEditor
     }
 
+    export function enableEditor() {
+        showEditor = true
+    }
+
     export function setText(newText: string) {
         text = newText
         editor.setValue(newText)
