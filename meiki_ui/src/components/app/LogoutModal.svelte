@@ -4,7 +4,7 @@
     import Button, { ButtonType } from "$cmp/Button.svelte"
     import Logo from "./Logo.svelte"
 
-    const dispathEvent = createEventDispatcher()
+    const dispatchEvent = createEventDispatcher()
 
     async function logoutUser() {
         try {
@@ -13,7 +13,7 @@
             // TODO: handle this error
         }
 
-        dispathEvent("loggedOut")
+        dispatchEvent("loggedOut")
     }
 </script>
 
