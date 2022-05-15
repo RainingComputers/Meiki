@@ -1,50 +1,27 @@
 <script lang="ts">
-    import { onMount } from "svelte"
-    import { listNotes, NoteInfo, readNoteContent } from "$lib/api/notes"
-    import currentNoteText from "$lib/stores/currentNoteText"
-    import currentNote from "$lib/stores/currentNote"
+    import { createEventDispatcher } from "svelte"
+    import type { NoteInfo } from "$lib/api/notes"
     import Panel from "$cmp/explorer/Panel.svelte"
     import Item from "$cmp/explorer/Item.svelte"
     import Empty from "$cmp/explorer/Empty.svelte"
 
-    let itemList: Array<NoteInfo> = []
+    export let noteList: Array<NoteInfo>
+    export let selectedNoteID: string
 
-    onMount(async () => {
-        await updateItems()
-    })
-
-    export async function updateItems() {
-        try {
-            itemList = await listNotes()
-        } catch {
-            // TODO: handle this error
-        }
-    }
+    const dispatchEvent = createEventDispatcher()
 
     function deselectAllNotes() {
-        currentNote.set("")
+        dispatchEvent("deselectAllNotes")
     }
 
-    async function selectNote(id: string) {
-        if ($currentNote == id) {
-            deselectAllNotes()
-            return
-        }
-
-        currentNote.set(id)
-
-        try {
-            const noteContent = await readNoteContent(id)
-            currentNoteText.set(noteContent)
-        } catch {
-            // TODO: handle this error
-        }
+    function selectNote(id: string) {
+        dispatchEvent("selectNote", { noteID: id })
     }
 </script>
 
 <Panel width="20%" onClick={deselectAllNotes}>
-    {#each itemList as item (item.id)}
-        {#if item.id == $currentNote}
+    {#each noteList as item (item.id)}
+        {#if item.id == selectedNoteID}
             <Item
                 title={item.title}
                 checked={true}
@@ -62,7 +39,7 @@
         {/if}
     {/each}
 
-    {#if !itemList.length}
+    {#if !noteList.length}
         <!-- TODO: Test this empty message in cypress -->
         <Empty
             message="Click the 'Create' button on the toolbar to create a new note"
