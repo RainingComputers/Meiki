@@ -67,12 +67,11 @@
         try {
             currentNoteText = await readNoteContent(id)
             workbench.setText(currentNoteText)
+            startNoteSync()
         } catch {
-            currentNoteText = undefined
+            deselectAllNotes()
             // TODO: handle this error
         }
-
-        startNoteSync()
     }
 
     function deselectAllNotes() {
