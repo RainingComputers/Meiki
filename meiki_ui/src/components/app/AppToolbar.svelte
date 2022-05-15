@@ -4,6 +4,7 @@
     import Toolbar from "$cmp/toolbar/Toolbar.svelte"
     import ToolbarButton from "$cmp/toolbar/Button.svelte"
     import ToolbarTitle from "$cmp/toolbar/Title.svelte"
+    import ToolbarGroup from "$cmp/toolbar/Group.svelte"
     import SidebarIcon from "$cmp/icons/SidebarIcon.svelte"
     import EditIcon from "$cmp/icons/EditIcon.svelte"
     import PreviewIcon from "$cmp/icons/PreviewIcon.svelte"
@@ -27,7 +28,7 @@
         <SidebarIcon />
     </ToolbarButton>
 
-    {#if showNoteActions}
+    <ToolbarGroup show={showNoteActions}>
         <span class="px-2" />
         <ToolbarButton checkable={true} name="edit" on:edit>
             <EditIcon />
@@ -38,7 +39,7 @@
         <ToolbarButton checkable={false} name="delete" on:delete>
             <TrashIcon />
         </ToolbarButton>
-    {/if}
+    </ToolbarGroup>
 
     <ToolbarTitle title="Meiki" />
 

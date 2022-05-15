@@ -9,7 +9,7 @@
     async function create(noteName: string) {
         try {
             const noteInfo = await createNote(noteName) // TODO select this note
-            dispatchEvent("noteCreated", {noteInfo})
+            dispatchEvent("noteCreated", { noteInfo })
         } catch {
             error = "Unable to create note, unable to connect to server"
         }
