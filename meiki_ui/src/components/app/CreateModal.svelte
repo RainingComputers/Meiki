@@ -8,8 +8,8 @@
 
     async function create(noteName: string) {
         try {
-            const noteInfo = await createNote(noteName)
-            dispatchEvent("noteCreated", { noteInfo })
+            const id = await createNote(noteName)
+            dispatchEvent("noteCreated", { id })
         } catch {
             error = "Unable to create note, unable to connect to server"
         }

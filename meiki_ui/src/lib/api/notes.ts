@@ -3,14 +3,18 @@ import { makeRequest } from "./request"
 export type NoteInfo = {
     id: string
     title: string
-    username: string
+}
+
+export type NoteContentInfo = {
+    title: string
+    content: string
 }
 
 export async function listNotes(): Promise<Array<NoteInfo>> {
     return await makeRequest("/notes/list", "GET")
 }
 
-export async function createNote(title: string): Promise<NoteInfo> {
+export async function createNote(title: string): Promise<string> {
     return await makeRequest("/notes/create", "POST", { title })
 }
 
@@ -22,6 +26,6 @@ export async function updateNote(id: string, content: string) {
     await makeRequest(`/notes/update/${id}`, "PUT", { content })
 }
 
-export async function readNoteContent(id: string): Promise<string> {
+export async function readNoteContent(id: string): Promise<NoteContentInfo> {
     return await makeRequest(`/notes/read/${id}`, "GET")
 }

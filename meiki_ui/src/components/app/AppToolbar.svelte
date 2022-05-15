@@ -13,6 +13,7 @@
     import ToolBarAction from "$cmp/toolbar/Action.svelte"
 
     export let showNoteActions: boolean = false
+    export let title: string
 
     const username = getUsername()
     const dispatchEvent = createEventDispatcher()
@@ -41,7 +42,7 @@
         </ToolbarButton>
     </ToolbarGroup>
 
-    <ToolbarTitle title="Meiki" />
+    <ToolbarTitle title={title || ""} />
 
     <ToolBarAction label="Create" onClick={() => dispatchEvent("create")} />
     <span class="px-0.5" />

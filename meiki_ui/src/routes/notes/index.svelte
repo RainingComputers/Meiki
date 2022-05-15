@@ -22,10 +22,11 @@
     let createModalOverlay: ModalOverlay
     let deleteModalOverlay: ModalOverlay
 
-    let currentNoteID: string = undefined
-    let currentNoteText: string = undefined
+    let currentNoteID: string
+    let currentNoteText: string
+    let currentNoteTitle: string
     let noteList: Array<NoteInfo> = []
-    let syncIntervalID: ReturnType<typeof setInterval> = undefined
+    let syncIntervalID: ReturnType<typeof setInterval>
 
     function toggleExplorer() {
         showExplorer = !showExplorer
@@ -63,9 +64,12 @@
         stopNoteSync()
 
         currentNoteID = id
+        currentNoteTitle = "testing"
 
         try {
-            currentNoteText = await readNoteContent(id)
+            const contentInfo = await readNoteContent(id)
+            currentNoteText = contentInfo.content
+            currentNoteTitle = contentInfo.title
             workbench.setText(currentNoteText)
             startNoteSync()
         } catch {
@@ -78,16 +82,17 @@
         stopNoteSync()
         currentNoteID = undefined
         currentNoteText = undefined
+        currentNoteTitle = undefined
     }
 
     function onTextChange(event: CustomEvent<{ text: string }>) {
         currentNoteText = event.detail.text
     }
 
-    function onNoteCreated(event: CustomEvent<{ noteInfo: NoteInfo }>) {
-        const noteInfo: NoteInfo = event.detail.noteInfo
+    function onNoteCreated(event: CustomEvent<{ id: string }>) {
+        const newNoteID: string = event.detail.id
         updateNoteList()
-        selectNote(noteInfo.id)
+        selectNote(newNoteID)
         workbench.enableEditor()
         createModalOverlay.closeModal()
     }
@@ -124,6 +129,7 @@
 
 <App>
     <AppToolbar
+        title={currentNoteTitle}
         showNoteActions={!!currentNoteID}
         on:sidebar={toggleExplorer}
         on:edit={() => {
