@@ -1,11 +1,16 @@
 /// <reference types="cypress"/>
 
+import { testAuthCreds } from "./testAuthCreds"
+
 describe("Layout Test", () => {
     beforeEach(() => {
-        cy.testRequest("DELETE", "/auth/delete", false)
+        cy.testRequest("DELETE", "/auth/delete", testAuthCreds, false)
         cy.clearLocalStorage()
-        cy.testRequest("POST", "/auth/create", true)
-        cy.testRequest("POST", "/auth/login", true)
+        cy.testRequest("POST", "/auth/create", testAuthCreds, true)
+        cy.testRequest("POST", "/auth/login", testAuthCreds, true)
+
+        // Create a test note
+        cy.testRequest("POST", "/notes/create", { title: "testNote" }, true)
     })
 
     it("App should have proper layout", () => {
