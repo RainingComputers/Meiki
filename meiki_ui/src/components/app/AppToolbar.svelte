@@ -19,6 +19,8 @@
     export let editorActive: boolean
     export let rendererActive: boolean
 
+    export let lastSavedTime: Date
+
     const username = getUsername()
     const dispatchEvent = createEventDispatcher()
 </script>
@@ -40,6 +42,7 @@
             <TrashIcon />
         </ToolbarButton>
     </ToolbarGroup>
+    <!-- <p>{lastSavedTime}</p> TODO: style this -->
 
     <ToolbarTitle title={title || ""} />
 

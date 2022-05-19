@@ -7,6 +7,7 @@
     import { goto } from "$app/navigation"
     import { readNoteContent, updateNote } from "$lib/api/notes"
     import { listNotes, NoteInfo } from "$lib/api/notes"
+    import { debounce } from "$lib/utils/debouncer"
     import App from "$cmp/App.svelte"
     import AppExplorer from "$cmp/app/AppExplorer.svelte"
     import AppToolbar from "$cmp/app/AppToolbar.svelte"
@@ -24,7 +25,7 @@
     let currentNote: NoteInfo
     let currentNoteText: string
     let noteList: Array<NoteInfo> = []
-    let syncIntervalID: ReturnType<typeof setInterval>
+    let lastSavedTime: Date
 
     let explorerActive: boolean = true
     let editorActive: boolean = true
@@ -46,32 +47,32 @@
         try {
             if (currentNote) {
                 await updateNote(currentNote.id, currentNoteText)
+                lastSavedTime = new Date()
             }
-        } catch {
+        } catch (err) {
+            console.log(err)
             // TODO: Error handling, how to show this toast
         }
     }
 
-    function startNoteSync() {
-        syncIntervalID = setInterval(async () => {
-            await syncCurrentNote()
-        }, NOTE_SYNC_INTERVAL)
+    const debouncedSyncNote = debounce(syncCurrentNote)
+    function onTextChange(event: CustomEvent<{ text: string }>) {
+        currentNoteText = event.detail.text
+        debouncedSyncNote()
     }
 
-    function stopNoteSync() {
-        if (syncIntervalID) clearInterval(syncIntervalID)
+    async function onFocusAway() {
+        await syncCurrentNote()
     }
 
     async function selectNote(id: string) {
-        stopNoteSync()
-
+        await onFocusAway()
         try {
             editorActive = true
             const noteContent = await readNoteContent(id)
             currentNote = { id, title: noteContent.title }
             currentNoteText = noteContent.content
             workbench.setText(noteContent.content)
-            startNoteSync()
         } catch (err) {
             console.log(err)
             deselectAllNotes()
@@ -79,13 +80,9 @@
         }
     }
 
-    function deselectAllNotes() {
-        stopNoteSync()
+    async function deselectAllNotes() {
+        await onFocusAway()
         currentNote = undefined
-    }
-
-    function onTextChange(event: CustomEvent<{ text: string }>) {
-        currentNoteText = event.detail.text
     }
 
     function onNoteCreated(event: CustomEvent<{ id: string }>) {
@@ -102,9 +99,21 @@
         deleteModal.closeModal()
     }
 
+    document.addEventListener(
+        "keydown",
+        function (e) {
+            if (
+                e.key === "s" &&
+                (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)
+            ) {
+                e.preventDefault()
+                syncCurrentNote()
+            }
+        },
+        false
+    )
     onMount(async () => {
         await updateNoteList()
-        startNoteSync()
     })
 </script>
 
@@ -133,6 +142,7 @@
         {explorerActive}
         {editorActive}
         {rendererActive}
+        {lastSavedTime}
         on:sidebar={toggleExplorer}
         on:edit={() => {
             editorActive = !editorActive
