@@ -31,10 +31,20 @@
 
     <ToolbarGroup show={showNoteActions}>
         <span class="px-2" />
-        <ToolbarButton checkable={true} name="edit" on:edit>
+        <ToolbarButton
+            checkable={true}
+            isButtonChecked={true}
+            name="edit"
+            on:edit
+        >
             <EditIcon />
         </ToolbarButton>
-        <ToolbarButton checkable={true} name="render" on:render>
+        <ToolbarButton
+            checkable={true}
+            isButtonChecked={true}
+            name="render"
+            on:render
+        >
             <PreviewIcon />
         </ToolbarButton>
         <ToolbarButton checkable={false} name="delete" on:delete>

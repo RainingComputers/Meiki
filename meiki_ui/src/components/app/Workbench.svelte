@@ -1,14 +1,14 @@
 <script context="module" lang="ts">
-    function getEditorClass(showEditor: boolean, showRenderer: boolean) {
-        if (showEditor && showRenderer) return "bg-green-100 flex-1"
-        if (showEditor && !showRenderer) return "bg-green-100 w-full"
+    function getEditorClass(editorActive: boolean, rendererActive: boolean) {
+        if (editorActive && rendererActive) return "bg-green-100 flex-1"
+        if (editorActive && !rendererActive) return "bg-green-100 w-full"
 
         return "hidden"
     }
 
-    function getRendererClass(showEditor: boolean, showRenderer: boolean) {
-        if (showEditor && showRenderer) return "bg-red-100 flex-1"
-        if (showRenderer && !showEditor) return "bg-red-100 w-3/4"
+    function getRendererClass(editorActive: boolean, rendererActive: boolean) {
+        if (editorActive && rendererActive) return "bg-red-100 flex-1"
+        if (rendererActive && !editorActive) return "bg-red-100 w-3/4"
 
         return "hidden"
     }
@@ -22,11 +22,11 @@
 
     export let fontSize = 18
     export let showEditorAndRenderer: boolean
+    export let editorActive: boolean
+    export let rendererActive: boolean
 
     let text = ""
     let editor: Editor
-    let showRenderer = false
-    let showEditor = false
     const dispatchEvent = createEventDispatcher()
 
     function onEditorChange() {
@@ -36,18 +36,6 @@
 
     function focus() {
         if (editor) editor.focus()
-    }
-
-    export function toggleRenderer() {
-        showRenderer = !showRenderer
-    }
-
-    export function toggleEditor() {
-        showEditor = !showEditor
-    }
-
-    export function enableEditor() {
-        showEditor = true
     }
 
     export function setText(newText: string) {
@@ -61,7 +49,7 @@
 <div class="flex flex-grow justify-center items-center">
     <div class="flex justify-center h-full w-full">
         {#if showEditorAndRenderer}
-            <div class={getEditorClass(showEditor, showRenderer)}>
+            <div class={getEditorClass(editorActive, rendererActive)}>
                 <Editor
                     bind:this={editor}
                     {fontSize}
@@ -70,7 +58,7 @@
                     initialText={text}
                 />
             </div>
-            <div class={getRendererClass(showEditor, showRenderer)}>
+            <div class={getRendererClass(editorActive, rendererActive)}>
                 <Renderer {text} />
             </div>
         {/if}

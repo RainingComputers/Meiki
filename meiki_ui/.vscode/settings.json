@@ -2,8 +2,8 @@
     "conventionalCommits.scopes": ["UI", "Backend"],
     "css.customData": [".vscode/css_custom_data.json"],
     "cSpell.ignoreWords": ["tailwindcss"],
-    "typescript.preferences.importModuleSpecifier": "relative",
-    "javascript.preferences.importModuleSpecifier": "relative",
+    "typescript.preferences.importModuleSpecifier": "non-relative",
+    "javascript.preferences.importModuleSpecifier": "non-relative",
     "cSpell.words": [
         "confirmpassword",
         "Creds",

@@ -28,6 +28,9 @@
     let noteList: Array<NoteInfo> = []
     let syncIntervalID: ReturnType<typeof setInterval>
 
+    let editorActive: boolean = true
+    let rendererActive: boolean = true
+
     function toggleExplorer() {
         showExplorer = !showExplorer
     }
@@ -93,7 +96,7 @@
         const newNoteID: string = event.detail.id
         updateNoteList()
         selectNote(newNoteID)
-        workbench.enableEditor()
+        editorActive = true
         createModalOverlay.closeModal()
     }
 
@@ -133,10 +136,10 @@
         showNoteActions={!!currentNoteID}
         on:sidebar={toggleExplorer}
         on:edit={() => {
-            workbench.toggleEditor()
+            editorActive = !editorActive
         }}
         on:render={() => {
-            workbench.toggleRenderer()
+            rendererActive = !rendererActive
         }}
         on:create={() => {
             createModalOverlay.showModal()
@@ -164,6 +167,8 @@
             bind:this={workbench}
             showEditorAndRenderer={!!currentNoteID}
             on:textChange={onTextChange}
+            {rendererActive}
+            {editorActive}
         />
     </div>
 </App>
