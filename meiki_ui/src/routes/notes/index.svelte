@@ -11,28 +11,27 @@
     import AppExplorer from "$cmp/app/AppExplorer.svelte"
     import AppToolbar from "$cmp/app/AppToolbar.svelte"
     import Workbench from "$cmp/app/Workbench.svelte"
-    import ModalOverlay from "$cmp/modal/ModalOverlay.svelte"
+    import Modal from "$cmp/modal/Modal.svelte"
     import LogoutModal from "$cmp/app/LogoutModal.svelte"
     import CreateModal from "$cmp/app/CreateModal.svelte"
     import DeleteModal from "$cmp/app/DeleteModal.svelte"
 
-    let showExplorer: boolean = true
     let workbench: Workbench
-    let logoutModalOverlay: ModalOverlay
-    let createModalOverlay: ModalOverlay
-    let deleteModalOverlay: ModalOverlay
+    let logoutModal: Modal
+    let createModal: Modal
+    let deleteModal: Modal
 
-    let currentNoteID: string
+    let currentNote: NoteInfo
     let currentNoteText: string
-    let currentNoteTitle: string
     let noteList: Array<NoteInfo> = []
     let syncIntervalID: ReturnType<typeof setInterval>
 
+    let explorerActive: boolean = true
     let editorActive: boolean = true
     let rendererActive: boolean = true
 
     function toggleExplorer() {
-        showExplorer = !showExplorer
+        explorerActive = !explorerActive
     }
 
     async function updateNoteList() {
@@ -45,8 +44,8 @@
 
     async function syncCurrentNote() {
         try {
-            if (currentNoteID) {
-                await updateNote(currentNoteID, currentNoteText)
+            if (currentNote) {
+                await updateNote(currentNote.id, currentNoteText)
             }
         } catch {
             // TODO: Error handling, how to show this toast
@@ -66,16 +65,15 @@
     async function selectNote(id: string) {
         stopNoteSync()
 
-        currentNoteID = id
-        currentNoteTitle = "testing"
-
         try {
-            const contentInfo = await readNoteContent(id)
-            currentNoteText = contentInfo.content
-            currentNoteTitle = contentInfo.title
-            workbench.setText(currentNoteText)
+            editorActive = true
+            const noteContent = await readNoteContent(id)
+            currentNote = { id, title: noteContent.title }
+            currentNoteText = noteContent.content
+            workbench.setText(noteContent.content)
             startNoteSync()
-        } catch {
+        } catch (err) {
+            console.log(err)
             deselectAllNotes()
             // TODO: handle this error
         }
@@ -83,9 +81,7 @@
 
     function deselectAllNotes() {
         stopNoteSync()
-        currentNoteID = undefined
-        currentNoteText = undefined
-        currentNoteTitle = undefined
+        currentNote = undefined
     }
 
     function onTextChange(event: CustomEvent<{ text: string }>) {
@@ -97,13 +93,13 @@
         updateNoteList()
         selectNote(newNoteID)
         editorActive = true
-        createModalOverlay.closeModal()
+        createModal.closeModal()
     }
 
     function onNoteDeleted() {
         updateNoteList()
         deselectAllNotes()
-        deleteModalOverlay.closeModal()
+        deleteModal.closeModal()
     }
 
     onMount(async () => {
@@ -112,28 +108,31 @@
     })
 </script>
 
-<ModalOverlay bind:this={logoutModalOverlay}>
+<Modal bind:this={logoutModal}>
     <LogoutModal on:loggedOut={() => goto("/login")} />
-</ModalOverlay>
+</Modal>
 
-<ModalOverlay bind:this={deleteModalOverlay}>
+<Modal bind:this={deleteModal}>
     <DeleteModal
-        noteID={currentNoteID}
+        noteInfo={currentNote}
         on:deleted={onNoteDeleted}
         on:deleteCancelled={() => {
-            deleteModalOverlay.closeModal()
+            deleteModal.closeModal()
         }}
     />
-</ModalOverlay>
+</Modal>
 
-<ModalOverlay bind:this={createModalOverlay}>
+<Modal bind:this={createModal}>
     <CreateModal on:noteCreated={onNoteCreated} />
-</ModalOverlay>
+</Modal>
 
 <App>
     <AppToolbar
-        title={currentNoteTitle}
-        showNoteActions={!!currentNoteID}
+        title={currentNote?.title || ""}
+        showNoteActions={!!currentNote}
+        {explorerActive}
+        {editorActive}
+        {rendererActive}
         on:sidebar={toggleExplorer}
         on:edit={() => {
             editorActive = !editorActive
@@ -142,20 +141,20 @@
             rendererActive = !rendererActive
         }}
         on:create={() => {
-            createModalOverlay.showModal()
+            createModal.showModal()
         }}
         on:profile={() => {
-            logoutModalOverlay.showModal()
+            logoutModal.showModal()
         }}
         on:delete={() => {
-            deleteModalOverlay.showModal()
+            deleteModal.showModal()
         }}
     />
     <div class="flex flex-row flex-grow w-full">
-        {#if showExplorer}
+        {#if explorerActive}
             <AppExplorer
                 {noteList}
-                selectedNoteID={currentNoteID}
+                selectedNoteID={currentNote?.id}
                 on:selectNote={(event) => {
                     selectNote(event.detail.noteID)
                 }}
@@ -165,7 +164,7 @@
 
         <Workbench
             bind:this={workbench}
-            showEditorAndRenderer={!!currentNoteID}
+            showEditorAndRenderer={!!currentNote}
             on:textChange={onTextChange}
             {rendererActive}
             {editorActive}

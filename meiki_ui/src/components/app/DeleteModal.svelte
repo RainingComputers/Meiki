@@ -1,15 +1,15 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte"
-    import { deleteNote } from "$lib/api/notes"
+    import { deleteNote, NoteInfo } from "$lib/api/notes"
     import ConfirmModal from "$cmp/modal/ConfirmModal.svelte"
 
-    export let noteID: string
+    export let noteInfo: NoteInfo
     export let error: string = ""
     const dispatchEvent = createEventDispatcher()
 
     async function deleteCurrentNote() {
         try {
-            await deleteNote(noteID)
+            await deleteNote(noteInfo.id)
             dispatchEvent("deleted")
         } catch {
             // TODO: Error handling
@@ -24,7 +24,7 @@
 <!-- TODO: note title here in the are you sure message -->
 <ConfirmModal
     {error}
-    message={`Are you sure you want to delete ${noteID}?`}
+    message={`Are you sure you want to delete ${noteInfo.title}?`}
     onYes={deleteCurrentNote}
     onNo={cancelDelete}
 />

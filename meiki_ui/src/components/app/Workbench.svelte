@@ -40,7 +40,9 @@
 
     export function setText(newText: string) {
         text = newText
-        editor.setValue(newText)
+        if (editor) {
+            editor.setValue(newText)
+        }
     }
 
     afterUpdate(focus)
