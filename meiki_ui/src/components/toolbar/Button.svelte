@@ -1,7 +1,6 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte"
 
-    export let checkable: boolean = false
     export let name: string = ""
     export let label: string = ""
     export let isButtonChecked: boolean = false
@@ -9,7 +8,6 @@
     const dispatch = createEventDispatcher()
 
     function onClick() {
-        if (checkable) isButtonChecked = !isButtonChecked
         dispatch(name)
     }
 
@@ -20,7 +18,7 @@
 
 <div
     class="flex gap-2 flex-row items-center hover:bg-slate-600 rounded-xl p-2"
-    class:isChecked={isButtonChecked && checkable}
+    class:isChecked={isButtonChecked}
     on:click={onClick}
     data-cy={name}
 >

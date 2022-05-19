@@ -12,42 +12,31 @@
     import UserIcon from "$cmp/icons/UserIcon.svelte"
     import ToolBarAction from "$cmp/toolbar/Action.svelte"
 
-    export let showNoteActions: boolean = false
+    export let showNoteActions: boolean
     export let title: string
+
+    export let explorerActive: boolean
+    export let editorActive: boolean
+    export let rendererActive: boolean
 
     const username = getUsername()
     const dispatchEvent = createEventDispatcher()
 </script>
 
 <Toolbar>
-    <ToolbarButton
-        checkable={true}
-        isButtonChecked={true}
-        name="sidebar"
-        on:sidebar
-    >
+    <ToolbarButton isButtonChecked={explorerActive} name="sidebar" on:sidebar>
         <SidebarIcon />
     </ToolbarButton>
 
     <ToolbarGroup show={showNoteActions}>
         <span class="px-2" />
-        <ToolbarButton
-            checkable={true}
-            isButtonChecked={true}
-            name="edit"
-            on:edit
-        >
+        <ToolbarButton isButtonChecked={editorActive} name="edit" on:edit>
             <EditIcon />
         </ToolbarButton>
-        <ToolbarButton
-            checkable={true}
-            isButtonChecked={true}
-            name="render"
-            on:render
-        >
+        <ToolbarButton isButtonChecked={rendererActive} name="render" on:render>
             <PreviewIcon />
         </ToolbarButton>
-        <ToolbarButton checkable={false} name="delete" on:delete>
+        <ToolbarButton name="delete" on:delete>
             <TrashIcon />
         </ToolbarButton>
     </ToolbarGroup>
@@ -56,7 +45,7 @@
 
     <ToolBarAction label="Create" onClick={() => dispatchEvent("create")} />
     <span class="px-0.5" />
-    <ToolbarButton checkable={false} name="profile" label={username} on:profile>
+    <ToolbarButton name="profile" label={username} on:profile>
         <UserIcon />
     </ToolbarButton>
 </Toolbar>
