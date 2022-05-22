@@ -66,6 +66,13 @@ describe("UserFlow Test", () => {
         /*TODO*/
     })
 
+    it("Should error out with unable to connect to server on account creation", () => {
+        /*TODO*/
+        // use cy.intercept to simulate failure on /auth/create endpoint
+        // assert error
+        // cleanup cy.intercept
+    })
+
     it("Should show invalid username error on login", () => {
         /*TODO*/
     })
@@ -76,5 +83,12 @@ describe("UserFlow Test", () => {
 
     it("Should show password mismatch on login", () => {
         /*TODO*/
+    })
+
+    it("Should error out with unable to connect to server on login", () => {
+        /*TODO*/
+        // use cy.intercept to simulate failure on /auth/login endpoint
+        // assert error
+        // cleanup cy.intercept
     })
 })

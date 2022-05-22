@@ -25,4 +25,15 @@ describe("Delete note flow", () => {
         // click outside the modal
         // assert note is present in app explorer
     })
+
+    it("Should error out with unable to connect to server", () => {
+        /*TODO*/
+        // use cy.intercept to simulate failure on /notes/delete endpoint
+        // create test note
+        // select the test note
+        // click the delete button
+        // click the yes button
+        // assert error
+        // cleanup cy.intercept
+    })
 })

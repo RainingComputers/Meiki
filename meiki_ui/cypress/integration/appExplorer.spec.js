@@ -21,4 +21,11 @@ describe("App explorer flow", () => {
         // select the panel
         // assert editor and renderer are not visible
     })
+
+    it("Should error out with unable to connect to server", () => {
+        /*TODO*/
+        // use cy.intercept to simulate failure on /notes/list endpoint
+        // assert error
+        // cleanup cy.intercept
+    })
 })
