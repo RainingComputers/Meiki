@@ -2,4 +2,4 @@
     export let text: string = ""
 </script>
 
-<pre class="p-2">{text}</pre>
+<pre data-cy="renderer" class="p-2">{text}</pre>

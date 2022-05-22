@@ -41,4 +41,4 @@
     }
 </script>
 
-<div class="w-full h-full" id={editorId} />
+<div data-cy="editor" class="w-full h-full" id={editorId} />
