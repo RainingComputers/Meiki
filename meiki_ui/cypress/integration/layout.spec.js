@@ -73,5 +73,7 @@ describe("Layout Test", () => {
         // both editor and renderer should be visible
         cy.get("[data-cy='renderer']").should("be.visible")
         cy.get("[data-cy='editor']").should("be.visible")
+
+        // TODO: figure out a way to clean up all notes, add a testing endpoint only available when DEBUG=true env is set?
     })
 })

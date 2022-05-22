@@ -49,4 +49,32 @@ describe("UserFlow Test", () => {
         cy.get("#username").should("be.visible")
         cy.get("#password").should("be.visible")
     })
+
+    it("Should show password do not match if confirm field does not match", () => {
+        /*TODO*/
+    })
+
+    it("Should show duplicate user error on account creation", () => {
+        /*TODO*/
+    })
+
+    it("Should show invalid username error on account creation", () => {
+        /*TODO*/
+    })
+
+    it("Should show invalid password error on account creation", () => {
+        /*TODO*/
+    })
+
+    it("Should show invalid username error on login", () => {
+        /*TODO*/
+    })
+
+    it("Should show invalid password error on login", () => {
+        /*TODO*/
+    })
+
+    it("Should show password mismatch on login", () => {
+        /*TODO*/
+    })
 })

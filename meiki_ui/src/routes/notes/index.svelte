@@ -3,6 +3,8 @@
 </script>
 
 <script lang="ts">
+    // TODO: extract sync logic and test it
+
     import { onMount } from "svelte"
     import { goto } from "$app/navigation"
     import { readNoteContent, updateNote } from "$lib/api/notes"
