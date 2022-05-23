@@ -1,11 +1,8 @@
 /// <reference types="cypress"/>
 
-import { testAuthCreds } from "./testAuthCreds"
-
 describe("UserFlow Test", () => {
     before(() => {
-        cy.testRequest("DELETE", "/auth/delete", testAuthCreds, false)
-        cy.clearLocalStorage()
+        cy.cleanUsers()
     })
 
     it("Login flow works fully", () => {

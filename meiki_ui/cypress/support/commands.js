@@ -1,5 +1,10 @@
 const serverUrl = "http://localhost:8080"
 
+const testAuthCreds = {
+    username: "shnoo",
+    password: "thisisveryunsafe",
+}
+
 function getHeaders() {
     return {
         "X-Username": localStorage.getItem("username"),
@@ -38,4 +43,21 @@ Cypress.Commands.add("cleanNotes", () => {
             cy.request(options)
         })
     })
+})
+
+Cypress.Commands.add("cleanUsers", () => {
+    cy.testRequest("DELETE", "/auth/delete", testAuthCreds, false)
+    cy.clearLocalStorage()
+})
+
+Cypress.Commands.add("login", () => {
+    cy.testRequest("DELETE", "/auth/delete", testAuthCreds, false)
+    cy.clearLocalStorage()
+    cy.testRequest("POST", "/auth/create", testAuthCreds, true)
+    cy.testRequest("POST", "/auth/login", testAuthCreds, true)
+    cy.cleanNotes()
+})
+
+Cypress.Commands.add("createNote", (title) => {
+    cy.testRequest("POST", "/notes/create", { title })
 })
