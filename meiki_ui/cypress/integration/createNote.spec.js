@@ -8,7 +8,7 @@ describe("Create note", () => {
         cy.visit("/")
 
         cy.contains("Create").click()
-        cy.get("#enternotename").type("testNote")
+        cy.get("#enterNoteName").type("testNote")
         cy.contains("Create note").click()
         cy.contains("testNote").should("exist")
     })
@@ -17,7 +17,7 @@ describe("Create note", () => {
         cy.visit("/")
 
         cy.contains("Create").click()
-        cy.get("#enternotename").type("testNote")
+        cy.get("#enterNoteName").type("testNote")
         cy.get("[data-cy='modalOverlay']").click()
         cy.contains("testNote").should("not.exist")
     })
@@ -27,7 +27,7 @@ describe("Create note", () => {
         cy.simulateServerDown("/notes/create")
 
         cy.contains("Create").click()
-        cy.get("#enternotename").type("testNote")
+        cy.get("#enterNoteName").type("testNote")
         cy.contains("Create note").click()
 
         cy.contains(
