@@ -97,7 +97,7 @@ describe("UserFlow Test", () => {
     })
 
     it("Error out with unable to connect to server on create", () => {
-        cy.simulateServerDown()
+        cy.simulateServerDown("/auth/create")
         cy.visit("/create")
 
         cy.get("#username").type("alex")
@@ -146,7 +146,7 @@ describe("UserFlow Test", () => {
     })
 
     it("Error out with unable to connect to server on login", () => {
-        cy.simulateServerDown()
+        cy.simulateServerDown("/auth/login")
         cy.visit("/login")
 
         cy.get("#username").type("alex")

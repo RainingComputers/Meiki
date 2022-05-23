@@ -70,11 +70,8 @@ Cypress.Commands.add("createUser", (username, password) => {
     cy.testRequest("POST", "/auth/create", creds, true)
 })
 
-Cypress.Commands.add("simulateServerDown", () => {
-    cy.intercept({ url: "/auth/*" }, (req) => {
-        req.destroy()
-    })
-    cy.intercept({ url: "/notes/*" }, (req) => {
+Cypress.Commands.add("simulateServerDown", (endpoint) => {
+    cy.intercept(endpoint, (req) => {
         req.destroy()
     })
 })

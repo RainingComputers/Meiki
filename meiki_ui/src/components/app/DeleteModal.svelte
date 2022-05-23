@@ -12,7 +12,7 @@
             await deleteNote(noteInfo.id)
             dispatchEvent("deleted")
         } catch {
-            // TODO: Error handling
+            error = "Unable to delete note, unable to connect to server"
         }
     }
 
