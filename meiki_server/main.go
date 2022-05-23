@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"os"
 	"time"
 
 	"github.com/RainingComputers/Meiki/auth"
@@ -14,8 +15,16 @@ import (
 	"go.uber.org/zap"
 )
 
+func getEnv(key, defaultValue string) string {
+	value := os.Getenv(key)
+	if len(value) == 0 {
+		return defaultValue
+	}
+	return value
+}
+
 func run() error {
-	// TODO: Make config env variables and use same db for auth and notes
+	databaseName := getEnv("MEIKI_DATABASE_NAME", "meiki")
 
 	ctx := context.Background()
 
@@ -26,7 +35,7 @@ func run() error {
 		return err
 	}
 
-	meikiDB := client.Database("meiki")
+	meikiDB := client.Database(databaseName)
 	userColl := meikiDB.Collection("users")
 	tokenColl := meikiDB.Collection("tokens")
 	notesColl := meikiDB.Collection("notes")
