@@ -61,3 +61,20 @@ Cypress.Commands.add("login", () => {
 Cypress.Commands.add("createNote", (title) => {
     cy.testRequest("POST", "/notes/create", { title })
 })
+
+Cypress.Commands.add("createUser", (username, password) => {
+    const creds = { username, password }
+
+    cy.testRequest("DELETE", "/auth/delete", creds, false)
+    cy.clearLocalStorage()
+    cy.testRequest("POST", "/auth/create", creds, true)
+})
+
+Cypress.Commands.add("simulateServerDown", () => {
+    cy.intercept({ url: "/auth/*" }, (req) => {
+        req.destroy()
+    })
+    cy.intercept({ url: "/notes/*" }, (req) => {
+        req.destroy()
+    })
+})
