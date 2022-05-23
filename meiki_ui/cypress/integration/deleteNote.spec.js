@@ -1,3 +1,5 @@
+/// <reference types="cypress"/>
+
 describe("Delete note", () => {
     beforeEach(() => {
         cy.login()

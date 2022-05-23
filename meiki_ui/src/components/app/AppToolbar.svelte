@@ -42,7 +42,7 @@
             <TrashIcon />
         </ToolbarButton>
     </ToolbarGroup>
-    <!-- <p>{lastSavedTime}</p> TODO: style this -->
+    <!-- TODO: style this  <p>{lastSavedTime}</p>-->
 
     <ToolbarTitle title={title || ""} />
 
