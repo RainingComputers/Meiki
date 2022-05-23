@@ -1,4 +1,8 @@
 describe("App explorer flow", () => {
+    beforeEach(() => {
+        cy.login()
+    })
+
     it("App explorer should show empty notes watermark if non notes are present", () => {
         /* TODO */
     })

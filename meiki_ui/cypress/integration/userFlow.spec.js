@@ -1,7 +1,7 @@
 /// <reference types="cypress"/>
 
 describe("UserFlow Test", () => {
-    before(() => {
+    beforeEach(() => {
         cy.cleanUsers()
     })
 
@@ -23,7 +23,7 @@ describe("UserFlow Test", () => {
         cy.get("#confirmpassword").type("thisisveryunsafe")
         cy.get("Button").click()
 
-        // goes to account creation success page
+        // goes to create success page
         cy.contains("Your account has successfully been created").should(
             "be.visible"
         )
@@ -47,45 +47,114 @@ describe("UserFlow Test", () => {
         cy.get("#password").should("be.visible")
     })
 
-    it("Should show password do not match if confirm field does not match", () => {
-        /*TODO*/
+    it("Show password do not match if confirm field does not match", () => {
+        cy.visit("/create")
+
+        cy.get("#username").type("shnoo")
+        cy.get("#password").type("password")
+        cy.get("#confirmpassword").type("doesNotMatch")
+        cy.get("Button").click()
+
+        cy.contains("Passwords do not match").should("be.visible")
     })
 
-    it("Should show duplicate user error on account creation", () => {
-        /*TODO*/
+    it("Show duplicate user error on create", () => {
+        cy.createUser("alex", "password")
+        cy.visit("/create")
+
+        cy.get("#username").type("alex")
+        cy.get("#password").type("password")
+        cy.get("#confirmpassword").type("password")
+        cy.get("Button").click()
+
+        cy.contains("User already exists").should("be.visible")
     })
 
-    it("Should show invalid username error on account creation", () => {
-        /*TODO*/
+    it("Show invalid username error on create", () => {
+        cy.visit("/create")
+
+        cy.get("#username").type("alex**")
+        cy.get("#password").type("password")
+        cy.get("#confirmpassword").type("password")
+        cy.get("Button").click()
+
+        cy.contains(
+            "Username should not contain any special characters other than '-' and '_'"
+        ).should("be.visible")
     })
 
-    it("Should show invalid password error on account creation", () => {
-        /*TODO*/
+    it("Show invalid password error on create", () => {
+        cy.visit("/create")
+
+        cy.get("#username").type("alex")
+        cy.get("#password").type("123")
+        cy.get("#confirmpassword").type("123")
+        cy.get("Button").click()
+
+        cy.contains("Password should have minimum five characters").should(
+            "be.visible"
+        )
     })
 
-    it("Should error out with unable to connect to server on account creation", () => {
-        /*TODO*/
-        // use cy.intercept to simulate failure on /auth/create endpoint
-        // assert error
-        // cleanup cy.intercept
+    it("Error out with unable to connect to server on create", () => {
+        cy.simulateServerDown()
+        cy.visit("/create")
+
+        cy.get("#username").type("alex")
+        cy.get("#password").type("password")
+        cy.get("#confirmpassword").type("password")
+        cy.get("Button").click()
+
+        cy.contains(
+            "An error has occurred while creating the account, unable to connect to server"
+        ).should("be.visible")
     })
 
-    it("Should show invalid username error on login", () => {
-        /*TODO*/
+    it("Show invalid username error on login", () => {
+        cy.visit("/login")
+
+        cy.get("#username").type("alex**")
+        cy.get("#password").type("password")
+        cy.get("Button").click()
+
+        cy.contains(
+            "Username should not contain any special characters other than '-' and '_'"
+        ).should("be.visible")
     })
 
-    it("Should show invalid password error on login", () => {
-        /*TODO*/
+    it("Show invalid password error on login", () => {
+        cy.visit("/login")
+
+        cy.get("#username").type("alex")
+        cy.get("#password").type("123")
+        cy.get("Button").click()
+
+        cy.contains("Password should have minimum five characters").should(
+            "be.visible"
+        )
     })
 
-    it("Should show password mismatch on login", () => {
-        /*TODO*/
+    it("Show password mismatch on login", () => {
+        cy.createUser("alex", "password")
+        cy.visit("/login")
+
+        cy.get("#username").type("alex")
+        cy.get("#password").type("passwordMismatch")
+        cy.get("Button").click()
+
+        cy.contains("Password does not match").should("be.visible")
     })
 
-    it("Should error out with unable to connect to server on login", () => {
-        /*TODO*/
-        // use cy.intercept to simulate failure on /auth/login endpoint
-        // assert error
-        // cleanup cy.intercept
+    it("Error out with unable to connect to server on login", () => {
+        cy.simulateServerDown()
+        cy.visit("/login")
+
+        cy.get("#username").type("alex")
+        cy.get("#password").type("password")
+        cy.get("Button").click()
+
+        cy.contains(
+            "An error has occurred while logging in, unable to connect to server"
+        ).should("be.visible")
     })
 })
