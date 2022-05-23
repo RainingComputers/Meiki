@@ -15,16 +15,6 @@ describe("Layout Test", () => {
         cy.get("[data-cy='explorer']").should("be.visible")
     })
 
-    it("Explorer should toggle in and out", () => {
-        cy.visit("/notes")
-
-        cy.get("[data-cy='explorer']").should("be.visible")
-        cy.get("[data-cy='sidebar']").should("have.class", "isChecked").click()
-        cy.get("[data-cy='explorer']").should("not.exist")
-        cy.get("[data-cy='sidebar']").click()
-        cy.get("[data-cy='explorer']").should("be.visible")
-    })
-
     it("Workbench show show rendered and editor accordingly", () => {
         cy.visit("/notes")
 
