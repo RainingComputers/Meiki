@@ -1,14 +1,8 @@
 /// <reference types="cypress"/>
 
-import { testAuthCreds } from "./testAuthCreds"
-
 describe("Layout Test", () => {
     beforeEach(() => {
-        cy.testRequest("DELETE", "/auth/delete", testAuthCreds, false)
-        cy.clearLocalStorage()
-        cy.testRequest("POST", "/auth/create", testAuthCreds, true)
-        cy.testRequest("POST", "/auth/login", testAuthCreds, true)
-        cy.cleanNotes()
+        cy.login()
     })
 
     afterEach(() => {
@@ -40,7 +34,7 @@ describe("Layout Test", () => {
 
         // create note
         // separate test for create workflow notes, testing only workbench logic
-        cy.testRequest("POST", "/notes/create", { title: "testing" })
+        cy.createNote("testing")
 
         // select a note
         cy.contains("testing").click()

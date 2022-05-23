@@ -1,11 +1,8 @@
 /// <reference types="cypress"/>
 
-import { testAuthCreds } from "./testAuthCreds"
-
 describe("HeroFlow Test", () => {
     beforeEach(() => {
-        cy.testRequest("DELETE", "/auth/delete", testAuthCreds, false)
-        cy.clearLocalStorage()
+        cy.cleanUsers()
     })
 
     it("Hero page goes to create page and login page", () => {
@@ -24,8 +21,7 @@ describe("HeroFlow Test", () => {
     })
 
     it("Hero page redirects to app if logged in", () => {
-        cy.testRequest("POST", "/auth/create", testAuthCreds, true)
-        cy.testRequest("POST", "/auth/login", testAuthCreds, true)
+        cy.login()
         cy.visit("/")
 
         // goes to app if already logged in
