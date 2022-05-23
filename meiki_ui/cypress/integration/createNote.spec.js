@@ -1,3 +1,5 @@
+/// <reference types="cypress"/>
+
 describe("Create note", () => {
     beforeEach(() => {
         cy.login()

@@ -21,7 +21,6 @@
     }
 </script>
 
-<!-- TODO: note title here in the are you sure message -->
 <ConfirmModal
     {error}
     message={`Are you sure you want to delete ${noteInfo.title}?`}
