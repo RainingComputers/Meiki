@@ -1,10 +1,17 @@
+/// <reference types="cypress"/>
+
 describe("App explorer", () => {
     beforeEach(() => {
         cy.login()
+        cy.cleanNotes()
     })
 
     it("App explorer should show empty notes watermark if non notes are present", () => {
-        /* TODO */
+        cy.visit("/")
+
+        cy.contains(
+            "Click the 'Create' button on the toolbar to create a new note"
+        ).should("exist")
     })
 
     it("App explorer should select appropriate note", () => {
