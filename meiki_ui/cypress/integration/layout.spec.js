@@ -8,6 +8,11 @@ describe("Layout Test", () => {
         cy.clearLocalStorage()
         cy.testRequest("POST", "/auth/create", testAuthCreds, true)
         cy.testRequest("POST", "/auth/login", testAuthCreds, true)
+        cy.cleanNotes()
+    })
+
+    afterEach(() => {
+        cy.cleanNotes()
     })
 
     it("App should have proper layout", () => {
@@ -73,7 +78,5 @@ describe("Layout Test", () => {
         // both editor and renderer should be visible
         cy.get("[data-cy='renderer']").should("be.visible")
         cy.get("[data-cy='editor']").should("be.visible")
-
-        // TODO: figure out a way to clean up all notes, add a testing endpoint only available when DEBUG=true env is set?
     })
 })
