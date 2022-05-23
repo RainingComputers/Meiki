@@ -1,10 +1,7 @@
 describe("App explorer flow", () => {
-    it(
-        ("App explorer should show empty notes watermark if non notes are present",
-        () => {
-            /* TODO */
-        })
-    )
+    it("App explorer should show empty notes watermark if non notes are present", () => {
+        /* TODO */
+    })
 
     it("App explorer should select appropriate note", () => {
         /* TODO */
