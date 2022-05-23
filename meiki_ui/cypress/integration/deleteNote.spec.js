@@ -1,4 +1,4 @@
-describe("Delete note flow", () => {
+describe("Delete note", () => {
     beforeEach(() => {
         cy.login()
         cy.cleanNotes()
@@ -36,8 +36,8 @@ describe("Delete note flow", () => {
     })
 
     it("Error out with unable to connect to server", () => {
-        cy.simulateServerDown("/notes/delete/*")
         cy.visit("/")
+        cy.simulateServerDown("/notes/delete/*")
         cy.createNote("testNote")
 
         cy.contains("testNote").click()

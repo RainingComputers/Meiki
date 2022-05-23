@@ -1,6 +1,6 @@
 /// <reference types="cypress"/>
 
-describe("HeroFlow Test", () => {
+describe("Hero page", () => {
     beforeEach(() => {
         cy.cleanUsers()
     })

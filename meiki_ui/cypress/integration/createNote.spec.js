@@ -1,27 +1,37 @@
-describe("Create note flow", () => {
+describe("Create note", () => {
+    beforeEach(() => {
+        cy.login()
+        cy.cleanNotes()
+    })
+
     it("Create note flow", () => {
-        /*TODO*/
-        // click create button
-        // type note name
-        // click create button
-        // assert note is present in app explorer
+        cy.visit("/")
+
+        cy.contains("Create").click()
+        cy.get("#enternotename").type("testNote")
+        cy.contains("Create note").click()
+        cy.contains("testNote").should("exist")
     })
 
-    it("Should not create note if clicked outside modal", () => {
-        /*TODO*/
-        // click create button
-        // type note name
-        // click outside the modal
-        // assert note is not present in app explorer
+    it("Do not create note if clicked outside modal", () => {
+        cy.visit("/")
+
+        cy.contains("Create").click()
+        cy.get("#enternotename").type("testNote")
+        cy.get("[data-cy='modalOverlay']").click()
+        cy.contains("testNote").should("not.exist")
     })
 
-    it("Should error out with unable to connect to server", () => {
-        /*TODO*/
-        // use cy.intercept to simulate failure on /notes/create endpoint
-        // click create button
-        // type note name
-        // click create button
-        // assert error
-        // cleanup cy.intercept
+    it("Error out with unable to connect to server", () => {
+        cy.visit("/")
+        cy.simulateServerDown("/notes/create")
+
+        cy.contains("Create").click()
+        cy.get("#enternotename").type("testNote")
+        cy.contains("Create note").click()
+
+        cy.contains(
+            "Unable to create note, unable to connect to server"
+        ).should("exist")
     })
 })
