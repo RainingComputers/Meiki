@@ -1,4 +1,4 @@
-describe("App explorer flow", () => {
+describe("App explorer", () => {
     beforeEach(() => {
         cy.login()
     })

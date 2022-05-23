@@ -1,6 +1,6 @@
 /// <reference types="cypress"/>
 
-describe("UserFlow Test", () => {
+describe("User account creation and login", () => {
     beforeEach(() => {
         cy.cleanUsers()
     })
@@ -146,8 +146,8 @@ describe("UserFlow Test", () => {
     })
 
     it("Error out with unable to connect to server on login", () => {
-        cy.simulateServerDown("/auth/login")
         cy.visit("/login")
+        cy.simulateServerDown("/auth/login")
 
         cy.get("#username").type("alex")
         cy.get("#password").type("password")

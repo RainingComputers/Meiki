@@ -1,11 +1,8 @@
 /// <reference types="cypress"/>
 
-describe("Layout Test", () => {
+describe("Workbench", () => {
     beforeEach(() => {
         cy.login()
-    })
-
-    afterEach(() => {
         cy.cleanNotes()
     })
 

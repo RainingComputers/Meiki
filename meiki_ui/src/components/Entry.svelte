@@ -6,7 +6,7 @@
     let inputEl: HTMLInputElement
     const type: string = password ? "password" : "text"
 
-    const id: string = label.toLowerCase().replace(" ", "")
+    const id: string = label.toLowerCase().split(" ").join("")
 
     function onKeyDown(event: any) {
         if (!onEnter) return
