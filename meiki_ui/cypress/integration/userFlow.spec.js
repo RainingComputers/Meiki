@@ -20,7 +20,7 @@ describe("User account creation and login", () => {
             .and("be.visible")
         cy.get("#username").type("shnoo")
         cy.get("#password").type("thisisveryunsafe")
-        cy.get("#confirmpassword").type("thisisveryunsafe")
+        cy.get("#confirmPassword").type("thisisveryunsafe")
         cy.get("Button").click()
 
         // goes to create success page
@@ -52,7 +52,7 @@ describe("User account creation and login", () => {
 
         cy.get("#username").type("shnoo")
         cy.get("#password").type("password")
-        cy.get("#confirmpassword").type("doesNotMatch")
+        cy.get("#confirmPassword").type("doesNotMatch")
         cy.get("Button").click()
 
         cy.contains("Passwords do not match").should("be.visible")
@@ -64,7 +64,7 @@ describe("User account creation and login", () => {
 
         cy.get("#username").type("alex")
         cy.get("#password").type("password")
-        cy.get("#confirmpassword").type("password")
+        cy.get("#confirmPassword").type("password")
         cy.get("Button").click()
 
         cy.contains("User already exists").should("be.visible")
@@ -75,7 +75,7 @@ describe("User account creation and login", () => {
 
         cy.get("#username").type("alex**")
         cy.get("#password").type("password")
-        cy.get("#confirmpassword").type("password")
+        cy.get("#confirmPassword").type("password")
         cy.get("Button").click()
 
         cy.contains(
@@ -88,7 +88,7 @@ describe("User account creation and login", () => {
 
         cy.get("#username").type("alex")
         cy.get("#password").type("123")
-        cy.get("#confirmpassword").type("123")
+        cy.get("#confirmPassword").type("123")
         cy.get("Button").click()
 
         cy.contains("Password should have minimum five characters").should(
@@ -102,7 +102,7 @@ describe("User account creation and login", () => {
 
         cy.get("#username").type("alex")
         cy.get("#password").type("password")
-        cy.get("#confirmpassword").type("password")
+        cy.get("#confirmPassword").type("password")
         cy.get("Button").click()
 
         cy.contains(

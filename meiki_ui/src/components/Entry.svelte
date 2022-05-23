@@ -1,3 +1,17 @@
+<script context="module" lang="ts">
+    function toCamelCase(spaceSeperatedString: string) {
+        const words = spaceSeperatedString.toLowerCase().split(" ")
+
+        const camelWords = words.map((word, index) => {
+            if (index == 0) return word.toLowerCase()
+
+            return word[0].toUpperCase() + word.slice(1)
+        })
+
+        return camelWords.join("")
+    }
+</script>
+
 <script lang="ts">
     export let label: string
     export let password: boolean = false
@@ -6,7 +20,7 @@
     let inputEl: HTMLInputElement
     const type: string = password ? "password" : "text"
 
-    const id: string = label.toLowerCase().split(" ").join("")
+    const id: string = toCamelCase(label)
 
     function onKeyDown(event: any) {
         if (!onEnter) return
