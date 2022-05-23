@@ -15,7 +15,7 @@ describe("Layout Test", () => {
         cy.get("[data-cy='explorer']").should("be.visible")
     })
 
-    it("Workbench show show rendered and editor accordingly", () => {
+    it("Workbench shows rendered and editor accordingly", () => {
         cy.visit("/notes")
 
         // both should not be visible when app has been opened
@@ -24,10 +24,10 @@ describe("Layout Test", () => {
 
         // create note
         // separate test for create workflow notes, testing only workbench logic
-        cy.createNote("testing")
+        cy.createNote("testNote")
 
         // select a note
-        cy.contains("testing").click()
+        cy.contains("testNote").click()
 
         // both editor and render should be visible
         cy.get("[data-cy='editor']").should("be.visible")

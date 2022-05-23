@@ -1,39 +1,50 @@
 describe("Delete note flow", () => {
+    beforeEach(() => {
+        cy.login()
+        cy.cleanNotes()
+    })
+
     it("Delete note flow", () => {
-        /*TODO*/
-        // create test note
-        // select the test note
-        // click the delete button
-        // click the yes button
-        // assert note is not present in app explorer
+        cy.visit("/")
+        cy.createNote("testNote")
+
+        cy.contains("testNote").click()
+        cy.get("[data-cy='delete']").click()
+        cy.contains("Yes").click()
+        cy.contains("testNote").should("not.exist")
     })
 
-    it("Should not create note if NO button is clicked", () => {
-        /*TODO*/
-        // create test note
-        // select the test note
-        // click the delete button
-        // click the no button
-        // assert note is present in app explorer
+    it("Do not delete note if NO button is clicked", () => {
+        cy.visit("/")
+        cy.createNote("testNote")
+
+        cy.contains("testNote").click()
+        cy.get("[data-cy='delete']").click()
+        cy.contains("No").click()
+        cy.contains("testNote").should("exist")
     })
 
-    it("Should not create note if clicked outside modal", () => {
-        /*TODO*/
-        // create test note
-        // select the test note
-        // click the delete button
-        // click outside the modal
-        // assert note is present in app explorer
+    it("Do not delete note if clicked outside modal", () => {
+        cy.visit("/")
+        cy.createNote("testNote")
+
+        cy.contains("testNote").click()
+        cy.get("[data-cy='delete']").click()
+        cy.get("[data-cy='modalOverlay']").click()
+        cy.contains("No").click()
+        cy.contains("testNote").should("exist")
     })
 
-    it("Should error out with unable to connect to server", () => {
-        /*TODO*/
-        // use cy.intercept to simulate failure on /notes/delete endpoint
-        // create test note
-        // select the test note
-        // click the delete button
-        // click the yes button
-        // assert error
-        // cleanup cy.intercept
+    it("Error out with unable to connect to server", () => {
+        cy.simulateServerDown("/notes/delete/*")
+        cy.visit("/")
+        cy.createNote("testNote")
+
+        cy.contains("testNote").click()
+        cy.get("[data-cy='delete']").click()
+        cy.contains("Yes").click()
+        cy.contains(
+            "Unable to delete note, unable to connect to server"
+        ).should("exist")
     })
 })
