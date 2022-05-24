@@ -20,7 +20,6 @@ describe("Workbench", () => {
         cy.get("[data-cy='renderer']").should("not.exist")
 
         // create note
-        // separate test for create workflow notes, testing only workbench logic
         cy.createNote("testNote")
 
         // select a note
