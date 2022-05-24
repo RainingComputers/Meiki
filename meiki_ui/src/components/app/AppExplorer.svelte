@@ -45,7 +45,6 @@
     {/each}
 
     {#if !noteList.length}
-        <!-- TODO: Test this empty message in cypress -->
         <Empty
             message="Click the 'Create' button on the toolbar to create a new note"
         />
