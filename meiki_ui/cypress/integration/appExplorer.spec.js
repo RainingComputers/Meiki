@@ -6,7 +6,7 @@ describe("App explorer", () => {
         cy.cleanNotes()
     })
 
-    it("App explorer should show empty notes watermark if non notes are present", () => {
+    it("Should show empty notes watermark if non notes are present", () => {
         cy.visit("/")
 
         cy.contains(
@@ -14,7 +14,7 @@ describe("App explorer", () => {
         ).should("exist")
     })
 
-    it("App explorer should select appropriate note", () => {
+    it("Should select appropriate note", () => {
         const testContent1 =
             "This is a test note, this should be automatically saved"
         const testContent2 =
@@ -47,14 +47,19 @@ describe("App explorer", () => {
         cy.get("[data-cy='renderer']").should("not.exist")
     })
 
-    it("Should error out with unable to connect to server", () => {
+    it("Error out with unable to connect to server", () => {
         /*TODO*/
         // use cy.intercept to simulate failure on /notes/list endpoint
         // assert error
         // cleanup cy.intercept
     })
 
-    it("App explorer should toggle in and out", () => {
+    it("Should be scrollable", () => {
+        // TODO
+        // create 100 notes and assert scrollable
+    })
+
+    it("Should toggle in and out", () => {
         cy.visit("/notes")
 
         cy.get("[data-cy='explorer']").should("be.visible")
