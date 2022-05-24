@@ -16,8 +16,8 @@
     import Workbench from "$cmp/app/Workbench.svelte"
     import Modal from "$cmp/modal/Modal.svelte"
     import LogoutModal from "$cmp/app/LogoutModal.svelte"
-    import CreateModal from "$cmp/app/CreateModal.svelte"
-    import DeleteModal from "$cmp/app/DeleteModal.svelte"
+    import CreateModal from "$cmp/app/modal/CreateModal.svelte"
+    import DeleteModal from "$cmp/app/modal/DeleteModal.svelte"
 
     let workbench: Workbench
     let logoutModal: Modal
