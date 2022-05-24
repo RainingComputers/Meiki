@@ -1,19 +1,28 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte"
+    import { StatusNotOkError } from "$lib/api/request"
     import { logout } from "$lib/api/user"
     import Button, { ButtonType } from "$cmp/Button.svelte"
+    import Error from "$cmp/toast/Error.svelte"
     import Logo from "./Logo.svelte"
 
     const dispatchEvent = createEventDispatcher()
 
+    let error = ""
+
     async function logoutUser() {
         try {
             await logout()
-        } catch {
-            // TODO: handle this error
-        }
+            dispatchEvent("loggedOut")
+        } catch (err) {
+            if (err instanceof StatusNotOkError) {
+                error = err.message
+                return
+            }
 
-        dispatchEvent("loggedOut")
+            error =
+                "An error has occurred while logging out, unable to connect to server"
+        }
     }
 </script>
 
@@ -21,6 +30,10 @@
     class=" w-[500px] max-h-fit m-auto bg-gray-50 border-gray-200 rounded-xl flex flex-col py-5 px-6"
 >
     <div />
+    <!-- TODO: UI cleanup -->
+    {#if error}
+        <Error>{error}</Error>
+    {/if}
     <Logo />
     <div class="px-4 py-5 flex flex-col">
         <Button

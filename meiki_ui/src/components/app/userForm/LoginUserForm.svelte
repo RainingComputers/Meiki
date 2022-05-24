@@ -19,6 +19,7 @@
                 return
             }
 
+            // TODO: centralize all errors
             error =
                 "An error has occurred while logging in, unable to connect to server"
         }

@@ -14,6 +14,13 @@ describe("User logout", () => {
     })
 
     it("Errors out with unable to connect to server", () => {
-        /* TODO */
+        cy.visit("/")
+        cy.simulateServerDown("/auth/logout")
+
+        cy.get("[data-cy='profile']").click()
+        cy.contains("Logout").click()
+        cy.contains(
+            "An error has occurred while logging out, unable to connect to server"
+        ).should("be.visible")
     })
 })
