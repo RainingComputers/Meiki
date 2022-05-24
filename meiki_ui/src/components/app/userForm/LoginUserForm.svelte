@@ -15,7 +15,7 @@
             dispatch("userLoggedIn")
         } catch (err) {
             if (err instanceof StatusNotOkError) {
-                error = await err.message
+                error = err.message
                 return
             }
 

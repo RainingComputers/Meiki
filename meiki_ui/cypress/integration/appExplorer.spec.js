@@ -6,7 +6,7 @@ describe("App explorer", () => {
         cy.cleanNotes()
     })
 
-    it("Should show empty notes watermark if non notes are present", () => {
+    it("Show empty notes watermark if non notes are present", () => {
         cy.visit("/")
 
         cy.contains(
@@ -14,7 +14,7 @@ describe("App explorer", () => {
         ).should("exist")
     })
 
-    it("Should select appropriate note", () => {
+    it("Select appropriate note", () => {
         const testContent1 =
             "This is a test note, this should be automatically saved"
         const testContent2 =
@@ -27,11 +27,12 @@ describe("App explorer", () => {
 
         // Edit note 1
         cy.contains("testNote1").click()
-        cy.get("textarea").type(testContent1, { force: true })
+        cy.get(".ace_text-input").first().focus().type(testContent1)
 
         // Edit note 2
         cy.contains("testNote2").click()
-        cy.get("textarea").type(testContent2, { force: true })
+        cy.get("[data-cy='renderer']").should("not.contain.text", testContent1)
+        cy.get(".ace_text-input").first().focus().type(testContent2)
 
         // Select note 1 and assert contents are present
         cy.contains("testNote1").click()
