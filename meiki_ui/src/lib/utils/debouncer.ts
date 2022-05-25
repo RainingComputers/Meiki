@@ -1,8 +1,8 @@
 // Based on https://github.com/component/debounce/blob/master/index.js
 
-const DEFAULT_WAIT_TIME_MS = 500
+import type { VoidReturnAsyncFunc } from "./types"
 
-type VoidReturnAsyncFunc = (...args: any[]) => Promise<void>
+const DEFAULT_WAIT_TIME_MS = 500
 
 export function debounce(
     func: VoidReturnAsyncFunc,

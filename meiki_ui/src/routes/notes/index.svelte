@@ -3,13 +3,12 @@
 </script>
 
 <script lang="ts">
-    // TODO: extract sync logic and test it
-
     import { onMount } from "svelte"
     import { goto } from "$app/navigation"
     import { readNoteContent, updateNote } from "$lib/api/notes"
     import { listNotes, NoteInfo } from "$lib/api/notes"
     import { debounce } from "$lib/utils/debouncer"
+    import { onCtrlPlusS } from "$lib/utils/onCtrlPlusS"
     import App from "$cmp/App.svelte"
     import AppExplorer from "$cmp/app/AppExplorer.svelte"
     import AppToolbar from "$cmp/app/AppToolbar.svelte"
@@ -32,10 +31,6 @@
     let explorerActive: boolean = true
     let editorActive: boolean = true
     let rendererActive: boolean = true
-
-    function toggleExplorer() {
-        explorerActive = !explorerActive
-    }
 
     async function updateNoteList() {
         try {
@@ -101,16 +96,12 @@
         deleteModal.closeModal()
     }
 
-    document.addEventListener(
-        "keydown",
-        function (e) {
-            if (e.key === "s" && (e.metaKey || e.ctrlKey)) {
-                e.preventDefault()
-                syncCurrentNote()
-            }
-        },
-        false
-    )
+    function toggleExplorer() {
+        explorerActive = !explorerActive
+    }
+
+    onCtrlPlusS(syncCurrentNote)
+
     onMount(async () => {
         await updateNoteList()
     })
