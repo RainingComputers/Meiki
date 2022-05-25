@@ -1,7 +1,3 @@
-<script context="module" lang="ts">
-    const NOTE_SYNC_INTERVAL = 5000
-</script>
-
 <script lang="ts">
     import { onMount } from "svelte"
     import { goto } from "$app/navigation"
