@@ -28,11 +28,13 @@
     let editorActive: boolean = true
     let rendererActive: boolean = true
 
+    let listError = ""
+
     async function updateNoteList() {
         try {
             noteList = await listNotes()
         } catch {
-            // TODO: handle this error
+            listError = "Unable to list notes, cannot connect to server"
         }
     }
 
@@ -150,6 +152,7 @@
         {#if explorerActive}
             <AppExplorer
                 {noteList}
+                error={listError}
                 selectedNoteID={currentNote?.id}
                 on:selectNote={(event) => {
                     selectNote(event.detail.noteID)
