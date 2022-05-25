@@ -1,40 +1,38 @@
-type VoidReturnAsyncFunc = (...args: any[]) => Promise<void>
-
 // Based on https://github.com/component/debounce/blob/master/index.js
+
+const DEFAULT_WAIT_TIME_MS = 500
+
+type VoidReturnAsyncFunc = (...args: any[]) => Promise<void>
 
 export function debounce(
     func: VoidReturnAsyncFunc,
-    wait: number = 500,
-    immediate: boolean = false
+    wait: number = DEFAULT_WAIT_TIME_MS
 ): VoidReturnAsyncFunc {
-    var timeout: NodeJS.Timeout,
-        args: any,
-        context: any,
-        timestamp: number,
-        result: Promise<void>
-    if (null == wait) wait = 100
+    let timeout: NodeJS.Timeout
+    let args: IArguments
+    let context: Function
+    let timestamp: number
+    let result: Promise<void>
 
     function later() {
-        var last = Date.now() - timestamp
+        const last = Date.now() - timestamp
 
         if (last < wait && last >= 0) {
             timeout = setTimeout(later, wait - last)
         } else {
             timeout = null
-            if (!immediate) {
-                result = func.apply(context, args)
-                context = args = null
-            }
+            result = func.apply(context, args)
+            context = args = null
         }
     }
 
-    var debounced = async function () {
+    async function debounced() {
         context = this
         args = arguments
         timestamp = Date.now()
-        var callNow = immediate && !timeout
-        if (!timeout) timeout = setTimeout(later, wait)
-        if (callNow) {
+
+        if (!timeout) {
+            timeout = setTimeout(later, wait)
             result = await func.apply(context, args)
             context = args = null
         }

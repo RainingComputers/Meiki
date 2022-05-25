@@ -15,7 +15,6 @@ describe("User account creation and login", () => {
         cy.get("a[href='/create']").and("be.visible").click()
 
         // user creates an account
-        cy.wait(100) // https://github.com/cypress-io/cypress/issues/7306
         cy.get("Button")
             .should("include.text", "Create Meiki account")
             .and("be.visible")
