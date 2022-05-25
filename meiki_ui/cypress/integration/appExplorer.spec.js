@@ -49,10 +49,13 @@ describe("App explorer", () => {
     })
 
     it("Error out with unable to connect to server", () => {
-        /*TODO*/
-        // use cy.intercept to simulate failure on /notes/list endpoint
-        // assert error
-        // cleanup cy.intercept
+        cy.simulateServerDown("/notes/list")
+        cy.visit("/")
+
+        cy.get("[data-cy='explorer']").should(
+            "contain.text",
+            "Unable to list notes, cannot connect to server"
+        )
     })
 
     it("Should be scrollable", () => {

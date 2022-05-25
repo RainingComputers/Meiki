@@ -97,8 +97,8 @@ describe("User account creation and login", () => {
     })
 
     it("Error out with unable to connect to server on create", () => {
-        cy.simulateServerDown("/auth/create")
         cy.visit("/create")
+        cy.simulateServerDown("/auth/create")
 
         cy.get("#username").type("alex")
         cy.get("#password").type("password")
