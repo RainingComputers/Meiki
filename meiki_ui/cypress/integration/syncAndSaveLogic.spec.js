@@ -13,6 +13,7 @@ describe("Note is saved and synchronized on changes", () => {
 
         cy.visit("/")
 
+        // Create test note and edit it, the editor will try to sync every 70 ms
         cy.createNote("testNote")
         cy.contains("testNote").click()
         cy.get(".ace_text-input")
@@ -20,28 +21,13 @@ describe("Note is saved and synchronized on changes", () => {
             .focus()
             .type(testContent, { delay: 70 })
 
-        cy.visit("/login")
+        // Simulate refreshing the page
         cy.visit("/")
 
+        // Assert the text file was not saved since the editor was never idle for DEBOUNCE_INTERVAL ms
+        // This tests weather the debouncer only calls sync only if the app was idle for a period of time
         cy.contains("testNote").click()
         cy.get("[data-cy='renderer']").should("contain.text", "")
-    })
-
-    it("Note saves on selected outside the note", () => {
-        const testContent =
-            "This is a content to test if the note is synced and saved properly"
-
-        cy.visit("/")
-
-        cy.createNote("testNote")
-        cy.contains("testNote").click()
-        cy.get(".ace_text-input").first().focus().type(testContent)
-
-        cy.contains("[data-cy='explorer']", "testNote").click()
-        cy.visit("/")
-
-        cy.contains("testNote").click()
-        cy.get("[data-cy='renderer']").should("contain.text", testContent)
     })
 
     it("Note should be saved if the user waited for enough time", () => {
@@ -50,14 +36,41 @@ describe("Note is saved and synchronized on changes", () => {
 
         cy.visit("/")
 
+        // Create test note and edit it
         cy.createNote("testNote")
         cy.contains("testNote").click()
         cy.get(".ace_text-input").first().focus().type(testContent)
+
+        // Wait for some time, let the app be idle
         cy.wait(DEBOUNCE_INTERVAL)
 
-        cy.visit("/login")
+        // Refresh the page
         cy.visit("/")
 
+        // Assert the note was saved
+        // Since the app was idle for DEBOUNCE_INTERVAL, a sync should have happened
+        cy.contains("testNote").click()
+        cy.get("[data-cy='renderer']").should("contain.text", testContent)
+    })
+
+    it("Note saves on deselecting the note", () => {
+        const testContent =
+            "This is a content to test if the note is synced and saved properly"
+
+        cy.visit("/")
+
+        // Create test note and edit it
+        cy.createNote("testNote")
+        cy.contains("testNote").click()
+        cy.get(".ace_text-input").first().focus().type(testContent)
+
+        // Deselect the note
+        cy.contains("[data-cy='explorer']", "testNote").click()
+
+        // Refresh app
+        cy.visit("/")
+
+        // Assert the note was saved
         cy.contains("testNote").click()
         cy.get("[data-cy='renderer']").should("contain.text", testContent)
     })
