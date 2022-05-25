@@ -7,7 +7,7 @@
     import { onCtrlPlusS } from "$lib/utils/onCtrlPlusS"
     import App from "$cmp/App.svelte"
     import AppExplorer from "$cmp/app/AppExplorer.svelte"
-    import AppToolbar from "$cmp/app/AppToolbar.svelte"
+    import AppToolbar from "$cmp/app/toolbar/AppToolbar.svelte"
     import Workbench from "$cmp/app/Workbench.svelte"
     import Modal from "$cmp/modal/Modal.svelte"
     import LogoutModal from "$cmp/app/modal/LogoutModal.svelte"
@@ -22,7 +22,7 @@
     let currentNote: NoteInfo
     let currentNoteText: string
     let noteList: Array<NoteInfo> = []
-    let lastSavedTime: Date
+    let changesNotSaved: boolean = false
 
     let explorerActive: boolean = true
     let editorActive: boolean = true
@@ -42,7 +42,7 @@
         try {
             if (currentNote) {
                 await updateNote(currentNote.id, currentNoteText)
-                lastSavedTime = new Date()
+                changesNotSaved = false
             }
         } catch (err) {
             console.log(err)
@@ -53,6 +53,7 @@
     const debouncedSyncNote = debounce(syncCurrentNote)
     function onTextChange(event: CustomEvent<{ text: string }>) {
         currentNoteText = event.detail.text
+        changesNotSaved = true
         debouncedSyncNote()
     }
 
@@ -63,11 +64,11 @@
     async function selectNote(id: string) {
         await onFocusAway()
         try {
-            editorActive = true
             const noteContent = await readNoteContent(id)
             currentNote = { id, title: noteContent.title }
             currentNoteText = noteContent.content
             workbench.setText(noteContent.content)
+            editorActive = true
         } catch (err) {
             console.log(err)
             deselectAllNotes()
@@ -130,7 +131,7 @@
         {explorerActive}
         {editorActive}
         {rendererActive}
-        {lastSavedTime}
+        {changesNotSaved}
         on:sidebar={toggleExplorer}
         on:edit={() => {
             editorActive = !editorActive

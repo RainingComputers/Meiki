@@ -11,6 +11,7 @@
     import TrashIcon from "$cmp/icons/TrashIcon.svelte"
     import UserIcon from "$cmp/icons/UserIcon.svelte"
     import ToolBarAction from "$cmp/toolbar/Action.svelte"
+    import ToolbarSyncIndicator from "$cmp/app/toolbar/SyncIndicator.svelte"
 
     export let showNoteActions: boolean
     export let title: string
@@ -19,7 +20,7 @@
     export let editorActive: boolean
     export let rendererActive: boolean
 
-    export let lastSavedTime: Date
+    export let changesNotSaved: boolean
 
     const username = getUsername()
     const dispatchEvent = createEventDispatcher()
@@ -42,9 +43,10 @@
             <TrashIcon />
         </ToolbarButton>
     </ToolbarGroup>
-    <!-- TODO: style this  <p>{lastSavedTime}</p>-->
 
-    <ToolbarTitle title={title || ""} />
+    <ToolbarTitle {title}>
+        <ToolbarSyncIndicator show={showNoteActions} {changesNotSaved} />
+    </ToolbarTitle>
 
     <ToolBarAction label="Create" onClick={() => dispatchEvent("create")} />
     <span class="px-0.5" />
