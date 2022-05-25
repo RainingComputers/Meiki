@@ -1,6 +1,6 @@
 /// <reference types="cypress"/>
 
-const DEBOUNCE_INTERVAL = 500
+const DEBOUNCE_INTERVAL = 1000
 const EPSILON = 10
 
 describe("Note is saved and synchronized on changes", () => {

@@ -2,7 +2,7 @@
 
 import type { VoidReturnAsyncFunc } from "./types"
 
-const DEFAULT_WAIT_TIME_MS = 500
+const DEFAULT_WAIT_TIME_MS = 1000
 
 export function debounce(
     func: VoidReturnAsyncFunc,
