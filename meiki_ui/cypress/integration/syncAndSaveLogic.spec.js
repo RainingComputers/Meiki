@@ -21,6 +21,9 @@ describe("Note is saved and synchronized on changes", () => {
             .focus()
             .type(testContent, { delay: 70 })
 
+        // assert sync indicator
+        cy.get("nav").should("contain.text", "saving")
+
         // Simulate refreshing the page
         cy.visit("/")
 
@@ -41,8 +44,12 @@ describe("Note is saved and synchronized on changes", () => {
         cy.contains("testNote").click()
         cy.get(".ace_text-input").first().focus().type(testContent)
 
+        // assert sync indicator
+        cy.get("nav").should("contain.text", "saving")
+
         // Wait for some time, let the app be idle
         cy.wait(DEBOUNCE_INTERVAL)
+        cy.get("nav").should("contain.text", "saved")
 
         // Refresh the page
         cy.visit("/")
