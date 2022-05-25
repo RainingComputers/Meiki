@@ -4,6 +4,7 @@
     import EntryModal from "$cmp/modal/EntryModal.svelte"
 
     export let error: string = ""
+    
     const dispatchEvent = createEventDispatcher()
 
     async function create(noteName: string) {
