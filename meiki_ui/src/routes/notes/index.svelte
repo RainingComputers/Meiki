@@ -28,13 +28,14 @@
     let editorActive: boolean = true
     let rendererActive: boolean = true
 
-    let listError = ""
+    let explorerError: string = ""
+    let toolbarError: string = ""
 
     async function updateNoteList() {
         try {
             noteList = await listNotes()
         } catch {
-            listError = "Unable to list notes, cannot connect to server"
+            explorerError = "Unable to list notes, cannot connect to server"
         }
     }
 
@@ -46,7 +47,7 @@
             }
         } catch (err) {
             console.log(err)
-            // TODO: Error handling, how to show this toast
+            toolbarError = "sync error"
         }
     }
 
@@ -72,7 +73,8 @@
         } catch (err) {
             console.log(err)
             deselectAllNotes()
-            // TODO: handle this error
+            toolbarError = "read error"
+            currentNote = undefined
         }
     }
 
@@ -132,6 +134,7 @@
         {editorActive}
         {rendererActive}
         {changesNotSaved}
+        {toolbarError}
         on:sidebar={toggleExplorer}
         on:edit={() => {
             editorActive = !editorActive
@@ -153,7 +156,7 @@
         {#if explorerActive}
             <AppExplorer
                 {noteList}
-                error={listError}
+                error={explorerError}
                 selectedNoteID={currentNote?.id}
                 on:selectNote={(event) => {
                     selectNote(event.detail.noteID)

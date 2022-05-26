@@ -21,6 +21,7 @@
     export let rendererActive: boolean
 
     export let changesNotSaved: boolean
+    export let toolbarError: string
 
     const username = getUsername()
     const dispatchEvent = createEventDispatcher()
@@ -45,7 +46,11 @@
     </ToolbarGroup>
 
     <ToolbarTitle {title}>
-        <ToolbarSyncIndicator show={showNoteActions} {changesNotSaved} />
+        <ToolbarSyncIndicator
+            show={showNoteActions}
+            {changesNotSaved}
+            error={toolbarError}
+        />
     </ToolbarTitle>
 
     <ToolBarAction label="Create" onClick={() => dispatchEvent("create")} />
