@@ -34,6 +34,7 @@
     class="flex text-xs w-36 overflow-hidden px-3 gap-1 items-center {getFontColorClass(
         type
     )}"
+    data-cy="badge"
 >
     <span class="stroke-gray-200 h-3 w-3 {getIconColorClass(type)}">
         <slot />

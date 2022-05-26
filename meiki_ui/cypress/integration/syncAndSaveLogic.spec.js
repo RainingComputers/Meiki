@@ -1,7 +1,7 @@
 /// <reference types="cypress"/>
 
 const DEBOUNCE_INTERVAL = 1000
-const EPSILON = 10
+const EPSILON = 100
 
 describe("Note is saved and synchronized on changes", () => {
     beforeEach(() => {
@@ -22,7 +22,10 @@ describe("Note is saved and synchronized on changes", () => {
             .type(testContent, { delay: 70 })
 
         // assert sync indicator
-        cy.get("nav").should("contain.text", "saving")
+        cy.get("nav")
+            .get("[data-cy='badge']")
+            .find("svg")
+            .should("have.class", "feather-refresh-cw")
 
         // Simulate refreshing the page
         cy.visit("/")
@@ -45,11 +48,17 @@ describe("Note is saved and synchronized on changes", () => {
         cy.get(".ace_text-input").first().focus().type(testContent)
 
         // assert sync indicator
-        cy.get("nav").should("contain.text", "saving")
+        cy.get("nav")
+            .get("[data-cy='badge']")
+            .find("svg")
+            .should("have.class", "feather-refresh-cw")
 
         // Wait for some time, let the app be idle
-        cy.wait(DEBOUNCE_INTERVAL)
-        cy.get("nav").should("contain.text", "saved")
+        cy.wait(DEBOUNCE_INTERVAL + EPSILON)
+        cy.get("nav")
+            .get("[data-cy='badge']")
+            .find("svg")
+            .should("have.class", "feather-check")
 
         // Refresh the page
         cy.visit("/")
@@ -83,6 +92,24 @@ describe("Note is saved and synchronized on changes", () => {
     })
 
     it("Errors out with unable to connect to server", () => {
-        // TODO
+        const testContent =
+            "This is a content to test if sync error is handled correctly"
+
+        cy.visit("/")
+        cy.simulateServerDown("/notes/update/*")
+
+        // Create test note and edit it
+        cy.createNote("testNote")
+        cy.contains("testNote").click()
+        cy.get(".ace_text-input").first().focus().type(testContent)
+
+        cy.wait(DEBOUNCE_INTERVAL + EPSILON)
+
+        // Error should have appeared
+        cy.get("nav").should("contain.text", "SYNC ERROR !")
+        cy.get("nav")
+            .get("[data-cy='badge']")
+            .find("svg")
+            .should("have.class", "feather-alert-triangle")
     })
 })
