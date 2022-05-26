@@ -59,10 +59,10 @@ describe("User account creation and login", () => {
     })
 
     it("Show duplicate user error on create", () => {
-        cy.createUser("alex", "password")
+        cy.createUser("alex1234", "password")
         cy.visit("/create")
 
-        cy.get("#username").type("alex")
+        cy.get("#username").type("alex1234")
         cy.get("#password").type("password")
         cy.get("#confirmPassword").type("password")
         cy.get("Button").click()
@@ -86,7 +86,7 @@ describe("User account creation and login", () => {
     it("Show invalid password error on create", () => {
         cy.visit("/create")
 
-        cy.get("#username").type("alex")
+        cy.get("#username").type("alex1234")
         cy.get("#password").type("123")
         cy.get("#confirmPassword").type("123")
         cy.get("Button").click()
@@ -100,7 +100,7 @@ describe("User account creation and login", () => {
         cy.visit("/create")
         cy.simulateServerDown("/auth/create")
 
-        cy.get("#username").type("alex")
+        cy.get("#username").type("alex1234")
         cy.get("#password").type("password")
         cy.get("#confirmPassword").type("password")
         cy.get("Button").click()
@@ -135,10 +135,10 @@ describe("User account creation and login", () => {
     })
 
     it("Show password mismatch on login", () => {
-        cy.createUser("alex", "password")
+        cy.createUser("alex1234", "password")
         cy.visit("/login")
 
-        cy.get("#username").type("alex")
+        cy.get("#username").type("alex1234")
         cy.get("#password").type("passwordMismatch")
         cy.get("Button").click()
 
@@ -149,7 +149,7 @@ describe("User account creation and login", () => {
         cy.visit("/login")
         cy.simulateServerDown("/auth/login")
 
-        cy.get("#username").type("alex")
+        cy.get("#username").type("alex1234")
         cy.get("#password").type("password")
         cy.get("Button").click()
 
