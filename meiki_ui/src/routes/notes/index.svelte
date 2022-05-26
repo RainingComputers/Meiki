@@ -72,7 +72,6 @@
             editorActive = true
         } catch (err) {
             console.log(err)
-            deselectAllNotes()
             toolbarError = "read error"
             currentNote = undefined
         }

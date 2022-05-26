@@ -47,7 +47,7 @@
 
     <ToolbarTitle {title}>
         <ToolbarSyncIndicator
-            show={showNoteActions}
+            show={showNoteActions || !!toolbarError}
             {changesNotSaved}
             error={toolbarError}
         />

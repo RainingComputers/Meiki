@@ -58,6 +58,21 @@ describe("App explorer", () => {
         )
     })
 
+    it("Error out with read error", () => {
+        cy.simulateServerDown("/notes/read/*")
+        cy.createNote("testNote1")
+
+        cy.visit("/")
+
+        cy.contains("testNote1").click()
+        cy.wait(100)
+        cy.get("nav").should("contain.text", "READ ERROR !")
+        cy.get("nav")
+            .get("[data-cy='badge']")
+            .find("svg")
+            .should("have.class", "feather-alert-triangle")
+    })
+
     it("Should be scrollable", () => {
         // TODO
         // create 100 notes and assert scrollable
