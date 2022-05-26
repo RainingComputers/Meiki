@@ -4,7 +4,7 @@
     import { logout } from "$lib/api/user"
     import Button, { ButtonType } from "$cmp/Button.svelte"
     import Error from "$cmp/toast/Error.svelte"
-    import Logo from "./Logo.svelte"
+    import Logo from "../Logo.svelte"
 
     const dispatchEvent = createEventDispatcher()
 
@@ -30,12 +30,11 @@
     class=" w-[500px] max-h-fit m-auto bg-gray-50 border-gray-200 rounded-xl flex flex-col py-5 px-6"
 >
     <div />
-    <!-- TODO: UI cleanup -->
-    {#if error}
-        <Error>{error}</Error>
-    {/if}
     <Logo />
-    <div class="px-4 py-5 flex flex-col">
+    <div class="px-4 py-5 flex flex-col gap-5">
+        {#if error}
+            <Error>{error}</Error>
+        {/if}
         <Button
             label="Logout"
             type={ButtonType.SECONDARY}

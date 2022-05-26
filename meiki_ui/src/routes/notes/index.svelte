@@ -1,21 +1,16 @@
-<script context="module" lang="ts">
-    const NOTE_SYNC_INTERVAL = 5000
-</script>
-
 <script lang="ts">
-    // TODO: extract sync logic and test it
-
     import { onMount } from "svelte"
     import { goto } from "$app/navigation"
     import { readNoteContent, updateNote } from "$lib/api/notes"
     import { listNotes, NoteInfo } from "$lib/api/notes"
     import { debounce } from "$lib/utils/debouncer"
+    import { onCtrlPlusS } from "$lib/utils/onCtrlPlusS"
     import App from "$cmp/App.svelte"
     import AppExplorer from "$cmp/app/AppExplorer.svelte"
-    import AppToolbar from "$cmp/app/AppToolbar.svelte"
+    import AppToolbar from "$cmp/app/toolbar/AppToolbar.svelte"
     import Workbench from "$cmp/app/Workbench.svelte"
     import Modal from "$cmp/modal/Modal.svelte"
-    import LogoutModal from "$cmp/app/LogoutModal.svelte"
+    import LogoutModal from "$cmp/app/modal/LogoutModal.svelte"
     import CreateModal from "$cmp/app/modal/CreateModal.svelte"
     import DeleteModal from "$cmp/app/modal/DeleteModal.svelte"
 
@@ -27,21 +22,19 @@
     let currentNote: NoteInfo
     let currentNoteText: string
     let noteList: Array<NoteInfo> = []
-    let lastSavedTime: Date
+    let changesNotSaved: boolean = false
 
     let explorerActive: boolean = true
     let editorActive: boolean = true
     let rendererActive: boolean = true
 
-    function toggleExplorer() {
-        explorerActive = !explorerActive
-    }
+    let listError = ""
 
     async function updateNoteList() {
         try {
             noteList = await listNotes()
         } catch {
-            // TODO: handle this error
+            listError = "Unable to list notes, cannot connect to server"
         }
     }
 
@@ -49,7 +42,7 @@
         try {
             if (currentNote) {
                 await updateNote(currentNote.id, currentNoteText)
-                lastSavedTime = new Date()
+                changesNotSaved = false
             }
         } catch (err) {
             console.log(err)
@@ -60,6 +53,7 @@
     const debouncedSyncNote = debounce(syncCurrentNote)
     function onTextChange(event: CustomEvent<{ text: string }>) {
         currentNoteText = event.detail.text
+        changesNotSaved = true
         debouncedSyncNote()
     }
 
@@ -70,11 +64,11 @@
     async function selectNote(id: string) {
         await onFocusAway()
         try {
-            editorActive = true
             const noteContent = await readNoteContent(id)
             currentNote = { id, title: noteContent.title }
             currentNoteText = noteContent.content
             workbench.setText(noteContent.content)
+            editorActive = true
         } catch (err) {
             console.log(err)
             deselectAllNotes()
@@ -101,16 +95,12 @@
         deleteModal.closeModal()
     }
 
-    document.addEventListener(
-        "keydown",
-        function (e) {
-            if (e.key === "s" && (e.metaKey || e.ctrlKey)) {
-                e.preventDefault()
-                syncCurrentNote()
-            }
-        },
-        false
-    )
+    function toggleExplorer() {
+        explorerActive = !explorerActive
+    }
+
+    onCtrlPlusS(syncCurrentNote)
+
     onMount(async () => {
         await updateNoteList()
     })
@@ -141,7 +131,7 @@
         {explorerActive}
         {editorActive}
         {rendererActive}
-        {lastSavedTime}
+        {changesNotSaved}
         on:sidebar={toggleExplorer}
         on:edit={() => {
             editorActive = !editorActive
@@ -163,6 +153,7 @@
         {#if explorerActive}
             <AppExplorer
                 {noteList}
+                error={listError}
                 selectedNoteID={currentNote?.id}
                 on:selectNote={(event) => {
                     selectNote(event.detail.noteID)

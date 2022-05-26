@@ -1,6 +1,6 @@
 /// <reference types="cypress"/>
 
-const DEBOUNCE_INTERVAL = 500
+const DEBOUNCE_INTERVAL = 1000
 const EPSILON = 10
 
 describe("Note is saved and synchronized on changes", () => {
@@ -20,6 +20,9 @@ describe("Note is saved and synchronized on changes", () => {
             .first()
             .focus()
             .type(testContent, { delay: 70 })
+
+        // assert sync indicator
+        cy.get("nav").should("contain.text", "saving")
 
         // Simulate refreshing the page
         cy.visit("/")
@@ -41,8 +44,12 @@ describe("Note is saved and synchronized on changes", () => {
         cy.contains("testNote").click()
         cy.get(".ace_text-input").first().focus().type(testContent)
 
+        // assert sync indicator
+        cy.get("nav").should("contain.text", "saving")
+
         // Wait for some time, let the app be idle
         cy.wait(DEBOUNCE_INTERVAL)
+        cy.get("nav").should("contain.text", "saved")
 
         // Refresh the page
         cy.visit("/")
