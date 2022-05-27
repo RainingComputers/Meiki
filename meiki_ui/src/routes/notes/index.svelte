@@ -106,25 +106,25 @@
     })
 </script>
 
-<Modal bind:this={logoutModal}>
-    <LogoutModal on:loggedOut={() => goto("/login")} />
-</Modal>
-
-<Modal bind:this={deleteModal}>
-    <DeleteModal
-        noteInfo={currentNote}
-        on:deleted={onNoteDeleted}
-        on:deleteCancelled={() => {
-            deleteModal.closeModal()
-        }}
-    />
-</Modal>
-
-<Modal bind:this={createModal}>
-    <CreateModal on:noteCreated={onNoteCreated} />
-</Modal>
-
 <App>
+    <Modal bind:this={logoutModal}>
+        <LogoutModal on:loggedOut={() => goto("/login")} />
+    </Modal>
+
+    <Modal bind:this={deleteModal}>
+        <DeleteModal
+            noteInfo={currentNote}
+            on:deleted={onNoteDeleted}
+            on:deleteCancelled={() => {
+                deleteModal.closeModal()
+            }}
+        />
+    </Modal>
+
+    <Modal bind:this={createModal}>
+        <CreateModal on:noteCreated={onNoteCreated} />
+    </Modal>
+
     <AppToolbar
         title={currentNote?.title || ""}
         showNoteActions={!!currentNote}
@@ -150,7 +150,7 @@
             deleteModal.showModal()
         }}
     />
-    <div class="flex flex-row flex-grow w-full">
+    <div class="flex flex-row flex-grow h-full w-full">
         {#if explorerActive}
             <AppExplorer
                 {noteList}
