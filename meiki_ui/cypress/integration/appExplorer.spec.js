@@ -54,7 +54,7 @@ describe("App explorer", () => {
 
         cy.get("[data-cy='explorer']").should(
             "contain.text",
-            "Unable to list notes, cannot connect to server"
+            "An error has occurred while listing notes, unable to connect to server"
         )
     })
 

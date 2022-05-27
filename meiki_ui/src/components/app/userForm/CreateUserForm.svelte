@@ -1,7 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte"
     import { createUser } from "$lib/api/user"
-    import { StatusNotOkError } from "$lib/api/request"
+    import { formatRequestError } from "$lib/api/request"
     import UserForm from "./UserForm.svelte"
 
     let error: string = ""
@@ -19,13 +19,7 @@
             await createUser(userForm.getUsername(), userForm.getPassword())
             dispatch("userCreated")
         } catch (err) {
-            if (err instanceof StatusNotOkError) {
-                error = err.message
-                return
-            }
-
-            error =
-                "An error has occurred while creating the account, unable to connect to server"
+            error = formatRequestError(err, "creating account")
         }
     }
 </script>

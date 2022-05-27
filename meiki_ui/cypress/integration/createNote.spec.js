@@ -33,7 +33,7 @@ describe("Create note", () => {
         cy.contains("Create note").click()
 
         cy.contains(
-            "Unable to create note, unable to connect to server"
+            "An error has occurred while creating note, unable to connect to server"
         ).should("exist")
     })
 })

@@ -46,7 +46,7 @@ describe("Delete note", () => {
         cy.get("[data-cy='delete']").click()
         cy.contains("Yes").click()
         cy.contains(
-            "Unable to delete note, unable to connect to server"
+            "An error has occurred while deleting note, unable to connect to server"
         ).should("exist")
     })
 })

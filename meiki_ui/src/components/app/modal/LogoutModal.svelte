@@ -1,6 +1,6 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte"
-    import { StatusNotOkError } from "$lib/api/request"
+    import { formatRequestError } from "$lib/api/request"
     import { logout } from "$lib/api/user"
     import Button, { ButtonType } from "$cmp/Button.svelte"
     import Error from "$cmp/toast/Error.svelte"
@@ -15,13 +15,7 @@
             await logout()
             dispatchEvent("loggedOut")
         } catch (err) {
-            if (err instanceof StatusNotOkError) {
-                error = err.message
-                return
-            }
-
-            error =
-                "An error has occurred while logging out, unable to connect to server"
+            error = formatRequestError(err, "logging out")
         }
     }
 </script>
