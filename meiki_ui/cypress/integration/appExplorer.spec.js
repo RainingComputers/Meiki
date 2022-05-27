@@ -73,11 +73,6 @@ describe("App explorer", () => {
             .should("have.class", "feather-alert-triangle")
     })
 
-    it("Should be scrollable", () => {
-        // TODO
-        // create 100 notes and assert scrollable
-    })
-
     it("Should toggle in and out", () => {
         cy.visit("/notes")
 
