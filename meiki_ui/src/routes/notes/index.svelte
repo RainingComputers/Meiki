@@ -3,6 +3,7 @@
     import { goto } from "$app/navigation"
     import { readNoteContent, updateNote } from "$lib/api/notes"
     import { listNotes, NoteInfo } from "$lib/api/notes"
+    import { formatRequestError } from "$lib/api/request"
     import { debounce } from "$lib/utils/debouncer"
     import { onCtrlPlusS } from "$lib/utils/onCtrlPlusS"
     import App from "$cmp/App.svelte"
@@ -34,8 +35,8 @@
     async function updateNoteList() {
         try {
             noteList = await listNotes()
-        } catch {
-            explorerError = "Unable to list notes, cannot connect to server"
+        } catch (err) {
+            explorerError = formatRequestError(err, "listing notes")
         }
     }
 

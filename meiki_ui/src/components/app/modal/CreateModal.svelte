@@ -1,6 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte"
     import { createNote } from "$lib/api/notes"
+    import { formatRequestError } from "$lib/api/request"
     import EntryModal from "$cmp/modal/EntryModal.svelte"
 
     export let error: string = ""
@@ -12,7 +13,7 @@
             const id = await createNote(noteName)
             dispatchEvent("noteCreated", { id })
         } catch {
-            error = "Unable to create note, unable to connect to server"
+            error = formatRequestError(error, "creating note")
         }
     }
 </script>

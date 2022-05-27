@@ -38,3 +38,9 @@ export async function makeRequest(url: string, method: string, body: any = {}) {
     await ensureStatusOK(response)
     return response.json()
 }
+
+export function formatRequestError(err: any, action: string) {
+    if (err instanceof StatusNotOkError) return err.message
+
+    return `An error has occurred while ${action}, unable to connect to server`
+}

@@ -1,6 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte"
     import { deleteNote, NoteInfo } from "$lib/api/notes"
+    import { formatRequestError } from "$lib/api/request"
     import ConfirmModal from "$cmp/modal/ConfirmModal.svelte"
 
     export let noteInfo: NoteInfo
@@ -11,8 +12,8 @@
         try {
             await deleteNote(noteInfo.id)
             dispatchEvent("deleted")
-        } catch {
-            error = "Unable to delete note, unable to connect to server"
+        } catch (err) {
+            error = formatRequestError(err, "deleting note")
         }
     }
 

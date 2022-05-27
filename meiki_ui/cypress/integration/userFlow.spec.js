@@ -106,7 +106,7 @@ describe("User account creation and login", () => {
         cy.get("Button").click()
 
         cy.contains(
-            "An error has occurred while creating the account, unable to connect to server"
+            "An error has occurred while creating account, unable to connect to server"
         ).should("be.visible")
     })
 
