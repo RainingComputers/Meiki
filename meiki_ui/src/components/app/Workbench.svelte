@@ -45,6 +45,10 @@
         }
     }
 
+    export function getText() {
+        return editor.getValue()
+    }
+
     afterUpdate(focus)
 </script>
 

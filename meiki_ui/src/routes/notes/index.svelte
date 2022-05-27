@@ -21,7 +21,6 @@
     let deleteModal: Modal
 
     let currentNote: NoteInfo
-    let currentNoteText: string
     let noteList: Array<NoteInfo> = []
     let changesNotSaved: boolean = false
 
@@ -43,7 +42,7 @@
     async function syncCurrentNote() {
         try {
             if (currentNote) {
-                await updateNote(currentNote.id, currentNoteText)
+                await updateNote(currentNote.id, workbench.getText())
                 changesNotSaved = false
             }
         } catch (err) {
@@ -52,8 +51,7 @@
     }
 
     const debouncedSyncNote = debounce(syncCurrentNote)
-    function onTextChange(event: CustomEvent<{ text: string }>) {
-        currentNoteText = event.detail.text
+    function onTextChange() {
         changesNotSaved = true
         debouncedSyncNote()
     }
@@ -67,7 +65,6 @@
         try {
             const noteContent = await readNoteContent(id)
             currentNote = { id, title: noteContent.title }
-            currentNoteText = noteContent.content
             workbench.setText(noteContent.content)
             editorActive = true
         } catch (err) {
