@@ -6,6 +6,7 @@
 
     export let noteInfo: NoteInfo
     export let error: string = ""
+
     const dispatchEvent = createEventDispatcher()
 
     async function deleteCurrentNote() {
