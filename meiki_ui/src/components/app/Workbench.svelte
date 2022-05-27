@@ -7,7 +7,7 @@
     }
 
     function getRendererClass(editorActive: boolean, rendererActive: boolean) {
-        if (editorActive && rendererActive) return "bg-red-100 flex-1"
+        if (editorActive && rendererActive) return "bg-red-100 flex-1 w-1/2"
         if (rendererActive && !editorActive) return "bg-red-100 w-3/4"
 
         return "hidden"

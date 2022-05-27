@@ -2,5 +2,4 @@
     export let text: string = ""
 </script>
 
-<!-- TODO: restrict width -->
-<pre data-cy="renderer" class="p-2">{text}</pre>
+<pre data-cy="renderer" class="p-2 overflow-scroll h-full">{text}</pre>
