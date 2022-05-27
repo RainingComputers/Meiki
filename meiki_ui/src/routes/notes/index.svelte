@@ -91,7 +91,7 @@
 
     function onNoteDeleted() {
         updateNoteList()
-        deselectAllNotes()
+        currentNote = undefined
         deleteModal.closeModal()
     }
 
