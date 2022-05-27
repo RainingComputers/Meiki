@@ -11,7 +11,7 @@
 
 {#if show}
     {#if error}
-        <Badge label={`${error.toUpperCase()} !`} type={BadgeType.ERROR}>
+        <Badge label={error.toUpperCase()} type={BadgeType.ERROR}>
             <WarningIcon />
         </Badge>
     {:else if changesNotSaved}

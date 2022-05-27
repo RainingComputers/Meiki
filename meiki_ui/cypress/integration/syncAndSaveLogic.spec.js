@@ -103,6 +103,7 @@ describe("Note is saved and synchronized on changes", () => {
         cy.contains("testNote").click()
         cy.get(".ace_text-input").first().focus().type(testContent)
 
+        // Wait for some time, let the app be idle
         cy.wait(DEBOUNCE_INTERVAL + EPSILON)
 
         // Error should have appeared

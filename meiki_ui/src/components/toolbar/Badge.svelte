@@ -4,9 +4,8 @@
         ERROR,
     }
 
-    function getFontColorClass(type: BadgeType) {
+    function getFontClass(type: BadgeType) {
         switch (type) {
-            // TODO: Vishnu adds lipstick to this
             case BadgeType.INFO:
                 return "text-gray-200 font-light"
             case BadgeType.ERROR:
@@ -14,9 +13,8 @@
         }
     }
 
-    function getIconColorClass(type: BadgeType) {
+    function getIconClass(type: BadgeType) {
         switch (type) {
-            // TODO: Vishnu adds lipstick to this
             case BadgeType.INFO:
                 return "stroke-gray-200"
             case BadgeType.ERROR:
@@ -31,12 +29,12 @@
 </script>
 
 <span
-    class="flex text-xs w-36 overflow-hidden px-3 gap-1 items-center {getFontColorClass(
+    class="flex text-xs w-36 overflow-hidden px-2 gap-1 items-center {getFontClass(
         type
     )}"
     data-cy="badge"
 >
-    <span class="stroke-gray-200 h-3 w-3 {getIconColorClass(type)}">
+    <span class="stroke-gray-200 h-3 w-3 {getIconClass(type)}">
         <slot />
     </span>
     {label}

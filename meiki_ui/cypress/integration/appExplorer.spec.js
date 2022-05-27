@@ -65,7 +65,7 @@ describe("App explorer", () => {
         cy.visit("/")
 
         cy.contains("testNote1").click()
-        cy.wait(100)
+
         cy.get("nav").should("contain.text", "READ ERROR !")
         cy.get("nav")
             .get("[data-cy='badge']")

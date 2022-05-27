@@ -46,7 +46,6 @@
                 changesNotSaved = false
             }
         } catch (err) {
-            console.log(err)
             toolbarError = "sync error"
         }
     }
@@ -71,7 +70,6 @@
             workbench.setText(noteContent.content)
             editorActive = true
         } catch (err) {
-            console.log(err)
             toolbarError = "read error"
             currentNote = undefined
         }
