@@ -13,13 +13,13 @@
     import ToolBarAction from "$cmp/toolbar/Action.svelte"
     import ToolbarSyncIndicator from "$cmp/app/toolbar/SyncIndicator.svelte"
 
-    export let showNoteActions: boolean
     export let title: string
 
     export let explorerActive: boolean
     export let editorActive: boolean
     export let rendererActive: boolean
 
+    export let showNoteActions: boolean
     export let changesNotSaved: boolean
     export let toolbarError: string
 
