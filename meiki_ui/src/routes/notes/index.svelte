@@ -56,12 +56,8 @@
         debouncedSyncNote()
     }
 
-    async function onFocusAway() {
-        await syncCurrentNote()
-    }
-
     async function selectNote(id: string) {
-        await onFocusAway()
+        await syncCurrentNote()
         try {
             const noteContent = await readNoteContent(id)
             currentNote = { id, title: noteContent.title }
@@ -74,7 +70,7 @@
     }
 
     async function deselectAllNotes() {
-        await onFocusAway()
+        await syncCurrentNote()
         currentNote = undefined
     }
 
