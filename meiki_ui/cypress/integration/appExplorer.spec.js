@@ -66,7 +66,7 @@ describe("App explorer", () => {
 
         cy.contains("testNote1").click()
 
-        cy.get("nav").should("contain.text", "READ ERROR !")
+        cy.get("nav").should("contain.text", "READ ERROR")
         cy.get("nav")
             .get("[data-cy='badge']")
             .find("svg")

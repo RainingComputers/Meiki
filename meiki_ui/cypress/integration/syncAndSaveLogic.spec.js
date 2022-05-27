@@ -107,7 +107,7 @@ describe("Note is saved and synchronized on changes", () => {
         cy.wait(DEBOUNCE_INTERVAL + EPSILON)
 
         // Error should have appeared
-        cy.get("nav").should("contain.text", "SYNC ERROR !")
+        cy.get("nav").should("contain.text", "SYNC ERROR")
         cy.get("nav")
             .get("[data-cy='badge']")
             .find("svg")
