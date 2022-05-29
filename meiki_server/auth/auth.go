@@ -40,7 +40,7 @@ var (
 	ErrInvalidPassword   = errors.New("invalid password")
 )
 
-var usernameRegex = regexp.MustCompile(`^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$`)
+var usernameRegex = regexp.MustCompile(`^[a-zA-Z0-9]+([_-]?[a-zA-Z0-9])*$`)
 
 func getToken() string {
 	return uuid.NewString()
