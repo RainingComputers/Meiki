@@ -79,7 +79,7 @@ describe("User account creation and login", () => {
         cy.get("Button").click()
 
         cy.contains(
-            "Username should not contain any special characters other than '-' and '_'"
+            "Username should not contain any special characters or space other than '-' and '_'"
         ).should("be.visible")
     })
 
@@ -118,7 +118,7 @@ describe("User account creation and login", () => {
         cy.get("Button").click()
 
         cy.contains(
-            "Username should not contain any special characters other than '-' and '_'"
+            "Username should not contain any special characters or space other than '-' and '_'"
         ).should("be.visible")
     })
 

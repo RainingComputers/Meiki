@@ -1,6 +1,6 @@
 package auth
 
-const MSG_INVALID_USERNAME = "Username should not contain any special characters other than '-' and '_'"
+const MSG_INVALID_USERNAME = "Username should not contain any special characters or space other than '-' and '_'"
 const MSG_INVALID_PASSWORD = "Password should have minimum five characters"
 const MSG_USER_EXISTS = "User already exists"
 const MSG_UNABLE_TO_CREATE_USER = "Unable to create user, please try again later"
