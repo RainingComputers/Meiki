@@ -99,6 +99,10 @@
     })
 </script>
 
+<svelte:head>
+    <title>{currentNote?.title || "Meiki"}</title>
+</svelte:head>
+
 <App>
     <Modal bind:this={logoutModal}>
         <LogoutModal on:loggedOut={() => goto("/login")} />
