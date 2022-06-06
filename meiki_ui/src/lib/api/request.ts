@@ -42,5 +42,6 @@ export async function makeRequest(url: string, method: string, body: any = {}) {
 export function formatRequestError(err: any, action: string) {
     if (err instanceof StatusNotOkError) return err.message
 
+    //TODO: Make switch statement with Enums
     return `An error has occurred while ${action}, unable to connect to server`
 }
