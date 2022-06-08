@@ -29,3 +29,7 @@ export async function updateNote(id: string, content: string) {
 export async function readNoteContent(id: string): Promise<NoteContentInfo> {
     return await makeRequest(`/notes/read/${id}`, "GET")
 }
+
+export async function renameNote(id: string, newTitle: string) {
+    await makeRequest(`/notes/rename/${id}`, "PUT", { title: newTitle })
+}

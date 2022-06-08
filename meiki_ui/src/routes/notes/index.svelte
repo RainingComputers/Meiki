@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte"
     import { goto } from "$app/navigation"
-    import { readNoteContent, updateNote } from "$lib/api/notes"
+    import { readNoteContent, renameNote, updateNote } from "$lib/api/notes"
     import { listNotes, NoteInfo } from "$lib/api/notes"
     import { formatRequestError } from "$lib/api/request"
     import { debounce } from "$lib/utils/debouncer"
@@ -92,6 +92,18 @@
         explorerActive = !explorerActive
     }
 
+    async function onRename(event: CustomEvent<{ newTitle: string }>) {
+        try {
+            await renameNote(currentNote.id, event.detail.newTitle)
+            updateNoteList()
+            currentNote.title = event.detail.newTitle
+        } catch (err) {
+            // TODO catch this error and show in consistent way
+            console.log(formatRequestError(err, "renaming note"))
+        }
+        
+    }
+
     onCtrlPlusS(syncCurrentNote)
 
     onMount(async () => {
@@ -146,6 +158,7 @@
         on:delete={() => {
             deleteModal.showModal()
         }}
+        on:rename={onRename}
     />
     <div class="flex flex-row flex-grow h-full w-full">
         {#if explorerActive}

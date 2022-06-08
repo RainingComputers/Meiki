@@ -45,7 +45,7 @@
         </ToolbarButton>
     </ToolbarGroup>
 
-    <ToolbarTitle {title}>
+    <ToolbarTitle {title} on:rename>
         <ToolbarSyncIndicator
             show={showNoteActions || !!toolbarError}
             {changesNotSaved}
