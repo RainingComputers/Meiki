@@ -1,6 +1,6 @@
 /// <reference types="cypress"/>
 
-describe("Create note", () => {
+describe("Rename note", () => {
     beforeEach(() => {
         cy.login()
         cy.cleanNotes()
