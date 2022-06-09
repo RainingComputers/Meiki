@@ -1,14 +1,8 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte"
     import EditableLabel from "$cmp/EditableLabel.svelte"
 
-    const dispatchEvent = createEventDispatcher()
-
     export let title: string
-
-    function onEnter(text: string) {
-        dispatchEvent("rename", {newTitle: text})
-    }
+    export let onEnter: (text: string) => void
 </script>
 
 <span

@@ -101,7 +101,6 @@
             // TODO catch this error and show in consistent way
             console.log(formatRequestError(err, "renaming note"))
         }
-        
     }
 
     onCtrlPlusS(syncCurrentNote)

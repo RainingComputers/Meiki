@@ -1,5 +1,4 @@
 <script lang="ts">
-
     // TODO redesign this component
 
     export let text: string = ""
@@ -10,26 +9,24 @@
     let spanElement: HTMLSpanElement
 
     function onKeyDown(event: any) {
-        // TODO: move to utils
+        const newText = spanElement.innerText.trim()
+        // TODO: Show error if empty
+        // TODO: Sometimes click doesn't register first time
         if (!onEnter) return
-        if (event.key !== "Enter") return
-        editableMode = false
-        onEnter(event.target.innerText.trim())
-    }
+        if (event.type !== "focusout" && event.key !== "Enter") return
 
-    function onFocusout() {
-        // spanElement.innerText = text
         editableMode = false
-        spanElement.innerText = text
+        if (text !== newText) {
+            onEnter(newText)
+        }
     }
 </script>
 
 <span
     contenteditable={editableMode ? "true" : "false"}
-    class=" inline-block"
     bind:this={spanElement}
     on:keydown={onKeyDown}
-    on:focusout={onFocusout}
+    on:focusout={onKeyDown}
     on:click={() => {
         editableMode = true
         spanElement.focus()

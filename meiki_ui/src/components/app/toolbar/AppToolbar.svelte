@@ -25,6 +25,10 @@
 
     const username = getUsername()
     const dispatchEvent = createEventDispatcher()
+
+    function onEnter(text: string) {
+        dispatchEvent("rename", { newTitle: text })
+    }
 </script>
 
 <Toolbar>
@@ -45,7 +49,7 @@
         </ToolbarButton>
     </ToolbarGroup>
 
-    <ToolbarTitle {title} on:rename>
+    <ToolbarTitle {title} {onEnter}>
         <ToolbarSyncIndicator
             show={showNoteActions || !!toolbarError}
             {changesNotSaved}
