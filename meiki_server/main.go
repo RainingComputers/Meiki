@@ -27,6 +27,8 @@ func run() error {
 	databaseName := getEnv("MEIKI_DATABASE_NAME", "meiki")
 	databaseURL := getEnv("MEIKI_DATABASE_URL", "mongodb://root:example@localhost:27017")
 
+	// log.Info("connecting to database URL", zap.String("databaseURL", databaseURL))
+
 	ctx := context.Background()
 
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(databaseURL))
@@ -54,7 +56,7 @@ func run() error {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"*", "DELETE", "PUT"},
 		AllowHeaders:     []string{"Origin, Content-Type, Access-Control-Allow-Headers", "X-Username", "X-Token"},
 		AllowCredentials: true,
