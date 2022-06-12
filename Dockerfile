@@ -9,19 +9,19 @@ RUN go mod download
 
 RUN go build -o meiki
 
-## TODO: ENABLE MULTI STAGE
-# ##
-# ## Deploy
-# ##
+# TODO: ENABLE MULTI STAGE
+##
+## Deploy
+##
 # FROM gcr.io/distroless/base-debian10
 
-# WORKDIR /
+# WORKDIR /app
 
 # COPY --from=build /meiki /meiki
 
-EXPOSE 8080
+EXPOSE 80
+ENV PORT=80
 
-ENV GO111MODULE=on
 # ENV MEIKI_DATABASE_URL
 
 # USER nonroot:nonroot
