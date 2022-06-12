@@ -25,10 +25,13 @@ func getEnv(key, defaultValue string) string {
 
 func run() error {
 	databaseName := getEnv("MEIKI_DATABASE_NAME", "meiki")
+	databaseURL := getEnv("MEIKI_DATABASE_URL", "mongodb://root:example@localhost:27017")
+
+	log.Info("connecting to database URL", zap.String("databaseURL", databaseURL))
 
 	ctx := context.Background()
 
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://root:example@localhost:27017"))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(databaseURL))
 
 	if err != nil {
 		log.Error("unable to connect to mongo", zap.Error(err))
