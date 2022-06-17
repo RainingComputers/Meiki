@@ -1,6 +1,6 @@
 /// <reference types="cypress"/>
 
-describe("Create note", () => {
+describe("Rename note", () => {
     beforeEach(() => {
         cy.login()
         cy.cleanNotes()
@@ -8,43 +8,35 @@ describe("Create note", () => {
 
     it("Rename note flow", () => {
         cy.createNote("testNote")
-
-        // Go to root
         cy.visit("/")
 
-        // Click the note name
+        // Select the note
         cy.contains("testNote").click()
 
-        // Click the note label
-        cy.get("nav")
-            .contains("testNote")
-            .click()
-            .type("{selectAll}renamedNote")
-            .type("{enter}")
+        // Click on the toolbar title and rename the note
+        cy.get("nav").contains("testNote").click()
+        cy.get("nav").get("input").type("renamedNote").type("{enter}")
 
-        // Verify that name is changed
+        // Assert name has changed
         cy.get("nav").contains("renamedNote")
         cy.contains("[data-cy='explorer']", "renamedNote")
     })
 
     it("Rename note if clicked outside label", () => {
         cy.createNote("testNote")
-
-        // Go to root
         cy.visit("/")
 
-        // Click the note name
+        // Select the note
         cy.contains("testNote").click()
 
-        // Click the note label
-        cy.get("nav")
-            .contains("testNote")
-            .click()
-            .type("{selectAll}renamedNote")
+        // Click on the toolbar title and rename the note
+        cy.get("nav").contains("testNote").click()
+        cy.get("nav").get("input").type("renamedNote")
 
+        // Click outside the title
         cy.get("textarea").focus()
 
-        // Verify that name is changed
+        // Assert name has changed
         cy.get("nav").contains("renamedNote")
         cy.contains("[data-cy='explorer']", "renamedNote")
     })

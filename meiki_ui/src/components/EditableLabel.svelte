@@ -1,36 +1,53 @@
 <script lang="ts">
-    // TODO redesign this component
+    // Stolen and improved upon https://svelte.dev/repl/29c1026dda3c47a187bd21afa0782df1?version=3.48.0
 
-    export let text: string = ""
-    export let onEnter: (text: string) => void
+    import { createEventDispatcher } from "svelte"
 
-    let editableMode: boolean = false
+    export let value: string
 
-    let spanElement: HTMLSpanElement
+    const dispatch = createEventDispatcher()
+    let editing: boolean = false
+    let original: string = value
 
-    function onKeyDown(event: any) {
-        const newText = spanElement.innerText.trim()
-        // TODO: Show error if empty
-        // TODO: Sometimes click doesn't register first time
-        if (!onEnter) return
-        if (event.type !== "focusout" && event.key !== "Enter") return
+    function edit() {
+        editing = true
+    }
 
-        editableMode = false
-        if (text !== newText) {
-            onEnter(newText)
+    function submit() {
+        if (value != original && value.length != 0) {
+            dispatch("submit", value)
+            original = value
         }
+
+        value = original
+        editing = false
+    }
+
+    function keydown(event: KeyboardEvent) {
+        if (event.key == "Escape") {
+            event.preventDefault()
+            value = original
+            editing = false
+        }
+    }
+
+    function focus(element: HTMLInputElement) {
+        element.focus()
+        element.select()
     }
 </script>
 
-<span
-    contenteditable={editableMode ? "true" : "false"}
-    bind:this={spanElement}
-    on:keydown={onKeyDown}
-    on:focusout={onKeyDown}
-    on:click={() => {
-        editableMode = true
-        spanElement.focus()
-    }}
->
-    {text}
-</span>
+{#if editing}
+    <form on:submit|preventDefault={submit} on:keydown={keydown}>
+        <input
+            class="border-none bg-transparent text-inherit focus:outline-none focus:border-blue-500 focus:ring-blue-500 focus:ring-2 rounded-lg px-2"
+            bind:value
+            on:blur={submit}
+            use:focus
+        />
+    </form>
+{:else}
+    <div on:click={edit}>
+        {original}
+    </div>
+{/if}

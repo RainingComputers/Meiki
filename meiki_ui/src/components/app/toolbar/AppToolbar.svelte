@@ -12,8 +12,9 @@
     import UserIcon from "$cmp/icons/UserIcon.svelte"
     import ToolBarAction from "$cmp/toolbar/Action.svelte"
     import ToolbarSyncIndicator from "$cmp/app/toolbar/SyncIndicator.svelte"
+    import EditableLabel from "$cmp/EditableLabel.svelte"
 
-    export let title: string
+    export let title: string = "hello"
 
     export let explorerActive: boolean
     export let editorActive: boolean
@@ -25,10 +26,6 @@
 
     const username = getUsername()
     const dispatchEvent = createEventDispatcher()
-
-    function onEnter(text: string) {
-        dispatchEvent("rename", { newTitle: text })
-    }
 </script>
 
 <Toolbar>
@@ -49,7 +46,13 @@
         </ToolbarButton>
     </ToolbarGroup>
 
-    <ToolbarTitle {title} {onEnter}>
+    <ToolbarTitle show={showNoteActions}>
+        <EditableLabel
+            value={title}
+            on:submit={(event) => {
+                dispatchEvent("rename", { newTitle: event.detail })
+            }}
+        />
         <ToolbarSyncIndicator
             show={showNoteActions || !!toolbarError}
             {changesNotSaved}

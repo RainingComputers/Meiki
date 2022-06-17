@@ -1,4 +1,6 @@
 <script lang="ts">
+    // TODO style this if needed
+
     import Markdoc from "@markdoc/markdoc"
 
     export let text: string = ""

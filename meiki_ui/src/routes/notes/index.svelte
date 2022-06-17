@@ -134,7 +134,7 @@
     </Modal>
 
     <AppToolbar
-        title={currentNote?.title || ""}
+        title={currentNote?.title}
         showNoteActions={!!currentNote}
         {explorerActive}
         {editorActive}
