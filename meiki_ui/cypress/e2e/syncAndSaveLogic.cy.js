@@ -112,5 +112,11 @@ describe("Note is saved and synchronized on changes", () => {
             .get("[data-cy='badge']")
             .find("svg")
             .should("have.class", "feather-alert-triangle")
+
+        // Explorer should show toast
+        cy.get("[data-cy='explorer']").should(
+            "contain",
+            "An error has occurred while syncing note, unable to connect to server"
+        )
     })
 })

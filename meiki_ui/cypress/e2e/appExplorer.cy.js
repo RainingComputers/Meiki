@@ -35,12 +35,12 @@ describe("App explorer", () => {
         cy.get(".ace_text-input").first().focus().type(testContent2)
 
         // Select note 1 and assert contents are present
-        cy.contains("testNote1").click()
-        cy.get("[data-cy='renderer']").should("contain.text", testContent1)
+        cy.get("[data-cy='explorer']").contains("testNote1").click()
+        cy.get("[data-cy='renderer']").should("contain", testContent1)
 
         // Select note 2 and assert contents are present
-        cy.contains("testNote2").click()
-        cy.get("[data-cy='renderer']").should("contain.text", testContent2)
+        cy.get("[data-cy='explorer']").contains("testNote2").click()
+        cy.get("[data-cy='renderer']").should("contain", testContent2)
 
         // Select the panel and assert no note is selected
         cy.get("[data-cy='explorer']").click()
@@ -59,18 +59,17 @@ describe("App explorer", () => {
     })
 
     it("Error out with read error", () => {
-        cy.simulateServerDown("/notes/read/*")
         cy.createNote("testNote1")
+        cy.simulateServerDown("/notes/read/*")
 
         cy.visit("/")
 
-        cy.contains("testNote1").click()
+        cy.get("[data-cy='explorer']").contains("testNote1").click()
 
-        cy.get("nav").should("contain.text", "READ ERROR")
-        cy.get("nav")
-            .get("[data-cy='badge']")
-            .find("svg")
-            .should("have.class", "feather-alert-triangle")
+        cy.get("[data-cy='explorer']").should(
+            "contain",
+            "An error has occurred while reading note, unable to connect to server"
+        )
     })
 
     it("Should toggle in and out", () => {

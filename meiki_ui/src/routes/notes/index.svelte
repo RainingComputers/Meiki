@@ -28,14 +28,15 @@
     let editorActive: boolean = true
     let rendererActive: boolean = true
 
-    let explorerError: string = ""
+    let explorerWatermarkError: string = ""
+    let explorerToastError: string = ""
     let toolbarError: string = ""
 
     async function updateNoteList() {
         try {
             noteList = await listNotes()
         } catch (err) {
-            explorerError = formatRequestError(err, "listing notes")
+            explorerWatermarkError = formatRequestError(err, "listing notes")
         }
     }
 
@@ -47,6 +48,7 @@
             }
         } catch (err) {
             toolbarError = "sync error"
+            explorerToastError = formatRequestError(err, "syncing note")
         }
     }
 
@@ -64,7 +66,7 @@
             workbench.setText(noteContent.content)
             editorActive = true
         } catch (err) {
-            toolbarError = "read error"
+            explorerToastError = formatRequestError(err, "reading note")
             currentNote = undefined
         }
     }
@@ -98,8 +100,7 @@
             updateNoteList()
             currentNote.title = event.detail.newTitle
         } catch (err) {
-            // TODO catch this error and show in consistent way
-            console.log(formatRequestError(err, "renaming note"))
+            explorerToastError = formatRequestError(err, "renaming note")
         }
     }
 
@@ -163,7 +164,8 @@
         {#if explorerActive}
             <AppExplorer
                 {noteList}
-                error={explorerError}
+                watermarkError={explorerWatermarkError}
+                toastError={explorerToastError}
                 selectedNoteID={currentNote?.id}
                 on:selectNote={(event) => {
                     selectNote(event.detail.noteID)

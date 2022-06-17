@@ -41,17 +41,22 @@ describe("Rename note", () => {
         cy.contains("[data-cy='explorer']", "renamedNote")
     })
 
-    // TODO: Error
-    // it("Error out in rename if unable to connect to server", () => {
-    //     cy.visit("/")
-    //     cy.simulateServerDown("/notes/create")
+    it("Error out with unable to connect to server", () => {
+        cy.createNote("testNote")
+        cy.visit("/")
+        cy.simulateServerDown("/notes/rename/*")
 
-    //     cy.contains("Create").click()
-    //     cy.get("#enterNoteName").type("testNote")
-    //     cy.contains("Create note").click()
+        // Select the note
+        cy.contains("testNote").click()
 
-    //     cy.contains(
-    //         "An error has occurred while creating note, unable to connect to server"
-    //     ).should("exist")
-    // })
+        // Click on the toolbar title and rename the note
+        cy.get("nav").contains("testNote").click()
+        cy.get("nav").get("input").type("renamedNote").type("{enter}")
+
+        // Assert error
+        cy.get("[data-cy='explorer']").should(
+            "contain",
+            "An error has occurred while renaming note, unable to connect to server"
+        )
+    })
 })
