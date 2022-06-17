@@ -4,11 +4,13 @@
     import Panel from "$cmp/explorer/Panel.svelte"
     import Item from "$cmp/explorer/Item.svelte"
     import Info from "$cmp/explorer/watermark/Info.svelte"
-    import Error from "$cmp/explorer/watermark/Error.svelte"
+    import WatermarkError from "$cmp/explorer/watermark/Error.svelte"
+    import ToastError from "$cmp/explorer/toast/Error.svelte"
 
     export let noteList: Array<NoteInfo>
     export let selectedNoteID: string
-    export let error: string = ""
+    export let watermarkError: string = ""
+    export let toastError: string = ""
 
     const dispatchEvent = createEventDispatcher()
 
@@ -27,7 +29,11 @@
 </script>
 
 <Panel width="20%" onClick={deselectAllNotes}>
-    {#if !error}
+    {#if toastError}
+        <ToastError message={toastError} />
+    {/if}
+
+    {#if !watermarkError}
         {#each noteList as item (item.id)}
             {#if item.id == selectedNoteID}
                 <Item
@@ -53,6 +59,6 @@
             />
         {/if}
     {:else}
-        <Error message={error} />
+        <WatermarkError message={watermarkError} />
     {/if}
 </Panel>
