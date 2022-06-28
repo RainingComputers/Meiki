@@ -14,7 +14,7 @@
     import ToolbarSyncIndicator from "$cmp/app/toolbar/SyncIndicator.svelte"
     import EditableLabel from "$cmp/EditableLabel.svelte"
 
-    export let title: string = "hello"
+    export let title: string
 
     export let explorerActive: boolean
     export let editorActive: boolean
