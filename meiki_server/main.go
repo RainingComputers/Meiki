@@ -26,6 +26,7 @@ func getEnv(key, defaultValue string) string {
 func run() error {
 	databaseName := getEnv("MEIKI_DATABASE_NAME", "meiki")
 	databaseURL := getEnv("MEIKI_DATABASE_URL", "mongodb://root:example@localhost:27017")
+	corsOriginURL := getEnv("CORS_ORIGIN_URL", "*")
 
 	// log.Info("connecting to database URL", zap.String("databaseURL", databaseURL))
 
@@ -56,7 +57,7 @@ func run() error {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"},
+		AllowOrigins:     []string{corsOriginURL},
 		AllowMethods:     []string{"*", "DELETE", "PUT"},
 		AllowHeaders:     []string{"Origin, Content-Type, Access-Control-Allow-Headers", "X-Username", "X-Token"},
 		AllowCredentials: true,
