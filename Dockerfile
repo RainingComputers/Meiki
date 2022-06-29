@@ -19,8 +19,8 @@ RUN go build -o meiki
 
 # COPY --from=build /meiki /meiki
 
-EXPOSE 80
-ENV PORT=80
+EXPOSE 443
+ENV PORT=443
 
 # ENV MEIKI_DATABASE_URL
 
