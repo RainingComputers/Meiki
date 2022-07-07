@@ -28,7 +28,7 @@
     }
 </script>
 
-<Panel width="20%" onClick={deselectAllNotes}>
+<Panel widthPercentage={25} onClick={deselectAllNotes}>
     {#if toastError}
         <ToastError message={toastError} />
     {/if}
