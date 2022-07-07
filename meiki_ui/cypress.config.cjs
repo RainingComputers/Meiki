@@ -12,4 +12,5 @@ module.exports = defineConfig({
         baseUrl: "http://localhost:3000",
         excludeSpecPattern: "**/examples/**",
     },
+    pageLoadTimeout: 10000
 })
