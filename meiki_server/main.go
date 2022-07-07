@@ -26,7 +26,7 @@ func getEnv(key, defaultValue string) string {
 func run() error {
 	databaseName := getEnv("MEIKI_DATABASE_NAME", "meiki")
 	databaseURL := getEnv("MEIKI_DATABASE_URL", "mongodb://root:example@localhost:27017")
-	corsOriginURL := getEnv("CORS_ORIGIN_URL", "*")
+	corsOriginURL := getEnv("CORS_ORIGIN_URL", "http://localhost:3000")
 
 	// log.Info("connecting to database URL", zap.String("databaseURL", databaseURL))
 
