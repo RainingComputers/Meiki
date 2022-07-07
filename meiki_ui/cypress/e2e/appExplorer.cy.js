@@ -81,4 +81,16 @@ describe("App explorer", () => {
         cy.get("[data-cy='sidebar']").click()
         cy.get("[data-cy='explorer']").should("be.visible")
     })
+
+    it("Should resize the app explorer correctly", () => {
+        cy.visit("/notes")
+
+        cy.get("[data-cy='explorer']").should("be.visible")
+        cy.get("[data-cy='explorer-expander']")
+            .should("be.visible")
+            .trigger("mousedown")
+            .trigger("mousemove", { which: 1, pageX: 500 })
+        cy.get("[data-cy='explorer'").invoke("width").should("eq", 500)
+        cy.get("[data-cy='explorer'").trigger("mouseup")
+    })
 })

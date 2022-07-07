@@ -35,7 +35,7 @@
     <span class="py-10" />
 </div>
 <div
-    id="explorer-expander"
+    data-cy="explorer-expander"
     class=" cursor-col-resize h-full border-blue-600 border-2"
     on:mousedown={startExpand}
     on:mousemove={expand}
