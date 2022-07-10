@@ -48,6 +48,9 @@ jobs:
               sleep 2; 
             done
           done
+      - name: Install dependencies for server
+        working-directory: meiki_server
+        run: go get
       - name: Start tests
         working-directory: meiki_server
         run: |
