@@ -58,6 +58,10 @@ Cypress.Commands.add("login", () => {
     cy.cleanNotes()
 })
 
+Cypress.Commands.add("logout", () => {
+    cy.testRequest("POST", "/auth/logout", testAuthCreds, false)
+})
+
 Cypress.Commands.add("createNote", (title) => {
     cy.testRequest("POST", "/notes/create", { title })
 })

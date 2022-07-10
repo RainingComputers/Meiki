@@ -92,5 +92,8 @@ describe("App explorer", () => {
             .trigger("mousemove", { which: 1, pageX: 500 })
         cy.get("[data-cy='explorer'").invoke("width").should("eq", 500)
         cy.get("[data-cy='explorer'").trigger("mouseup")
+
+        cy.reload()
+        cy.get("[data-cy='explorer'").invoke("width").should("eq", 500)
     })
 })
