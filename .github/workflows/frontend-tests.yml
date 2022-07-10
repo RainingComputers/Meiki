@@ -48,16 +48,17 @@ jobs:
               sleep 2; 
             done
           done
-      - name: Start server
+      - name: Start tests
         working-directory: meiki_server
         run: |
-          go run main.go </dev/null &>/dev/null &
-          sleep 10
-      - name: Start UI
-        working-directory: meiki_ui
-        run: |
-          npm run dev </dev/null &>/dev/null &
-          sleep 5 
-      - name: Run cypress
-        working-directory: meiki_ui
-        run: npx cypress run
+          go run main.go & sleep 10 && cd ../meiki_ui && npm run dev & sleep 10 && npx cypress run
+      #     </dev/null &>/dev/null &
+      #     sleep 10
+      # - name: Start UI
+      #   working-directory: meiki_ui
+      #   run: |
+      #     npm run dev </dev/null &>/dev/null &
+      #     sleep 5 
+      # - name: Run cypress
+      #   working-directory: meiki_ui
+      #   run: npx cypress run
