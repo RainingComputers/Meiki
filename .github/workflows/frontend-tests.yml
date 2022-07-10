@@ -1,29 +1,7 @@
-name: Frontend code formatting, linting and tests
+name: Frontend tests
 on: push
 
 jobs:
-  ui-code-check:
-    name: UI code formatting and linting
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Set node version
-        id: set_node_version
-        run: echo "::set-output name=version::`cat .nvmrc`"
-      - name: Setup node
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ steps.set_node_version.outputs.version }}
-      - name: Install dependencies
-        run: npm i
-        working-directory: meiki_ui
-      - name: Run svelte-check
-        run: npm run check
-        working-directory: meiki_ui
-      - name: Run prettier
-        run: npm run lint
-        working-directory: meiki_ui
   ui-cypress-tests:
     name: Run cypress tests
     runs-on: ubuntu-latest
@@ -37,9 +15,19 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ steps.set_node_version.outputs.version }}
+      - name: Setup go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '^1.17.5' 
       - name: Install dependencies
         working-directory: meiki_ui
         run: npm i
+      - name: Install dependencies for server
+        working-directory: meiki_server
+        run: go get
+      - name: Start test services
+        run: docker-compose -f test_services.yml up -d
+        working-directory: meiki_server
       - name: Wait for test services to be healthy
         timeout-minutes: 5
         run: |
@@ -48,20 +36,16 @@ jobs:
               sleep 2; 
             done
           done
-      - name: Install dependencies for server
-        working-directory: meiki_server
-        run: go get
-      - name: Start tests
+      - name: Start server
         working-directory: meiki_server
         run: |
-          go run main.go & sleep 10 && cd ../meiki_ui && npm run dev & sleep 10 && npx cypress run
-      #     </dev/null &>/dev/null &
-      #     sleep 10
-      # - name: Start UI
-      #   working-directory: meiki_ui
-      #   run: |
-      #     npm run dev </dev/null &>/dev/null &
-      #     sleep 5 
-      # - name: Run cypress
-      #   working-directory: meiki_ui
-      #   run: npx cypress run
+          go run main.go &
+          sleep 25
+      - name: Start UI
+        working-directory: meiki_ui
+        run: |
+          npm run dev &
+          sleep 5 
+      - name: Run cypress
+        working-directory: meiki_ui
+        run: npx cypress run
