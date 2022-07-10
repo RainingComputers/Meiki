@@ -38,6 +38,7 @@ jobs:
         with:
           node-version: ${{ steps.set_node_version.outputs.version }}
       - name: Install dependencies
+        working-directory: meiki_ui
         run: npm i
       - name: Wait for test services to be healthy
         timeout-minutes: 5
