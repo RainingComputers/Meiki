@@ -2,9 +2,9 @@
     import { fly } from "svelte/transition"
 
     export let widthPercentage: number = 25
-    let width: number = (widthPercentage * window.innerWidth) / 100
     export let onClick: () => void = undefined
 
+    let width: number = (widthPercentage * window.innerWidth) / 100
     let expanding = false
 
     function startExpand(event: MouseEvent) {

@@ -28,8 +28,6 @@ func run() error {
 	databaseURL := getEnv("MEIKI_DATABASE_URL", "mongodb://root:example@localhost:27017")
 	corsOriginURL := getEnv("CORS_ORIGIN_URL", "http://localhost:3000")
 
-	// log.Info("connecting to database URL", zap.String("databaseURL", databaseURL))
-
 	ctx := context.Background()
 
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(databaseURL))
