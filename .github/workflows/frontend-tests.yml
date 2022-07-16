@@ -5,6 +5,9 @@ jobs:
   ui-cypress-tests:
     name: Run cypress tests
     runs-on: ubuntu-latest
+    env:
+      SERVER_URL: "localhost:8080"
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -18,7 +21,7 @@ jobs:
       - name: Setup go
         uses: actions/setup-go@v2
         with:
-          go-version: '^1.17.5' 
+          go-version: '^1.17.5'
       - name: Install dependencies
         working-directory: meiki_ui
         run: npm i
@@ -32,20 +35,23 @@ jobs:
         timeout-minutes: 5
         run: |
           for cid in $(docker ps -a -q); do
-            while [ "`docker inspect -f {{.State.Health.Status}} $cid`" != "healthy" ]; do 
-              sleep 2; 
+            while [ "`curl " != "healthy" ]; do
+              sleep 2;
             done
           done
       - name: Start server
         working-directory: meiki_server
+        timeout-minutes: 1
         run: |
           go run main.go &
-          sleep 25
+            while [ "`curl --silent $SERVER_URL/health/`" != '"Healthy"' ]; do
+              sleep 1;
+            done
       - name: Start UI
         working-directory: meiki_ui
         run: |
           npm run dev &
-          sleep 5 
+          sleep 5
       - name: Run cypress
         working-directory: meiki_ui
         run: npx cypress run
