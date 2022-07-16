@@ -1,18 +1,18 @@
 <script lang="ts">
     import { onDestroy, onMount } from "svelte"
 
-    import * as ace from "brace"
-    import "brace/mode/markdown"
-    import "brace/theme/textmate"
-
     export let fontSize: number
     export let editorId: string
     export let onChange: () => void
     export let initialText: string
 
-    let aceEditor: ace.Editor
+    let aceEditor: any
 
-    onMount(() => {
+    onMount(async () => {
+        const ace = (await import("brace")).default
+        ;(await import("brace/mode/markdown")).default
+        ;(await import("brace/theme/textmate")).default
+
         aceEditor = ace.edit(editorId)
         aceEditor.setTheme("ace/theme/textmate")
         aceEditor.session.setMode("ace/mode/markdown")
