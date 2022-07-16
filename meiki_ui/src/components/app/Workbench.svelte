@@ -69,7 +69,7 @@
             </div>
         {/if}
     </div>
-    <div class=" opacity-4 fixed">
+    <div class="opacity-4 fixed" on:dragstart|preventDefault>
         <Logo width="900em" />
     </div>
 </div>
