@@ -7,6 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SERVER_URL: "localhost:8080"
+      FRONTEND_URL: "localhost:3000"
 
     steps:
       - name: Checkout
@@ -35,7 +36,7 @@ jobs:
         timeout-minutes: 5
         run: |
           for cid in $(docker ps -a -q); do
-            while [ "`curl " != "healthy" ]; do
+            while [ "`docker inspect -f {{.State.Health.Status}} $cid`" != "healthy" ]; do
               sleep 2;
             done
           done
@@ -44,14 +45,16 @@ jobs:
         timeout-minutes: 1
         run: |
           go run main.go &
-            while [ "`curl --silent $SERVER_URL/health/`" != '"Healthy"' ]; do
-              sleep 1;
-            done
+          while [ "`curl --silent $SERVER_URL/health/`" != '"Healthy"' ]; do
+            sleep 1;
+          done
       - name: Start UI
         working-directory: meiki_ui
         run: |
           npm run dev &
-          sleep 5
+          while [[ ! "`curl --silent -I $FRONTEND_URL/ | grep 200`" =~ "200" ]]; do
+            sleep 1;
+          done
       - name: Run cypress
         working-directory: meiki_ui
         run: npx cypress run
