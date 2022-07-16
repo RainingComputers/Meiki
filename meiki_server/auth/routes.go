@@ -152,7 +152,7 @@ func getLogoutHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 	}
 }
 
-func getAuthStatus(ctx context.Context, a Auth) gin.HandlerFunc {
+func getAuthStatusHandler(ctx context.Context, a Auth) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.JSON(200, "Authorized")
 	}
@@ -167,5 +167,5 @@ func CreateRoutes(router *gin.RouterGroup, ctx context.Context, auth Auth) {
 	authorizedRouter := router.Group("/")
 	authorizedRouter.Use(GetAuthMiddleware(ctx, auth))
 	authorizedRouter.POST("/logout", getLogoutHandler(ctx, auth))
-	authorizedRouter.GET("/authStatus", getAuthStatus(ctx, auth))
+	authorizedRouter.GET("/authStatus", getAuthStatusHandler(ctx, auth))
 }

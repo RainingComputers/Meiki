@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/RainingComputers/Meiki/auth"
+	"github.com/RainingComputers/Meiki/health"
 	"github.com/RainingComputers/Meiki/log"
 	"github.com/RainingComputers/Meiki/notes"
 	"github.com/gin-contrib/cors"
@@ -61,6 +62,9 @@ func run() error {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
+
+	healthRouter := router.Group("/health")
+	health.CreateRoutes(healthRouter)
 
 	authRouter := router.Group("/auth")
 	auth.CreateRoutes(authRouter, ctx, authController)
