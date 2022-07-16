@@ -20,7 +20,7 @@
     import Renderer from "$cmp/Renderer.svelte"
     import Logo from "$cmp/app/Logo.svelte"
 
-    export let fontSize = 18
+    export let fontSize = 16
     export let showEditorAndRenderer: boolean
     export let editorActive: boolean
     export let rendererActive: boolean

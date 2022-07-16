@@ -1,21 +1,22 @@
 <script lang="ts">
     import { onDestroy, onMount } from "svelte"
 
+    import * as ace from "brace"
+    import "brace/mode/markdown"
+    import "brace/theme/textmate"
+
     export let fontSize: number
     export let editorId: string
     export let onChange: () => void
     export let initialText: string
 
-    let aceEditor: any = undefined
+    let aceEditor: ace.Editor
 
     onMount(() => {
-        // @ts-ignore
-        window.ace.config.set("basePath", "/")
-        // @ts-ignore
-        aceEditor = window.ace.edit(editorId)
-        aceEditor.setTheme("ace/theme/xcode")
+        aceEditor = ace.edit(editorId)
+        aceEditor.setTheme("ace/theme/textmate")
         aceEditor.session.setMode("ace/mode/markdown")
-        aceEditor.setFontSize(fontSize)
+        aceEditor.setFontSize(fontSize + "px")
         aceEditor.setShowPrintMargin(false)
         aceEditor.setHighlightActiveLine(false)
         aceEditor.setValue(initialText, 1)
