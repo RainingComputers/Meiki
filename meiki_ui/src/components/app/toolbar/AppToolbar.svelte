@@ -48,7 +48,7 @@
 
     <ToolbarTitle show={showNoteActions}>
         <EditableLabel
-            value={title}
+            label={title}
             on:submit={(event) => {
                 dispatchEvent("rename", { newTitle: event.detail })
             }}

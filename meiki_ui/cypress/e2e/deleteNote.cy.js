@@ -1,7 +1,6 @@
 /// <reference types="cypress"/>
 
 describe("Delete note", () => {
-
     beforeEach(() => {
         cy.on("uncaught:exception", (_, __) => false)
         cy.login()

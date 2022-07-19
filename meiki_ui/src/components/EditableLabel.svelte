@@ -3,30 +3,30 @@
 
     import { createEventDispatcher } from "svelte"
 
-    export let value: string
+    export let label: string
 
     const dispatch = createEventDispatcher()
     let editing: boolean = false
-    let original: string = value
+    let value: string = label
 
     function edit() {
         editing = true
     }
 
     function submit() {
-        if (value != original && value.length != 0) {
+        if (value != label && value.length != 0) {
             dispatch("submit", value)
-            original = value
+            label = value
         }
 
-        value = original
+        value = label
         editing = false
     }
 
     function keydown(event: KeyboardEvent) {
         if (event.key == "Escape") {
             event.preventDefault()
-            value = original
+            value = label
             editing = false
         }
     }
@@ -48,6 +48,6 @@
     </form>
 {:else}
     <div on:click={edit}>
-        {original}
+        {label}
     </div>
 {/if}
