@@ -30,7 +30,9 @@
     export function focus() {
         // set timeout so the editor does not capture key events like the enter key
         // there is no other way to do this
-        if (aceEditor) setTimeout(() => aceEditor.focus(), 1)
+        setTimeout(() => {
+            if (aceEditor) aceEditor.focus()
+        }, 1)
     }
 
     export function getValue(): string {

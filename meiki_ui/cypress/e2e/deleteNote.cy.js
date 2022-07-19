@@ -7,6 +7,8 @@ describe("Delete note", () => {
     })
 
     it("Delete note flow", () => {
+        cy.on("uncaught:exception", (_, __) => false)
+
         cy.visit("/")
         cy.createNote("testNote")
 

@@ -14,6 +14,7 @@
             await deleteNote(noteInfo.id)
             dispatchEvent("deleted")
         } catch (err) {
+            console.log(err)
             error = formatRequestError(err, "deleting note")
         }
     }
