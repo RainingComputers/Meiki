@@ -1,14 +1,14 @@
 /// <reference types="cypress"/>
 
 describe("Delete note", () => {
+
     beforeEach(() => {
+        cy.on("uncaught:exception", (_, __) => false)
         cy.login()
         cy.cleanNotes()
     })
 
     it("Delete note flow", () => {
-        cy.on("uncaught:exception", (_, __) => false)
-
         cy.visit("/")
         cy.createNote("testNote")
 
