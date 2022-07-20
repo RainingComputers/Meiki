@@ -2,6 +2,7 @@
     import { createEventDispatcher } from "svelte"
     import type { NoteInfo } from "$lib/api/notes"
     import Panel from "$cmp/explorer/Panel.svelte"
+    import NotesItem from "$cmp/app/NotesItem.svelte"
     import Item from "$cmp/explorer/Item.svelte"
     import Info from "$cmp/explorer/watermark/Info.svelte"
     import ExplorerToolbar from "$cmp/app/toolbar/ExplorerToolbar.svelte"
@@ -39,19 +40,21 @@
         {#each noteList as item (item.id)}
             {#if item.id == selectedNoteID}
                 <Item
-                    title={item.title}
-                    checked={true}
                     onClick={() => {
                         selectNote(item.id)
                     }}
-                />
+                    checked={true}
+                >
+                    <NotesItem title={item.title} />
+                </Item>
             {:else}
                 <Item
-                    title={item.title}
                     onClick={() => {
                         selectNote(item.id)
                     }}
-                />
+                >
+                    <NotesItem title={item.title} />
+                </Item>
             {/if}
         {/each}
 
