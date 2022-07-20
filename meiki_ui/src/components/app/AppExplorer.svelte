@@ -20,6 +20,10 @@
         dispatchEvent("deselectAllNotes")
     }
 
+    function deleteNote(item: NoteInfo) {
+        dispatchEvent("deleteNote", { item })
+    }
+
     function selectNote(id: string) {
         if (selectedNoteID === id) {
             deselectAllNotes()
@@ -31,31 +35,24 @@
 </script>
 
 <Panel widthPercentage={25} onClick={deselectAllNotes}>
-    <ExplorerToolbar on:create />
+    <ExplorerToolbar on:createNote />
     {#if toastError}
         <ToastError message={toastError} />
     {/if}
 
     {#if !watermarkError}
         {#each noteList as item (item.id)}
-            {#if item.id == selectedNoteID}
-                <Item
-                    onClick={() => {
-                        selectNote(item.id)
-                    }}
-                    checked={true}
-                >
-                    <NotesItem title={item.title} />
-                </Item>
-            {:else}
-                <Item
-                    onClick={() => {
-                        selectNote(item.id)
-                    }}
-                >
-                    <NotesItem title={item.title} />
-                </Item>
-            {/if}
+            <Item
+                onClick={() => {
+                    selectNote(item.id)
+                }}
+                checked={item.id == selectedNoteID}
+            >
+                <NotesItem
+                    title={item.title}
+                    onTrashClick={() => deleteNote(item)}
+                />
+            </Item>
         {/each}
 
         {#if !noteList.length}

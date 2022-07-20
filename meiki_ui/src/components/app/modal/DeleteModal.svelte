@@ -9,7 +9,7 @@
 
     const dispatchEvent = createEventDispatcher()
 
-    async function deleteCurrentNote() {
+    async function deleteSelectedNote() {
         try {
             await deleteNote(noteInfo.id)
             dispatchEvent("deleted")
@@ -27,6 +27,6 @@
 <ConfirmModal
     {error}
     message={`Are you sure you want to delete ${noteInfo.title}?`}
-    onYes={deleteCurrentNote}
+    onYes={deleteSelectedNote}
     onNo={cancelDelete}
 />

@@ -21,6 +21,7 @@
     let deleteModal: Modal
 
     let currentNote: NoteInfo
+    let noteToDelete: NoteInfo
     let noteList: Array<NoteInfo> = []
     let changesNotSaved: boolean = false
 
@@ -86,7 +87,7 @@
 
     function onNoteDeleted() {
         updateNoteList()
-        currentNote = undefined
+        if (currentNote.id == noteToDelete.id) currentNote = undefined
         deleteModal.closeModal()
     }
 
@@ -122,7 +123,7 @@
 
     <Modal bind:this={deleteModal}>
         <DeleteModal
-            noteInfo={currentNote}
+            noteInfo={noteToDelete}
             on:deleted={onNoteDeleted}
             on:deleteCancelled={() => {
                 deleteModal.closeModal()
@@ -152,16 +153,17 @@
         on:profile={() => {
             logoutModal.showModal()
         }}
-        on:delete={() => {
-            deleteModal.showModal()
-        }}
         on:rename={onRename}
     />
     <div class="flex flex-row flex-grow h-full w-full">
         {#if explorerActive}
             <AppExplorer
-                on:create={() => {
+                on:createNote={() => {
                     createModal.showModal()
+                }}
+                on:deleteNote={(event) => {
+                    noteToDelete = event.detail.item
+                    deleteModal.showModal()
                 }}
                 {noteList}
                 watermarkError={explorerWatermarkError}

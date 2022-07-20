@@ -40,9 +40,6 @@
         <ToolbarButton isButtonChecked={rendererActive} name="render" on:render>
             <PreviewIcon />
         </ToolbarButton>
-        <ToolbarButton name="delete" on:delete>
-            <TrashIcon />
-        </ToolbarButton>
     </ToolbarGroup>
 
     <ToolbarTitle show={showNoteActions}>

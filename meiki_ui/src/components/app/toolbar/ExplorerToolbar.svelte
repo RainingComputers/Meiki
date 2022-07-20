@@ -9,7 +9,7 @@
     <Entry showLabel={false} label="search" />
     <div
         class="  hover:cursor-pointer m-auto "
-        on:click={() => dispatchEvent("create")}
+        on:click={() => dispatchEvent("createNote")}
     >
         +
     </div>
