@@ -10,7 +10,6 @@
     import PreviewIcon from "$cmp/icons/PreviewIcon.svelte"
     import TrashIcon from "$cmp/icons/TrashIcon.svelte"
     import UserIcon from "$cmp/icons/UserIcon.svelte"
-    import ToolBarAction from "$cmp/toolbar/Action.svelte"
     import ToolbarSyncIndicator from "$cmp/app/toolbar/SyncIndicator.svelte"
     import EditableLabel from "$cmp/EditableLabel.svelte"
 
@@ -59,9 +58,6 @@
             error={toolbarError}
         />
     </ToolbarTitle>
-
-    <ToolBarAction label="Create" onClick={() => dispatchEvent("create")} />
-    <span class="px-0.5" />
     <ToolbarButton name="profile" label={username} on:profile>
         <UserIcon />
     </ToolbarButton>

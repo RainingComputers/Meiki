@@ -1,6 +1,6 @@
 /// <reference types="cypress"/>
 
-describe("Rename note", () => {
+describe("Create note", () => {
     beforeEach(() => {
         cy.login()
         cy.cleanNotes()
@@ -9,7 +9,7 @@ describe("Rename note", () => {
     it("Create note flow", () => {
         cy.visit("/")
 
-        cy.contains("Create").click()
+        cy.contains("+").click()
         cy.get("#enterNoteName").type("testNote")
         cy.contains("Create note").click()
         cy.contains("testNote").should("exist")
@@ -18,7 +18,7 @@ describe("Rename note", () => {
     it("Do not create note if clicked outside modal", () => {
         cy.visit("/")
 
-        cy.contains("Create").click()
+        cy.contains("+").click()
         cy.get("#enterNoteName").type("testNote")
         cy.get("[data-cy='modalOverlay']").click()
         cy.contains("testNote").should("not.exist")
@@ -28,7 +28,7 @@ describe("Rename note", () => {
         cy.visit("/")
         cy.simulateServerDown("/notes/create")
 
-        cy.contains("Create").click()
+        cy.contains("+").click()
         cy.get("#enterNoteName").type("testNote")
         cy.contains("Create note").click()
 

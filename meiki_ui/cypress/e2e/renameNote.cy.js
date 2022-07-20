@@ -15,7 +15,7 @@ describe("Rename note", () => {
 
         // Click on the toolbar title and rename the note
         cy.get("nav").contains("testNote").click()
-        cy.get("nav").get("input").type("renamedNote").type("{enter}")
+        cy.get("nav").find("input").type("renamedNote").type("{enter}")
 
         // Assert name has changed
         cy.get("nav").contains("renamedNote")
@@ -31,7 +31,7 @@ describe("Rename note", () => {
 
         // Click on the toolbar title and rename the note
         cy.get("nav").contains("testNote").click()
-        cy.get("nav").get("input").type("renamedNote")
+        cy.get("nav").find("input").type("renamedNote")
 
         // Click outside the title
         cy.get("textarea").focus()
@@ -51,7 +51,7 @@ describe("Rename note", () => {
 
         // Click on the toolbar title and rename the note
         cy.get("nav").contains("testNote").click()
-        cy.get("nav").get("input").type("renamedNote").type("{enter}")
+        cy.get("nav").find("input").type("renamedNote").type("{enter}")
 
         // Assert error
         cy.get("[data-cy='explorer']").should(

@@ -149,9 +149,6 @@
         on:render={() => {
             rendererActive = !rendererActive
         }}
-        on:create={() => {
-            createModal.showModal()
-        }}
         on:profile={() => {
             logoutModal.showModal()
         }}
@@ -163,6 +160,9 @@
     <div class="flex flex-row flex-grow h-full w-full">
         {#if explorerActive}
             <AppExplorer
+                on:create={() => {
+                    createModal.showModal()
+                }}
                 {noteList}
                 watermarkError={explorerWatermarkError}
                 toastError={explorerToastError}

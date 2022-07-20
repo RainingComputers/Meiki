@@ -16,6 +16,7 @@
     export let label: string
     export let password: boolean = false
     export let onEnter: () => void = undefined
+    export let showLabel: boolean = true
 
     let inputEl: HTMLInputElement
     const type: string = password ? "password" : "text"
@@ -37,8 +38,10 @@
     }
 </script>
 
-<div class=" flex flex-col w-full gap-1">
-    <label for={id} class="text-sm px-1">{label}</label>
+<div class=" flex flex-col w-full gap-1a">
+    <label for={id} class="text-sm px-1" class:hidden={!showLabel}>
+        {label}
+    </label>
 
     <input
         bind:this={inputEl}
