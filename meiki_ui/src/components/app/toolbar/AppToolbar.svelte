@@ -8,7 +8,6 @@
     import SidebarIcon from "$cmp/icons/SidebarIcon.svelte"
     import EditIcon from "$cmp/icons/EditIcon.svelte"
     import PreviewIcon from "$cmp/icons/PreviewIcon.svelte"
-    import TrashIcon from "$cmp/icons/TrashIcon.svelte"
     import UserIcon from "$cmp/icons/UserIcon.svelte"
     import ToolbarSyncIndicator from "$cmp/app/toolbar/SyncIndicator.svelte"
     import EditableLabel from "$cmp/EditableLabel.svelte"

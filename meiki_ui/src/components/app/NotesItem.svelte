@@ -1,12 +1,16 @@
 <script lang="ts">
     import ItemsIcon from "$cmp/icons/ItemsIcon.svelte"
     import TrashIcon from "$cmp/icons/TrashIcon.svelte"
+
     export let title: string
     export let onTrashClick = () => {}
+
     let trashInvisible = true
+
     const showTrash = () => {
         trashInvisible = false
     }
+
     const hideTrash = () => {
         trashInvisible = true
     }
@@ -20,7 +24,9 @@
     <span class="flex-shrink-0 w-5 h-5">
         <ItemsIcon />
     </span>
+
     <span class="flex-grow">{title}</span>
+
     <span
         class="flex-shrink-0 w-5 h-5"
         class:hidden={trashInvisible}
