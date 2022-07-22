@@ -135,46 +135,47 @@
         <CreateModal on:noteCreated={onNoteCreated} />
     </Modal>
 
-    <AppToolbar
-        title={currentNote?.title}
-        showNoteActions={!!currentNote}
-        {explorerActive}
-        {editorActive}
-        {rendererActive}
-        {changesNotSaved}
-        {toolbarError}
-        on:sidebar={toggleExplorer}
-        on:edit={() => {
-            editorActive = !editorActive
-        }}
-        on:render={() => {
-            rendererActive = !rendererActive
-        }}
-        on:profile={() => {
-            logoutModal.showModal()
-        }}
-        on:rename={onRename}
-    />
-    <div class="flex flex-row flex-grow h-full w-full">
-        {#if explorerActive}
-            <AppExplorer
-                on:createNote={() => {
-                    createModal.showModal()
-                }}
-                on:deleteNote={(event) => {
-                    noteToDelete = event.detail.item
-                    deleteModal.showModal()
-                }}
-                {noteList}
-                watermarkError={explorerWatermarkError}
-                toastError={explorerToastError}
-                selectedNoteID={currentNote?.id}
-                on:selectNote={(event) => {
-                    selectNote(event.detail.noteID)
-                }}
-                on:deselectAllNotes={deselectAllNotes}
-            />
-        {/if}
+    {#if explorerActive}
+        <AppExplorer
+            on:createNote={() => {
+                createModal.showModal()
+            }}
+            on:deleteNote={(event) => {
+                noteToDelete = event.detail.item
+                deleteModal.showModal()
+            }}
+            {noteList}
+            watermarkError={explorerWatermarkError}
+            toastError={explorerToastError}
+            selectedNoteID={currentNote?.id}
+            on:selectNote={(event) => {
+                selectNote(event.detail.noteID)
+            }}
+            on:deselectAllNotes={deselectAllNotes}
+        />
+    {/if}
+
+    <div class="flex flex-col flex-grow h-full w-full">
+        <AppToolbar
+            title={currentNote?.title}
+            showNoteActions={!!currentNote}
+            {explorerActive}
+            {editorActive}
+            {rendererActive}
+            {changesNotSaved}
+            {toolbarError}
+            on:sidebar={toggleExplorer}
+            on:edit={() => {
+                editorActive = !editorActive
+            }}
+            on:render={() => {
+                rendererActive = !rendererActive
+            }}
+            on:profile={() => {
+                logoutModal.showModal()
+            }}
+            on:rename={onRename}
+        />
 
         <Workbench
             bind:this={workbench}

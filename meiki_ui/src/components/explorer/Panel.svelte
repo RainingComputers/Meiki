@@ -33,22 +33,22 @@
 
 <svelte:window on:mouseup={stopExpand} on:mousemove={expand} />
 
-<div
-    class=" bg-gray-50  flex flex-col gap-1 h-full overflow-y-scroll"
-    style="min-width: 200px; width: {width}px"
-    data-cy="explorer"
-    on:click={onClick}
-    transition:fly|local={{ x: -400, duration: 200, opacity: 1 }}
->
-    <slot />
-    <span class="py-10" />
-</div>
-<div
-    data-cy="explorer-expander"
-    class=" cursor-col-resize h-full border-gray-200 border"
-    on:mousedown={startExpand}
-    on:mousemove={expand}
-/>
+<div class="flex flex-row h-full">
+    <div
+        class=" bg-gray-50  flex flex-col gap-1 h-full overflow-y-scroll py-1"
+        style="min-width: 350px; width: {width}px"
+        data-cy="explorer"
+        on:click={onClick}
+        transition:fly|local={{ x: -400, duration: 200, opacity: 1 }}
+    >
+        <slot />
+        <span class="py-10" />
+    </div>
 
-<style>
-</style>
+    <div
+        data-cy="explorer-expander"
+        class=" cursor-col-resize h-full border-gray-200 border"
+        on:mousedown={startExpand}
+        on:mousemove={expand}
+    />
+</div>

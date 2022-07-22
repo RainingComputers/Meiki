@@ -36,6 +36,7 @@
 
 <Panel widthPercentage={25} onClick={deselectAllNotes}>
     <ExplorerToolbar on:createNote />
+
     {#if toastError}
         <ToastError message={toastError} />
     {/if}
