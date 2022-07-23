@@ -13,6 +13,6 @@
 </script>
 
 <Toolbar {width} expand={false}>
-    <Searchbar />
+    <Searchbar on:change />
     <Button label="New" onClick={() => dispatchEvent("createNote")} />
 </Toolbar>

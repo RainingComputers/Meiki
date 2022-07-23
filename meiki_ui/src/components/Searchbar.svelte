@@ -8,6 +8,7 @@
     <input
         class=" bg-white placeholder-gray-400 outline-none border-0 flex-grow min-w-0"
         placeholder="Search"
+        on:change
     />
     <span class="stroke-gray-400 w-6 h-6">
         <SearchIcon />

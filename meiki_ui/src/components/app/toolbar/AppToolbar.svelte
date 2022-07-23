@@ -26,7 +26,7 @@
     const dispatchEvent = createEventDispatcher()
 </script>
 
-<Toolbar expand={true}>
+<Toolbar>
     <ToolbarButton isButtonChecked={explorerActive} name="sidebar" on:sidebar>
         <SidebarIcon />
     </ToolbarButton>

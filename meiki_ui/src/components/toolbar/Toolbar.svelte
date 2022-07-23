@@ -2,7 +2,7 @@
     import { fly } from "svelte/transition"
 
     export let width: string = ""
-    export let expand: boolean = false
+    export let expand: boolean = true
 </script>
 
 <nav
