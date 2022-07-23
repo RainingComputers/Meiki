@@ -5,7 +5,6 @@
     import NotesItem from "$cmp/app/NotesItem.svelte"
     import Item from "$cmp/explorer/Item.svelte"
     import Info from "$cmp/explorer/watermark/Info.svelte"
-    import ExplorerToolbar from "$cmp/app/toolbar/ExplorerToolbar.svelte"
     import WatermarkError from "$cmp/explorer/watermark/Error.svelte"
     import ToastError from "$cmp/explorer/toast/Error.svelte"
 
@@ -34,9 +33,7 @@
     }
 </script>
 
-<Panel widthPercentage={25} onClick={deselectAllNotes}>
-    <ExplorerToolbar on:createNote />
-
+<Panel defaultWidthPercentage={25} onClick={deselectAllNotes} on:resize>
     {#if toastError}
         <ToastError message={toastError} />
     {/if}

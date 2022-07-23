@@ -14,11 +14,13 @@
     import LogoutModal from "$cmp/app/modal/LogoutModal.svelte"
     import CreateModal from "$cmp/app/modal/CreateModal.svelte"
     import DeleteModal from "$cmp/app/modal/DeleteModal.svelte"
+    import ExplorerToolbar from "$cmp/app/toolbar/ExplorerToolbar.svelte"
 
     let workbench: Workbench
     let logoutModal: Modal
     let createModal: Modal
     let deleteModal: Modal
+    let explorerToolbar: ExplorerToolbar
 
     let currentNote: NoteInfo
     let noteToDelete: NoteInfo
@@ -135,27 +137,16 @@
         <CreateModal on:noteCreated={onNoteCreated} />
     </Modal>
 
-    {#if explorerActive}
-        <AppExplorer
-            on:createNote={() => {
-                createModal.showModal()
-            }}
-            on:deleteNote={(event) => {
-                noteToDelete = event.detail.item
-                deleteModal.showModal()
-            }}
-            {noteList}
-            watermarkError={explorerWatermarkError}
-            toastError={explorerToastError}
-            selectedNoteID={currentNote?.id}
-            on:selectNote={(event) => {
-                selectNote(event.detail.noteID)
-            }}
-            on:deselectAllNotes={deselectAllNotes}
-        />
-    {/if}
+    <div class="flex flex-row w-full">
+        {#if explorerActive}
+            <ExplorerToolbar
+                on:createNote={() => {
+                    createModal.showModal()
+                }}
+                bind:this={explorerToolbar}
+            />
+        {/if}
 
-    <div class="flex flex-col flex-grow h-full w-full">
         <AppToolbar
             title={currentNote?.title}
             showNoteActions={!!currentNote}
@@ -176,6 +167,29 @@
             }}
             on:rename={onRename}
         />
+    </div>
+
+    <div class="flex flex-row flex-grow h-full w-full">
+        {#if explorerActive}
+            <AppExplorer
+                on:deleteNote={(event) => {
+                    noteToDelete = event.detail.item
+                    deleteModal.showModal()
+                }}
+                {noteList}
+                watermarkError={explorerWatermarkError}
+                toastError={explorerToastError}
+                selectedNoteID={currentNote?.id}
+                on:selectNote={(event) => {
+                    selectNote(event.detail.noteID)
+                }}
+                on:deselectAllNotes={deselectAllNotes}
+                on:resize={(event) => {
+                    console.log(event.detail.width)
+                    explorerToolbar.setWidth(event.detail.width)
+                }}
+            />
+        {/if}
 
         <Workbench
             bind:this={workbench}

@@ -1,19 +1,26 @@
 <script lang="ts">
     import { fly } from "svelte/transition"
+    import { createEventDispatcher, onMount } from "svelte"
 
     const STORE_KEY = "explorer-width"
 
-    export let widthPercentage: number = 25
+    export let defaultWidthPercentage: number = 25
     export let onClick: () => void = undefined
 
     function getInitialWidth() {
-        const defaultWidth = (widthPercentage * window.innerWidth) / 100
+        const defaultWidth = (defaultWidthPercentage * window.innerWidth) / 100
         const storedWidth = parseFloat(localStorage.getItem(STORE_KEY))
         return storedWidth || defaultWidth
     }
 
     let width: number = getInitialWidth()
     let expanding = false
+
+    const dispatch = createEventDispatcher()
+
+    function dispatchResize() {
+        dispatch("resize", { width: `${width}px` })
+    }
 
     function startExpand(event: MouseEvent) {
         expanding = true
@@ -28,7 +35,10 @@
     function expand(event: MouseEvent) {
         if (!expanding) return
         width = event.pageX
+        dispatchResize()
     }
+
+    onMount(dispatchResize)
 </script>
 
 <svelte:window on:mouseup={stopExpand} on:mousemove={expand} />

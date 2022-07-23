@@ -1,12 +1,18 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte"
     import Searchbar from "$cmp/Searchbar.svelte"
-    import Action from "$cmp/toolbar/Action.svelte"
+    import Button from "$cmp/Button.svelte"
+    import Toolbar from "$cmp/toolbar/Toolbar.svelte"
 
     const dispatchEvent = createEventDispatcher()
+    let width = "25%"
+
+    export function setWidth(newWidth: string) {
+        width = newWidth
+    }
 </script>
 
-<div class="flex flex-row px-4 py-3 gap-2">
+<Toolbar {width} expand={false}>
     <Searchbar />
-    <Action label="+" onClick={() => dispatchEvent("createNote")} />
-</div>
+    <Button label="New" onClick={() => dispatchEvent("createNote")} />
+</Toolbar>
