@@ -42,17 +42,19 @@
     </ToolbarGroup>
 
     <ToolbarTitle show={showNoteActions}>
-        <EditableLabel
-            label={title}
-            on:submit={(event) => {
-                dispatchEvent("rename", { newTitle: event.detail })
-            }}
-        />
-        <ToolbarSyncIndicator
-            show={showNoteActions || !!toolbarError}
-            {changesNotSaved}
-            error={toolbarError}
-        />
+        <div data-cy="noteTitle">
+            <EditableLabel
+                label={title}
+                on:submit={(event) => {
+                    dispatchEvent("rename", { newTitle: event.detail })
+                }}
+            />
+            <ToolbarSyncIndicator
+                show={showNoteActions || !!toolbarError}
+                {changesNotSaved}
+                error={toolbarError}
+            />
+        </div>
     </ToolbarTitle>
     <ToolbarButton name="profile" label={username} on:profile>
         <UserIcon />
