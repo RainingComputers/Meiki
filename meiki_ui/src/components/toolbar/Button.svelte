@@ -17,7 +17,7 @@
 </script>
 
 <div
-    class="flex gap-2 flex-row items-center hover:bg-slate-600 rounded-xl p-2"
+    class="flex gap-2 flex-row items-center hover:bg-slate-600 rounded-xl p-2 cursor-pointer"
     class:isChecked={isButtonChecked}
     on:click={onClick}
     data-cy={name}
