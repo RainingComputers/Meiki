@@ -31,6 +31,7 @@
         class="flex-shrink-0 w-5 h-5 cursor-pointer"
         class:hidden={trashInvisible}
         on:click|stopPropagation={onTrashClick}
+        data-cy="delete"
     >
         <TrashIcon />
     </span>

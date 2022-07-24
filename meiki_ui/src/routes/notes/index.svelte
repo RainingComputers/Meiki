@@ -87,7 +87,7 @@
 
     function onNoteDeleted() {
         updateNoteList()
-        if (currentNote.id == noteToDelete.id) currentNote = undefined
+        if (currentNote?.id === noteToDelete.id) currentNote = undefined
         deleteModal.closeModal()
     }
 
