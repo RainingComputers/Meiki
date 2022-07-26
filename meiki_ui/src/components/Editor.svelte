@@ -1,4 +1,6 @@
 <script lang="ts">
+    import type AceAjax from "brace"
+
     import { onDestroy, onMount } from "svelte"
 
     export let fontSize: number
@@ -6,7 +8,7 @@
     export let onChange: () => void
     export let initialText: string
 
-    let aceEditor: any
+    let aceEditor: AceAjax.Editor
 
     onMount(async () => {
         const ace = (await import("brace")).default
@@ -21,6 +23,7 @@
         aceEditor.setHighlightActiveLine(false)
         aceEditor.setValue(initialText, 1)
         aceEditor.getSession().on("change", onChange)
+        aceEditor.getSession().setUseWrapMode(true)
     })
 
     onDestroy(() => {
