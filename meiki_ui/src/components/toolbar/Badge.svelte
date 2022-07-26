@@ -7,18 +7,18 @@
     function getFontClass(type: BadgeType) {
         switch (type) {
             case BadgeType.INFO:
-                return "text-gray-200 font-light"
+                return "text-content-title font-light"
             case BadgeType.ERROR:
-                return "text-red-500 font-bold"
+                return "text-content-error font-bold"
         }
     }
 
     function getIconClass(type: BadgeType) {
         switch (type) {
             case BadgeType.INFO:
-                return "stroke-gray-200"
+                return "stroke-content-title"
             case BadgeType.ERROR:
-                return "stroke-red-500"
+                return "stroke-content-error"
         }
     }
 </script>
@@ -34,7 +34,7 @@
     )}"
     data-cy="badge"
 >
-    <span class="stroke-gray-200 h-3 w-3 {getIconClass(type)}">
+    <span class="stroke-content-title h-3 w-3 {getIconClass(type)}">
         <slot />
     </span>
     {label}

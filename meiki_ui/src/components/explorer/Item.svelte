@@ -2,12 +2,12 @@
     export let onClick = () => {}
     export let checked = false
     $: checkedClass = checked
-        ? "bg-blue-500 text-white stroke-white"
-        : " text-slate-900 stroke-slate-900"
+        ? "bg-background-primary-focus text-content-primary stroke-content-primary"
+        : "text-info stroke-info"
 </script>
 
 <div
-    class=" {checkedClass} hover:bg-blue-500 hover:text-white hover:stroke-white "
+    class=" {checkedClass} hover:bg-background-primary-focus hover:text-content-primary hover:stroke-content-primary "
     on:click|stopPropagation={onClick}
 >
     <slot />

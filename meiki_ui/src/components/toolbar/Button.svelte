@@ -17,16 +17,16 @@
 </script>
 
 <div
-    class="flex gap-2 flex-row items-center hover:bg-slate-600 rounded-xl p-2 cursor-pointer"
+    class="flex gap-2 flex-row items-center hover:bg-background-toolbar-focus rounded-xl p-2 cursor-pointer"
     class:isChecked={isButtonChecked}
     on:click={onClick}
     data-cy={name}
 >
     {#if label}
-        <span class="text-gray-200">{label}</span>
+        <span class="text-content-title">{label}</span>
     {/if}
 
-    <span class="stroke-gray-200 h-6 w-6">
+    <span class="stroke-content-title h-6 w-6">
         <slot />
     </span>
 </div>

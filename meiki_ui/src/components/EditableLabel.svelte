@@ -40,7 +40,7 @@
 {#if editing}
     <form on:submit|preventDefault={submit} on:keydown={keydown}>
         <input
-            class="border-none bg-transparent text-inherit focus:outline-none focus:border-blue-500 focus:ring-blue-500 focus:ring-2 rounded-lg px-2"
+            class="border-none bg-transparent text-inherit focus:outline-none focus:border-background-primary-focus focus:ring-background-primary-focus focus:ring-2 rounded-lg px-2"
             bind:value
             on:blur={submit}
             use:focus

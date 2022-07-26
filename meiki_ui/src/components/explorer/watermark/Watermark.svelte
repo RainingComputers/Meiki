@@ -7,9 +7,9 @@
     function getColorClass(type: WatermarkType) {
         switch (type) {
             case WatermarkType.INFO:
-                return "text-slate-900 stroke-slate-900 opacity-30"
+                return "text-info stroke-info opacity-30"
             case WatermarkType.ERROR:
-                return "text-red-900 stroke-red-900 opacity-30"
+                return "text-content-error-watermark stroke-content-error-watermark opacity-30"
         }
     }
 </script>

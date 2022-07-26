@@ -18,7 +18,7 @@
 
 {#if showOverlay}
     <div
-        class="fixed inset-0 bg-gray-600 bg-opacity-60 h-full w-full flex flex-col align-center"
+        class="fixed inset-0 bg-background-overlay bg-opacity-60 h-full w-full flex flex-col align-center"
         class:hidden={!showOverlay}
         class:z-10={showOverlay}
         data-cy="modalOverlay"
