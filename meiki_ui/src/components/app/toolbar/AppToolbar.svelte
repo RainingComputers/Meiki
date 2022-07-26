@@ -42,7 +42,7 @@
     </ToolbarGroup>
 
     <ToolbarTitle show={showNoteActions}>
-        <div data-cy="noteTitle">
+        <div data-cy="noteTitle" class="flex flex-row">
             <EditableLabel
                 label={title}
                 on:submit={(event) => {
