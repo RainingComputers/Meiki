@@ -1,20 +1,18 @@
-<script lang="ts">
-    import { goto } from "$app/navigation"
-    import { onMount } from "svelte"
+<script lang="ts" context="module">
     import { authStatus } from "$lib/api/user"
+    import type { Load } from "@sveltejs/kit"
 
-    let loggedIn: boolean = false
-
-    onMount(async () => {
+    export const load: Load = async () => {
         try {
             await authStatus()
-            loggedIn = true
+            return {}
         } catch {
-            goto(`/login`)
+            return {
+                status: 302,
+                redirect: "/login",
+            }
         }
-    })
+    }
 </script>
 
-{#if loggedIn}
-    <slot />
-{/if}
+<slot />
