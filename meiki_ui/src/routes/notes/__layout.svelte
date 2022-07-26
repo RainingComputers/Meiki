@@ -1,18 +1,20 @@
-<script lang="ts" context="module">
+<script lang="ts">
     import { authStatus } from "$lib/api/user"
-    import type { Load } from "@sveltejs/kit"
+    import { onMount } from "svelte"
+    import { goto } from "$app/navigation"
 
-    export const load: Load = async () => {
+    // Server side Onload doesn't work because we can't get the session token which is on the client side
+    let loggedIn = false
+    onMount(async () => {
         try {
             await authStatus()
-            return {}
+            loggedIn = true
         } catch {
-            return {
-                status: 302,
-                redirect: "/login",
-            }
+            goto(`/login`)
         }
-    }
+    })
 </script>
 
-<slot />
+{#if loggedIn}
+    <slot />
+{/if}
