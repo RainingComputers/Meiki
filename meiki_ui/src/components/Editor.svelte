@@ -24,6 +24,7 @@
         aceEditor.setValue(initialText, 1)
         aceEditor.getSession().on("change", onChange)
         aceEditor.getSession().setUseWrapMode(true)
+        aceEditor.container.style.background = "transparent"
     })
 
     onDestroy(() => {

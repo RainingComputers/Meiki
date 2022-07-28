@@ -53,6 +53,9 @@
 </script>
 
 <div class="flex flex-grow justify-center items-center">
+    <div class="fixed opacity-4 -z-10" on:dragstart|preventDefault>
+        <Logo width="900em" />
+    </div>
     <div class="flex justify-center h-full w-full">
         {#if showEditorAndRenderer}
             <div class={getEditorClass(editorActive, rendererActive)}>
@@ -68,8 +71,5 @@
                 <Renderer {text} />
             </div>
         {/if}
-    </div>
-    <div class="opacity-4 fixed" on:dragstart|preventDefault>
-        <Logo width="900em" />
     </div>
 </div>
