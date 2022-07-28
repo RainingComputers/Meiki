@@ -44,8 +44,14 @@
     async function syncCurrentNote() {
         try {
             if (currentNote) {
+                const text = workbench.getText()
+
+                if (text.length === 0)
+                    console.log("[WARNING] Workbench text was empty")
+
                 await updateNote(currentNote.id, workbench.getText())
                 changesNotSaved = false
+                toolbarError = ""
             }
         } catch (err) {
             toolbarError = "sync error"
