@@ -5,7 +5,7 @@
 </script>
 
 <span
-    class=" text-content-error bg-background-error p-2 rounded-lg border-2 border-border-error drop-shadow-card"
+    class=" text-contentError bg-error p-2 rounded-lg border-2 border-borderError drop-shadow-card"
     class:w-full={fullWidth}
     transition:scale={{ duration: 70, opacity: 1 }}
 >

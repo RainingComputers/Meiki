@@ -4,7 +4,7 @@
 </script>
 
 <div
-    class="w-96 max-h-fit m-auto bg-background-panel border-border-panel rounded-xl flex flex-col py-6 px-6"
+    class="w-96 max-h-fit m-auto bg-panel border-borderPanel rounded-xl flex flex-col py-6 px-6"
 >
     <div class="flex flex-col gap-5">
         {#if error}

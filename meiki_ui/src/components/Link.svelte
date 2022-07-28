@@ -3,4 +3,4 @@
     export let target: string = "#"
 </script>
 
-<a class=" text-background-primary font-bold" href={target}>{text}</a>
+<a class=" text-primary font-bold" href={target}>{text}</a>

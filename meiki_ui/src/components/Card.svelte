@@ -5,7 +5,7 @@
 </script>
 
 <span
-    class=" bg-background-panel border-border-panel border drop-shadow-card "
+    class=" bg-panel border-borderPanel border drop-shadow-card "
     style="width: {width}px;"
     transition:scale={{ duration: 70, opacity: 1 }}
 >

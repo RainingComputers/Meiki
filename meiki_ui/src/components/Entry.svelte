@@ -46,7 +46,7 @@
     <input
         bind:this={inputEl}
         {id}
-        class=" bg-background-secondary-focus focus:outline-none focus:border-background-primary-focus focus:ring-background-primary-focus focus:ring-2 rounded-lg p-2"
+        class=" bg-secondaryFocus focus:outline-none focus:border-primaryFocus focus:ring-primaryFocus focus:ring-2 rounded-lg p-2"
         {type}
         required
         on:keydown={onKeyDown}

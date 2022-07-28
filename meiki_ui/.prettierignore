@@ -10,3 +10,4 @@ node_modules
 todo.txt
 cypress/fixtures
 static/ace/
+tailwind.config.cjs

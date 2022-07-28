@@ -8,11 +8,11 @@
     function getButtonClass(type: ButtonType) {
         switch (type) {
             case ButtonType.HERO:
-                return "bg-background-primary hover:bg-background-primary-focus text-content-primary text-2xl py-4 px-10"
+                return "bg-primary hover:bg-primaryFocus text-contentPrimary text-2xl py-4 px-10"
             case ButtonType.PRIMARY:
-                return "bg-background-primary hover:bg-background-primary-focus text-content-primary py-2 px-5"
+                return "bg-primary hover:bg-primaryFocus text-contentPrimary py-2 px-5"
             case ButtonType.SECONDARY:
-                return "bg-background-secondary hover:bg-background-secondary-focus text-content-secondary py-2 px-5"
+                return "bg-secondary hover:bg-secondaryFocus text-contentSecondary py-2 px-5"
         }
     }
 </script>

@@ -9,7 +9,7 @@
             case WatermarkType.INFO:
                 return "text-info stroke-info opacity-30"
             case WatermarkType.ERROR:
-                return "text-content-error-watermark stroke-content-error-watermark opacity-30"
+                return "text-contentErrorWatermark stroke-contentErrorWatermark opacity-30"
         }
     }
 </script>

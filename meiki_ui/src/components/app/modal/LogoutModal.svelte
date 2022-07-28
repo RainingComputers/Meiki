@@ -21,7 +21,7 @@
 </script>
 
 <div
-    class=" w-[500px] max-h-fit m-auto bg-gray-50 border-panel-200 rounded-xl flex flex-col py-5 px-6"
+    class=" w-[500px] max-h-fit m-auto bg-panel border-borderPanel rounded-xl flex flex-col py-5 px-6"
 >
     <div />
     <Logo />

@@ -3,7 +3,7 @@
 </script>
 
 <span
-    class="flex flex-row flex-grow text-content-title justify-center font-light items-center"
+    class="flex flex-row flex-grow text-contentTitle justify-center font-light items-center"
 >
     {#if show}
         <slot />

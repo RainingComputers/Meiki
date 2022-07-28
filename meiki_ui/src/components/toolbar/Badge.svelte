@@ -7,9 +7,9 @@
     function getFontClass(type: BadgeType) {
         switch (type) {
             case BadgeType.INFO:
-                return "text-content-title font-light"
+                return "text-contentTitle font-light"
             case BadgeType.ERROR:
-                return "text-content-error font-bold"
+                return "text-contentError font-bold"
         }
     }
 
@@ -34,7 +34,7 @@
     )}"
     data-cy="badge"
 >
-    <span class="stroke-content-title h-3 w-3 {getIconClass(type)}">
+    <span class="stroke-contentTitle h-3 w-3 {getIconClass(type)}">
         <slot />
     </span>
     {label}
