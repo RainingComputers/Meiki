@@ -7,7 +7,10 @@ module.exports = {
     theme: {
         colors: {
             "transparent": "#00000000",
-            "searchbar": "#ffffff", //
+            "searchbar": {
+                "DEFAULT": "#ffffff", //
+                "dark": "rgb(201, 209, 217)"
+            },
             "workbench": "#ffffff",
             "info": "#0f172a",
             "error": "#fef2f2",
@@ -28,7 +31,10 @@ module.exports = {
             "borderSuccess": "#4ade80",
             "contentErrorWatermark": "#7f1d1d",
             "contentError": "#ef4444",
-            "contentPlaceholder": "#9ca3af",
+            "contentPlaceholder": {
+                "DEFAULT": "#d1d5db",
+                "dark": "#4b5563",
+            },
             "contentPrimaryFocus": {
                 "DEFAULT": "rgb(201, 209, 217)",
                 "dark": "#ffffff"

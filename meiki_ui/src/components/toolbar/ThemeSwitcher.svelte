@@ -1,4 +1,23 @@
-<script lang="ts" context="module">
+<script lang="ts">
+    import { onMount } from "svelte"
+    import currentTheme from "$lib/stores/theme"
+    import SunIcon from "$cmp/icons/SunIcon.svelte"
+    import MoonIcon from "$cmp/icons/MoonIcon.svelte"
+
+    export let isDarkTheme: boolean = false
+
+    export function setTheme(isDarkTheme: boolean) {
+        if (isDarkTheme) {
+            document.documentElement.classList.add("dark")
+            localStorage.theme = "dark"
+            $currentTheme = "dark"
+        } else {
+            document.documentElement.classList.remove("dark")
+            localStorage.theme = "light"
+            $currentTheme = "light"
+        }
+    }
+
     function isCurrentThemeDark() {
         return (
             localStorage.theme === "dark" ||
@@ -6,25 +25,6 @@
                 window.matchMedia("(prefers-color-scheme: dark)").matches)
         )
     }
-
-    export function setTheme(isDarkTheme: boolean) {
-        if (isDarkTheme) {
-            document.documentElement.classList.add("dark")
-            localStorage.theme = "dark"
-        } else {
-            document.documentElement.classList.remove("dark")
-            localStorage.theme = "light"
-        }
-    }
-</script>
-
-<script lang="ts">
-    import { onMount } from "svelte"
-    import SunIcon from "$cmp/icons/SunIcon.svelte"
-    import MoonIcon from "$cmp/icons/MoonIcon.svelte"
-
-    export let name: string = ""
-    export let isDarkTheme: boolean = false
 
     function flipTheme() {
         isDarkTheme = !isDarkTheme
@@ -40,7 +40,7 @@
 <div
     class="flex gap-2 flex-row items-center hover:bg-toolbarFocus rounded-xl p-2 cursor-pointer"
     on:click={flipTheme}
-    data-cy={name}
+    data-cy="themeSwitcher"
 >
     <span class="stroke-contentTitle h-6 w-6">
         {#if isDarkTheme}

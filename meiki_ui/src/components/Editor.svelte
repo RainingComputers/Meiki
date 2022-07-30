@@ -1,6 +1,6 @@
 <script lang="ts">
+    import currentTheme from "$lib/stores/theme"
     import type AceAjax from "brace"
-
     import { onDestroy, onMount } from "svelte"
 
     export let fontSize: number
@@ -14,9 +14,9 @@
         const ace = (await import("brace")).default
         ;(await import("brace/mode/markdown")).default
         ;(await import("brace/theme/textmate")).default
+        ;(await import("brace/theme/tomorrow_night_bright")).default
 
         aceEditor = ace.edit(editorId)
-        aceEditor.setTheme("ace/theme/textmate")
         aceEditor.session.setMode("ace/mode/markdown")
         aceEditor.setFontSize(fontSize + "px")
         aceEditor.setShowPrintMargin(false)
@@ -24,7 +24,17 @@
         aceEditor.setValue(initialText, 1)
         aceEditor.getSession().on("change", onChange)
         aceEditor.getSession().setUseWrapMode(true)
-        aceEditor.container.style.background = "transparent"
+
+        const setTheme = (theme: string) => {
+            const editorTheme =
+                theme === "light" ? "textmate" : "tomorrow_night_bright"
+            aceEditor.setTheme(`ace/theme/${editorTheme}`)
+
+            aceEditor.container.style.background =
+                theme === "light" ? "transparent" : ""
+        }
+
+        currentTheme.subscribe(setTheme)
     })
 
     onDestroy(() => {
