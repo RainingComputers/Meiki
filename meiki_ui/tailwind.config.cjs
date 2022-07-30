@@ -1,17 +1,21 @@
 const colors = require("tailwindcss/colors")
 
 module.exports = {
-    darkMode: "media",
+    darkMode: "class",
 
     content: ["./src/**/*.{html,js,svelte,ts}"],
     theme: {
         colors: {
             "transparent": "#00000000",
-            "searchbar": "#ffffff",
+            "searchbar": "#ffffff", //
+            "workbench": "#ffffff",
             "info": "#0f172a",
             "error": "#fef2f2",
             "overlay": "#4b5563",
-            "panel": "#f9fafb",
+            "panel": {
+                "DEFAULT": "#f9fafb",
+                "dark": "rgb(33, 38, 45)"
+            },
             "primaryFocus": "#3b82f6",
             "primary": "#2563eb",
             "secondaryFocus": "#e5e7eb",
@@ -25,7 +29,14 @@ module.exports = {
             "contentErrorWatermark": "#7f1d1d",
             "contentError": "#ef4444",
             "contentPlaceholder": "#9ca3af",
-            "contentPrimary": "#ffffff",
+            "contentPrimaryFocus": {
+                "DEFAULT": "rgb(201, 209, 217)",
+                "dark": "#ffffff"
+            },
+            "contentPrimary": {
+                "DEFAULT": "#ffffff",
+                "dark": "rgb(201, 209, 217)"
+            },
             "contentSecondary": "334155",
             "contentSuccess": "#22c55e",
             "contentTitle": "#e5e7eb",

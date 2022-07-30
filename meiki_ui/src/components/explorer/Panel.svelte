@@ -35,7 +35,7 @@
 
 <div class="flex flex-row h-full">
     <div
-        class=" bg-base-gray flex flex-col gap-1 h-full overflow-y-scroll py-1"
+        class=" bg-panel dark:bg-panel-dark flex flex-col gap-1 h-full overflow-y-scroll py-1"
         style="min-width: 350px; width: {width}px"
         data-cy="explorer"
         on:click={onClick}
