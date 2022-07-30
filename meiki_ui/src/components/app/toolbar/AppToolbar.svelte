@@ -11,6 +11,7 @@
     import UserIcon from "$cmp/icons/UserIcon.svelte"
     import ToolbarSyncIndicator from "$cmp/app/toolbar/SyncIndicator.svelte"
     import EditableLabel from "$cmp/EditableLabel.svelte"
+    import ThemeSwitcher from "$cmp/toolbar/ThemeSwitcher.svelte"
 
     export let title: string
 
@@ -56,6 +57,7 @@
             />
         </div>
     </ToolbarTitle>
+    <ThemeSwitcher />
     <ToolbarButton name="profile" label={username} on:profile>
         <UserIcon />
     </ToolbarButton>
