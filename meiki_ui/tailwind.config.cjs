@@ -1,5 +1,3 @@
-const colors = require("tailwindcss/colors")
-
 module.exports = {
     darkMode: "class",
 
@@ -12,7 +10,7 @@ module.exports = {
             "base-1": "var(--color-base-1)",
             "base-2": "var(--color-base-2)",
             "base-3": "var(--color-base-3)",
-            "base-4": "var(--color-base-4)",
+            placeholder: "var(--color-placeholder)",
             content: "var(--color-content)",
             toolbar: "var(--color-toolbar)",
             "toolbar-focus": "var(--color-toolbar-focus)",

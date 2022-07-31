@@ -52,7 +52,7 @@
     afterUpdate(focus)
 </script>
 
-<div class="flex flex-grow justify-center items-center bg-workbench">
+<div class="flex flex-grow justify-center items-center bg-base-0">
     <div class="fixed opacity-4 -z-10" on:dragstart|preventDefault>
         <Logo width="900em" />
     </div>
