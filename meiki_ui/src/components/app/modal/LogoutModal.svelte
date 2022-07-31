@@ -5,6 +5,7 @@
     import Button, { ButtonType } from "$cmp/Button.svelte"
     import Error from "$cmp/toast/Error.svelte"
     import Logo from "$cmp/app/Logo.svelte"
+    import Window from "$cmp/modal/Window.svelte"
 
     const dispatchEvent = createEventDispatcher()
 
@@ -20,7 +21,7 @@
     }
 </script>
 
-<div class=" w-[500px] max-h-fit m-auto bg-base-1 border-base-2 rounded-xl flex flex-col py-5 px-6">
+<Window width="500px">
     <div />
     <Logo />
     <div class="px-4 py-5 flex flex-col gap-5">
@@ -34,4 +35,4 @@
         <div>The Meiki notes editor</div>
         <div>&#169; Copyright 2022 Vishnu Shankar B and Alex Joseph</div>
     </div>
-</div>
+</Window>
