@@ -47,7 +47,7 @@
 
     <div
         data-cy="explorer-expander"
-        class=" cursor-col-resize h-full border-base-2 border"
+        class=" cursor-col-resize h-full bg-base-2 w-px"
         on:mousedown={startExpand}
         on:mousemove={expand}
     />
