@@ -5,7 +5,7 @@
 </script>
 
 <Root>
-    <div class="flex flex-col items-center gap-5 ">
+    <div class="flex flex-col items-center gap-5 text-content">
         <Success>Your account has successfully been created</Success>
         <span>
             Click <Link target="/login" text="here" /> to login
