@@ -59,7 +59,4 @@
         --color-success-content: #34d399;
     }
 
-    .ace_gutter {
-        background: var(--color-base-1);
-    }
 }
