@@ -5,33 +5,27 @@ module.exports = {
 
     content: ["./src/**/*.{html,js,svelte,ts}"],
     theme: {
-        // prettier-ignore
         colors: {
-            "transparent": "#00000000",
-            "overlay": "#4b5563",
-
-            "base-0": "#ffffff",
-            "base-1": "#f9fafb",
-            "base-2": "#e5e7eb",
-            "base-3": "#d1d5db",
-            "base-4": "#9ca3af",
-            "content": "#0f172a",
-
-            "toolbar": "#1f2937",
-            "toolbar-focus": "#475569",
-            "toolbar-content": "#e5e7eb",
-            
-            "primary": "#2563eb",
-            "primary-focus": "#3b82f6",
-            "primary-content": "#ffffff",
-            
-            "error": "#fef2f2",
-            "error-outline": "#f87171",
-            "error-content": "#ef4444",
-
-            "success": "#f0fdf4",
-            "success-outline": "#4ade80",
-            "success-content": "#22c55e",
+            transparent: "var(--color-transparent)",
+            overlay: "var(--color-overlay)",
+            "base-0": "var(--color-base-0)",
+            "base-1": "var(--color-base-1)",
+            "base-2": "var(--color-base-2)",
+            "base-3": "var(--color-base-3)",
+            "base-4": "var(--color-base-4)",
+            content: "var(--color-content)",
+            toolbar: "var(--color-toolbar)",
+            "toolbar-focus": "var(--color-toolbar-focus)",
+            "toolbar-content": "var(--color-toolbar-content)",
+            primary: "var(--color-primary)",
+            "primary-focus": "var(--color-primary-focus)",
+            "primary-content": "var(--color-primary-content)",
+            error: "var(--color-error)",
+            "error-outline": "var(--color-error-outline)",
+            "error-content": "var(--color-error-content)",
+            success: "var(--color-success)",
+            "success-outline": "var(--color-success-outline)",
+            "success-content": "var(--color-success-content)",
         },
         fontFamily: {
             serif: ["Montserrat", "system-ui"],
