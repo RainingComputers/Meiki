@@ -30,7 +30,7 @@
         <Button label="Logout" type={ButtonType.SECONDARY} onClick={logoutUser} />
     </div>
 
-    <div class="flex flex-col text-center text-sm mt-3">
+    <div class="flex flex-col text-center text-sm mt-3 text-content">
         <div>The Meiki notes editor</div>
         <div>&#169; Copyright 2022 Vishnu Shankar B and Alex Joseph</div>
     </div>

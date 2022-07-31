@@ -39,14 +39,14 @@
 </script>
 
 <div class=" flex flex-col w-full gap-1a">
-    <label for={id} class="text-sm px-1" class:hidden={!showLabel}>
+    <label for={id} class="text-sm px-1 text-content" class:hidden={!showLabel}>
         {label}
     </label>
 
     <input
         bind:this={inputEl}
         {id}
-        class=" bg-base-2 focus:outline-none focus:border-primary-focus focus:ring-primary-focus focus:ring-2 rounded-lg p-2"
+        class=" bg-base-2 text-content focus:outline-none focus:border-primary-focus focus:ring-primary-focus focus:ring-2 rounded-lg p-2"
         {type}
         required
         on:keydown={onKeyDown}
