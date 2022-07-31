@@ -30,8 +30,8 @@
     let rendererActive: boolean = true
 
     let explorerWatermarkError: string = ""
-    let explorerToastError: string = "There is an error"
-    let toolbarError: string = "SYNC ERROR"
+    let explorerToastError: string = ""
+    let toolbarError: string = ""
 
     async function updateNoteList() {
         try {
