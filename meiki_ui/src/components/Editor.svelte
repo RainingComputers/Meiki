@@ -1,5 +1,5 @@
 <script lang="ts">
-    import currentTheme from "$lib/stores/theme"
+    import { theme } from "$lib/stores/theme"
     import type AceAjax from "brace"
     import { onDestroy, onMount } from "svelte"
 
@@ -27,13 +27,11 @@
 
         const setTheme = (theme: string) => {
             const editorTheme = theme === "light" ? "textmate" : "tomorrow_night_bright"
-
             aceEditor.setTheme(`ace/theme/${editorTheme}`)
-
             aceEditor.container.style.background = theme === "light" ? "transparent" : ""
         }
 
-        currentTheme.subscribe(setTheme)
+        theme.subscribe(setTheme)
     })
 
     onDestroy(() => {
