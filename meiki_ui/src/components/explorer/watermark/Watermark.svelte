@@ -7,9 +7,9 @@
     function getColorClass(type: WatermarkType) {
         switch (type) {
             case WatermarkType.INFO:
-                return "text-info stroke-info opacity-30"
+                return "text-content stroke-content opacity-30"
             case WatermarkType.ERROR:
-                return "text-contentErrorWatermark stroke-contentErrorWatermark opacity-30"
+                return "text-error-content stroke-error-content opacity-30"
         }
     }
 </script>
@@ -19,11 +19,7 @@
     export let message: string
 </script>
 
-<div
-    class="flex flex-col gap-5 h-full items-center justify-center {getColorClass(
-        type
-    )}"
->
+<div class="flex flex-col gap-5 h-full items-center justify-center {getColorClass(type)}">
     <span class="flex-shrink-0 w-20 h-20">
         <slot />
     </span>

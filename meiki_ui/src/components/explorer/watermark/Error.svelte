@@ -1,8 +1,6 @@
 <script lang="ts">
     import WarningIcon from "$cmp/icons/WarningIcon.svelte"
-    import Watermark, {
-        WatermarkType,
-    } from "$cmp/explorer/watermark/Watermark.svelte"
+    import Watermark, { WatermarkType } from "$cmp/explorer/watermark/Watermark.svelte"
 
     export let message: string
 </script>

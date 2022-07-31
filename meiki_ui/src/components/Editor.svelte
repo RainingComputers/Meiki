@@ -26,12 +26,11 @@
         aceEditor.getSession().setUseWrapMode(true)
 
         const setTheme = (theme: string) => {
-            const editorTheme =
-                theme === "light" ? "textmate" : "tomorrow_night_bright"
+            const editorTheme = theme === "light" ? "textmate" : "tomorrow_night_bright"
+
             aceEditor.setTheme(`ace/theme/${editorTheme}`)
 
-            aceEditor.container.style.background =
-                theme === "light" ? "transparent" : ""
+            aceEditor.container.style.background = theme === "light" ? "transparent" : ""
         }
 
         currentTheme.subscribe(setTheme)

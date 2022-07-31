@@ -4,9 +4,9 @@
     import SunIcon from "$cmp/icons/SunIcon.svelte"
     import MoonIcon from "$cmp/icons/MoonIcon.svelte"
 
-    export let isDarkTheme: boolean = false
+    let isDarkTheme: boolean = false
 
-    export function setTheme(isDarkTheme: boolean) {
+    function setTheme(isDarkTheme: boolean) {
         if (isDarkTheme) {
             document.documentElement.classList.add("dark")
             localStorage.theme = "dark"
@@ -19,11 +19,10 @@
     }
 
     function isCurrentThemeDark() {
-        return (
-            localStorage.theme === "dark" ||
-            (!("theme" in localStorage) &&
-                window.matchMedia("(prefers-color-scheme: dark)").matches)
-        )
+        const prefersDarkTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+        const noThemeSet = !("theme" in localStorage)
+
+        return localStorage.theme === "dark" || (noThemeSet && prefersDarkTheme)
     }
 
     function flipTheme() {
@@ -38,11 +37,11 @@
 </script>
 
 <div
-    class="flex gap-2 flex-row items-center hover:bg-toolbarFocus rounded-xl p-2 cursor-pointer"
+    class="flex gap-2 flex-row items-center hover:bg-toolbar-focus rounded-xl p-2 cursor-pointer"
     on:click={flipTheme}
     data-cy="themeSwitcher"
 >
-    <span class="stroke-contentTitle h-6 w-6">
+    <span class="stroke-toolbar-content h-6 w-6">
         {#if isDarkTheme}
             <SunIcon />
         {:else}

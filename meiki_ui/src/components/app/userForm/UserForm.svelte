@@ -36,17 +36,8 @@
                     {error}
                 </Error>
             {/if}
-            <Entry
-                label="Username"
-                bind:this={usernameEntry}
-                onEnter={onClick}
-            />
-            <Entry
-                label="Password"
-                bind:this={passwordEntry}
-                password={true}
-                onEnter={onClick}
-            />
+            <Entry label="Username" bind:this={usernameEntry} onEnter={onClick} />
+            <Entry label="Password" bind:this={passwordEntry} password={true} onEnter={onClick} />
             {#if confirmPassword}
                 <Entry
                     label="Confirm password"

@@ -18,9 +18,4 @@
     }
 </script>
 
-<EntryModal
-    {error}
-    onValue={create}
-    buttonLabel="Create note"
-    entryLabel="Enter note name"
-/>
+<EntryModal {error} onValue={create} buttonLabel="Create note" entryLabel="Enter note name" />

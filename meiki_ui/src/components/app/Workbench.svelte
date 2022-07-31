@@ -1,14 +1,14 @@
 <script context="module" lang="ts">
     function getEditorClass(editorActive: boolean, rendererActive: boolean) {
-        if (editorActive && rendererActive) return "bg-green-100 flex-1"
-        if (editorActive && !rendererActive) return "bg-green-100 w-full"
+        if (editorActive && rendererActive) return "flex-1"
+        if (editorActive && !rendererActive) return "w-full"
 
         return "hidden"
     }
 
     function getRendererClass(editorActive: boolean, rendererActive: boolean) {
-        if (editorActive && rendererActive) return "bg-red-100 flex-1 w-1/2"
-        if (rendererActive && !editorActive) return "bg-red-100 w-3/4"
+        if (editorActive && rendererActive) return "flex-1 w-1/2"
+        if (rendererActive && !editorActive) return "w-3/4"
 
         return "hidden"
     }

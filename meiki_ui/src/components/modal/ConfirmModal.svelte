@@ -13,12 +13,7 @@
         <p class="px-1">{message}</p>
         <div class="flex gap-2 w-full">
             <Button expand={true} label="Yes" onClick={onYes} />
-            <Button
-                expand={true}
-                label="No"
-                type={ButtonType.SECONDARY}
-                onClick={onNo}
-            />
+            <Button expand={true} label="No" type={ButtonType.SECONDARY} onClick={onNo} />
         </div>
     </div>
 </ActionModal>
