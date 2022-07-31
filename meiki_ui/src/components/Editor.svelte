@@ -14,7 +14,7 @@
         const ace = (await import("brace")).default
         ;(await import("brace/mode/markdown")).default
         ;(await import("brace/theme/textmate")).default
-        ;(await import("brace/theme/tomorrow_night_bright")).default
+        ;(await import("brace/theme/twilight")).default
 
         aceEditor = ace.edit(editorId)
         aceEditor.session.setMode("ace/mode/markdown")
@@ -26,7 +26,7 @@
         aceEditor.getSession().setUseWrapMode(true)
 
         const setTheme = (theme: string) => {
-            const editorTheme = theme === "light" ? "textmate" : "tomorrow_night_bright"
+            const editorTheme = theme === "light" ? "textmate" : "twilight"
             aceEditor.setTheme(`ace/theme/${editorTheme}`)
             aceEditor.container.style.background = "transparent"
         }
