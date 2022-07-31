@@ -11,7 +11,7 @@
             goto("/notes")
         }}
     />
-    <div class=" mt-8 text-sm text-content">
+    <div class=" mt-8 text-sm">
         New to Meiki notes? <Link text="Create" target="/create" /> a new account to get started
     </div>
 </Root>
