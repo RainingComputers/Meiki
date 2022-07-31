@@ -9,16 +9,12 @@ describe("App explorer", () => {
     it("Show empty notes watermark if non notes are present", () => {
         cy.visit("/")
 
-        cy.contains(
-            "Click the 'Create' button on the toolbar to create a new note"
-        ).should("exist")
+        cy.contains("Click the 'Create' button on the toolbar to create a new note").should("exist")
     })
 
     it("Select appropriate note", () => {
-        const testContent1 =
-            "This is a test note, this should be automatically saved"
-        const testContent2 =
-            "This is an another note, this should also be saved automatically"
+        const testContent1 = "This is a test note, this should be automatically saved"
+        const testContent2 = "This is an another note, this should also be saved automatically"
 
         // Pre create notes
         cy.createNote("testNote1")
@@ -42,7 +38,7 @@ describe("App explorer", () => {
         cy.get("[data-cy='explorer']").contains("testNote2").click()
         cy.get("[data-cy='renderer']").should("contain", testContent2)
 
-        // Select the panel and assert no note is selected
+        // Select the base-1 and assert no note is selected
         cy.get("[data-cy='explorer']").click()
         cy.get("[data-cy='editor']").should("not.exist")
         cy.get("[data-cy='renderer']").should("not.exist")

@@ -49,17 +49,12 @@
                 }}
                 checked={item.id == selectedNoteID}
             >
-                <NotesItem
-                    title={item.title}
-                    onTrashClick={() => deleteNote(item)}
-                />
+                <NotesItem title={item.title} onTrashClick={() => deleteNote(item)} />
             </Item>
         {/each}
 
         {#if !noteList.length}
-            <Info
-                message="Click the 'Create' button on the toolbar to create a new note"
-            />
+            <Info message="Click the 'Create' button on the toolbar to create a new note" />
         {/if}
     {:else}
         <WatermarkError message={watermarkError} />

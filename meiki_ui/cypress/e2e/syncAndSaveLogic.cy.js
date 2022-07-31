@@ -16,10 +16,7 @@ describe("Note is saved and synchronized on changes", () => {
         // Create test note and edit it, the editor will try to sync every 70 ms
         cy.createNote("testNote")
         cy.contains("testNote").click()
-        cy.get(".ace_text-input")
-            .first()
-            .focus()
-            .type(testContent, { delay: 70 })
+        cy.get(".ace_text-input").first().focus().type(testContent, { delay: 70 })
 
         // assert sync indicator
         cy.get("nav")
@@ -37,8 +34,7 @@ describe("Note is saved and synchronized on changes", () => {
     })
 
     it("Note should be saved if the user waited for enough time", () => {
-        const testContent =
-            "This is a content to test if the note is synced and saved properly"
+        const testContent = "This is a content to test if the note is synced and saved properly"
 
         cy.visit("/")
 
@@ -55,10 +51,7 @@ describe("Note is saved and synchronized on changes", () => {
 
         // Wait for some time, let the app be idle
         cy.wait(DEBOUNCE_INTERVAL + EPSILON)
-        cy.get("nav")
-            .get("[data-cy='badge']")
-            .find("svg")
-            .should("have.class", "feather-check")
+        cy.get("nav").get("[data-cy='badge']").find("svg").should("have.class", "feather-check")
 
         // Refresh the page
         cy.visit("/")
@@ -70,8 +63,7 @@ describe("Note is saved and synchronized on changes", () => {
     })
 
     it("Note saves on deselecting the note", () => {
-        const testContent =
-            "This is a content to test if the note is synced and saved properly"
+        const testContent = "This is a content to test if the note is synced and saved properly"
 
         cy.visit("/")
 
@@ -92,8 +84,7 @@ describe("Note is saved and synchronized on changes", () => {
     })
 
     it("Errors out with unable to connect to server", () => {
-        const testContent =
-            "This is a content to test if sync error is handled correctly"
+        const testContent = "This is a content to test if sync error is handled correctly"
 
         cy.visit("/")
         cy.simulateServerDown("/notes/update/*")

@@ -12,9 +12,7 @@ describe("Delete note", () => {
         cy.createNote("testNote")
 
         cy.get("[data-cy='explorer']").contains("testNote").click()
-        cy.get("[data-cy='explorer']")
-            .contains("testNote")
-            .trigger("mouseenter")
+        cy.get("[data-cy='explorer']").contains("testNote").trigger("mouseenter")
         cy.get("[data-cy='delete']").click()
         cy.contains("Yes").click()
         cy.get("[data-cy='explorer']").contains("testNote").should("not.exist")
@@ -27,13 +25,9 @@ describe("Delete note", () => {
         cy.createNote("testNote2")
 
         cy.get("[data-cy='explorer']").contains("testNote1").click()
-        cy.get("[data-cy='explorer']")
-            .contains("testNote1")
-            .trigger("mouseleave")
+        cy.get("[data-cy='explorer']").contains("testNote1").trigger("mouseleave")
 
-        cy.get("[data-cy='explorer']")
-            .contains("testNote2")
-            .trigger("mouseenter")
+        cy.get("[data-cy='explorer']").contains("testNote2").trigger("mouseenter")
         cy.get("[data-cy='delete']:visible").click()
 
         cy.contains("Yes").click()
@@ -49,9 +43,7 @@ describe("Delete note", () => {
         cy.createNote("testNote1")
         cy.createNote("testNote2")
 
-        cy.get("[data-cy='explorer']")
-            .contains("testNote2")
-            .trigger("mouseenter")
+        cy.get("[data-cy='explorer']").contains("testNote2").trigger("mouseenter")
         cy.get("[data-cy='delete']:visible").click()
 
         cy.contains("Yes").click()
@@ -67,9 +59,7 @@ describe("Delete note", () => {
         cy.createNote("testNote")
 
         cy.get("[data-cy='explorer']").contains("testNote").click()
-        cy.get("[data-cy='explorer']")
-            .contains("testNote")
-            .trigger("mouseenter")
+        cy.get("[data-cy='explorer']").contains("testNote").trigger("mouseenter")
         cy.get("[data-cy='delete']").click()
         cy.contains("No").click()
         cy.get("[data-cy='explorer']").contains("testNote").should("exist")
@@ -80,9 +70,7 @@ describe("Delete note", () => {
         cy.createNote("testNote")
 
         cy.get("[data-cy='explorer']").contains("testNote").click()
-        cy.get("[data-cy='explorer']")
-            .contains("testNote")
-            .trigger("mouseenter")
+        cy.get("[data-cy='explorer']").contains("testNote").trigger("mouseenter")
         cy.get("[data-cy='delete']").click()
         cy.get("[data-cy='modalOverlay']").click()
         cy.contains("No").click()
@@ -95,9 +83,7 @@ describe("Delete note", () => {
         cy.createNote("testNote")
 
         cy.get("[data-cy='explorer']").contains("testNote").click()
-        cy.get("[data-cy='explorer']")
-            .contains("testNote")
-            .trigger("mouseenter")
+        cy.get("[data-cy='explorer']").contains("testNote").trigger("mouseenter")
         cy.get("[data-cy='delete']").click()
         cy.contains("Yes").click()
         cy.contains(

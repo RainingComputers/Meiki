@@ -3,9 +3,7 @@
     export let error: string = ""
 </script>
 
-<div
-    class="w-96 max-h-fit m-auto bg-panel border-borderPanel rounded-xl flex flex-col py-6 px-6"
->
+<div class="w-96 max-h-fit m-auto bg-base-1 border-base-2 rounded-xl flex flex-col py-6 px-6">
     <div class="flex flex-col gap-5">
         {#if error}
             <Error fullWidth={true}>{error}</Error>

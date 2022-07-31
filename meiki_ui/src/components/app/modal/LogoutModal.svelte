@@ -20,26 +20,18 @@
     }
 </script>
 
-<div
-    class=" w-[500px] max-h-fit m-auto bg-panel border-borderPanel rounded-xl flex flex-col py-5 px-6"
->
+<div class=" w-[500px] max-h-fit m-auto bg-base-1 border-base-2 rounded-xl flex flex-col py-5 px-6">
     <div />
     <Logo />
     <div class="px-4 py-5 flex flex-col gap-5">
         {#if error}
             <Error>{error}</Error>
         {/if}
-        <Button
-            label="Logout"
-            type={ButtonType.SECONDARY}
-            onClick={logoutUser}
-        />
+        <Button label="Logout" type={ButtonType.SECONDARY} onClick={logoutUser} />
     </div>
 
     <div class="flex flex-col text-center text-sm mt-3">
-        <div class="">The Meiki notes editor</div>
-        <div class="">
-            &#169; Copyright 2022 Vishnu Shankar B and Alex Joseph
-        </div>
+        <div>The Meiki notes editor</div>
+        <div>&#169; Copyright 2022 Vishnu Shankar B and Alex Joseph</div>
     </div>
 </div>

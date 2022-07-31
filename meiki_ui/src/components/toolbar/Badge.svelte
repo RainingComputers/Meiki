@@ -7,9 +7,9 @@
     function getFontClass(type: BadgeType) {
         switch (type) {
             case BadgeType.INFO:
-                return "text-contentTitle font-light"
+                return "text-toolbar-content font-light"
             case BadgeType.ERROR:
-                return "text-contentError font-bold"
+                return "text-error-content font-bold"
         }
     }
 
@@ -29,12 +29,10 @@
 </script>
 
 <span
-    class="flex text-xs w-36 overflow-hidden px-2 gap-1 items-center {getFontClass(
-        type
-    )}"
+    class="flex text-xs w-36 overflow-hidden px-2 gap-1 items-center {getFontClass(type)}"
     data-cy="badge"
 >
-    <span class="stroke-contentTitle h-3 w-3 {getIconClass(type)}">
+    <span class="stroke-toolbar-content h-3 w-3 {getIconClass(type)}">
         <slot />
     </span>
     {label}

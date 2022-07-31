@@ -35,7 +35,7 @@
 
 <div class="flex flex-row h-full">
     <div
-        class=" bg-panel dark:bg-panel-dark flex flex-col gap-1 h-full overflow-y-scroll py-1"
+        class=" bg-base-1 flex flex-col gap-1 h-full overflow-y-scroll py-1"
         style="min-width: 350px; width: {width}px"
         data-cy="explorer"
         on:click={onClick}
@@ -47,7 +47,7 @@
 
     <div
         data-cy="explorer-expander"
-        class=" cursor-col-resize h-full border-borderPanel border"
+        class=" cursor-col-resize h-full border-base-2 border"
         on:mousedown={startExpand}
         on:mousemove={expand}
     />

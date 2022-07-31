@@ -15,18 +15,14 @@ describe("User account creation and login", () => {
         cy.get("a[href='/create']").and("be.visible").click()
 
         // User creates an account
-        cy.get("Button")
-            .should("include.text", "Create Meiki account")
-            .and("be.visible")
+        cy.get("Button").should("include.text", "Create Meiki account").and("be.visible")
         cy.get("#username").type("shnoo")
         cy.get("#password").type("thisisveryunsafe")
         cy.get("#confirmPassword").type("thisisveryunsafe")
         cy.get("Button").click()
 
         // Goes to create success page
-        cy.contains("Your account has successfully been created").should(
-            "be.visible"
-        )
+        cy.contains("Your account has successfully been created").should("be.visible")
         cy.get("a[href='/login']").should("be.visible").click()
 
         // User logs in
@@ -91,9 +87,7 @@ describe("User account creation and login", () => {
         cy.get("#confirmPassword").type("123")
         cy.get("Button").click()
 
-        cy.contains("Password should have minimum five characters").should(
-            "be.visible"
-        )
+        cy.contains("Password should have minimum five characters").should("be.visible")
     })
 
     it("Error out with unable to connect to server on create", () => {
@@ -129,9 +123,7 @@ describe("User account creation and login", () => {
         cy.get("#password").type("123")
         cy.get("Button").click()
 
-        cy.contains("Password should have minimum five characters").should(
-            "be.visible"
-        )
+        cy.contains("Password should have minimum five characters").should("be.visible")
     })
 
     it("Show password mismatch on login", () => {
@@ -153,8 +145,8 @@ describe("User account creation and login", () => {
         cy.get("#password").type("password")
         cy.get("Button").click()
 
-        cy.contains(
-            "An error has occurred while logging in, unable to connect to server"
-        ).should("be.visible")
+        cy.contains("An error has occurred while logging in, unable to connect to server").should(
+            "be.visible"
+        )
     })
 })

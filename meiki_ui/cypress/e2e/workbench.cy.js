@@ -51,9 +51,7 @@ describe("Workbench", () => {
         cy.get("[data-cy='editor']").should("be.visible")
 
         // Open renderer again
-        cy.get("[data-cy='render']")
-            .should("not.have.class", "isChecked")
-            .click()
+        cy.get("[data-cy='render']").should("not.have.class", "isChecked").click()
 
         // Both editor and renderer should be visible
         cy.get("[data-cy='renderer']").should("be.visible")
