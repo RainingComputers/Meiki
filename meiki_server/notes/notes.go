@@ -206,3 +206,42 @@ func (ns NotesStore) Delete(ctx context.Context, id string, username string) err
 
 	return nil
 }
+
+func (ns NotesStore) Search(ctx context.Context, query string, username string) ([]NoteResponse, error) {
+	// TODO has common code with List
+
+	cursor, err := ns.coll.Find(ctx,
+		bson.M{
+			"username": username,
+			"$or": bson.A{
+				bson.M{"title": bson.M{"$regex": query, "$options": "i"}},
+				bson.M{"content": bson.M{"$regex": query, "$options": "i"}},
+			},
+		},
+	)
+
+	if err != nil {
+		log.Error("unable to search notes", zap.Error(err))
+		return nil, err
+	}
+
+	noteInfoList := []NoteResponse{}
+
+	for cursor.Next(ctx) {
+		var note Note
+
+		err := cursor.Decode(&note)
+
+		if err != nil {
+			log.Error("unable to search note", zap.Error(err))
+			return nil, err
+		}
+
+		noteInfoList = append(noteInfoList, NoteResponse{
+			ID:    note.ID.Hex(),
+			Title: note.Title,
+		})
+	}
+
+	return noteInfoList, nil
+}
