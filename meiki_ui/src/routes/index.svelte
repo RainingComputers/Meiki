@@ -18,7 +18,9 @@
 {#if !loggedIn}
     <Root>
         <span class="flex flex-col items-center gap-6">
-            <Logo width="50%" />
+            <span class="w-1/2">
+                <Logo />
+            </span>
             <h1 class="text-5xl">The ⚡ lightning fast ⚡ notes editor</h1>
             <h1 class="text-2xl">
                 Meiki is a markdown notes editor built with performance and simplicity in mind

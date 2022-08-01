@@ -24,7 +24,8 @@ export async function deleteUser(username: string, password: string) {
 
 export async function logout() {
     await makeRequest("auth/logout", "POST")
-    localStorage.clear()
+    localStorage.removeItem("username")
+    localStorage.removeItem("token")
 }
 
 export function getUsername() {
