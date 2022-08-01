@@ -1,4 +1,10 @@
-<svg viewBox="0 0 403.22501 135.46666" version="1.1" id="svg960" xmlns="http://www.w3.org/2000/svg">
+<svg
+    data-cy="meiki-logo"
+    viewBox="0 0 403.22501 135.46666"
+    version="1.1"
+    id="svg960"
+    xmlns="http://www.w3.org/2000/svg"
+>
     <sodipodi:namedview
         id="namedview962"
         pagecolor="#ffffff"

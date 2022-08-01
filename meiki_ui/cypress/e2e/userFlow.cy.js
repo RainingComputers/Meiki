@@ -8,7 +8,7 @@ describe("User account creation and login", () => {
     it("Login flow works fully", () => {
         cy.visit("/login")
         // Shows login page
-        cy.get("img[alt='meiki-logo']").should("be.visible")
+        cy.get("[data-cy='meiki-logo']").should("be.visible")
         cy.get("#username").should("be.visible")
         cy.get("#password").should("be.visible")
         cy.get("Button").should("include.text", "Login").and("be.visible")
@@ -38,7 +38,7 @@ describe("User account creation and login", () => {
         cy.get("button:contains('Logout')").click()
 
         // Shows login page
-        cy.get("img[alt='meiki-logo']").should("be.visible")
+        cy.get("[data-cy='meiki-logo']").should("be.visible")
         cy.get("#username").should("be.visible")
         cy.get("#password").should("be.visible")
     })
