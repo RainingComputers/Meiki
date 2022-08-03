@@ -88,6 +88,22 @@ func getListHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 	}
 }
 
+func getSearchHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		username := c.GetHeader("X-Username")
+		query := c.Query("query")
+		notesResponseList, err := ns.Search(ctx, query, username)
+
+		if err != nil {
+			errorToResponse(c, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, notesResponseList)
+	}
+}
+
 func getReadHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param("id")
@@ -171,6 +187,7 @@ func getDeleteHandler(ctx context.Context, ns NotesStore) gin.HandlerFunc {
 func CreateRoutes(router *gin.RouterGroup, ctx context.Context, ns NotesStore) {
 	router.POST("/create", getCreateHandler(ctx, ns))
 	router.GET("/list", getListHandler(ctx, ns))
+	router.GET("/search", getSearchHandler(ctx, ns))
 	router.GET("/read/:id", getReadHandler(ctx, ns))
 	router.PUT("/update/:id", getUpdateHandler(ctx, ns))
 	router.PUT("/rename/:id", genRenameHandler(ctx, ns))

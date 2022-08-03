@@ -69,8 +69,8 @@ func newReqWithUserHeader(method string, route string, body io.Reader) *http.Req
 	return req
 }
 
-func (s *NotesRoutesTestSuite) assertListResponse(expectedTitleList []string) []notes.NoteResponse {
-	req := newReqWithUserHeader("GET", "/list", nil)
+func (s *NotesRoutesTestSuite) assertQueryResponse(expectedTitleList []string, queryType string) []notes.NoteResponse {
+	req := newReqWithUserHeader("GET", queryType, nil)
 	w := testhelpers.GetResponse(s.T(), s.router, req)
 
 	assert.Equal(s.T(), 200, w.Code)
@@ -90,7 +90,7 @@ func (s *NotesRoutesTestSuite) assertListResponse(expectedTitleList []string) []
 
 func (s *NotesRoutesTestSuite) assertAndGetListResponse(expectedTitleList []string) []notes.NoteResponse {
 	// function exists for syntactic sugar
-	return s.assertListResponse(expectedTitleList)
+	return s.assertQueryResponse(expectedTitleList, "/list")
 }
 
 func (s *NotesRoutesTestSuite) assertCreateResponse(w *httptest.ResponseRecorder) {
@@ -145,7 +145,7 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 	s.assertCreateResponse(w)
 
 	// assert create using list
-	s.assertListResponse([]string{"This is a new note"})
+	s.assertQueryResponse([]string{"This is a new note"}, "/list")
 
 	// create note and assert read
 	createRequest2, _ := json.Marshal(notes.TitleRequest{
@@ -155,6 +155,9 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 	req = newReqWithUserHeader("POST", "/create", bytes.NewBuffer(createRequest2))
 	w = testhelpers.GetResponse(s.T(), s.router, req)
 	s.assertCreateResponse(w)
+
+	s.assertQueryResponse([]string{"This is a new note", "This is another note"}, "/list")
+	s.assertQueryResponse([]string{"This is another note"}, "/search?query=another")
 
 	// assert create using list
 	listResponse := s.assertAndGetListResponse([]string{"This is a new note", "This is another note"})
@@ -187,7 +190,7 @@ func (s *NotesRoutesTestSuite) TestRoutesScenario() {
 	testhelpers.AssertResponseString(s.T(), s.router, req, 200, "Deleted note")
 
 	// assert create using list
-	s.assertListResponse([]string{"This is another note"})
+	s.assertQueryResponse([]string{"This is another note"}, "/list")
 
 	// assert read other note does not exists
 	req, _ = http.NewRequest("GET", "/read/"+listResponse[0].ID, nil)
