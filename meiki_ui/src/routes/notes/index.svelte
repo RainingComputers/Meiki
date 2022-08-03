@@ -2,7 +2,7 @@
     import { onMount } from "svelte"
     import { goto } from "$app/navigation"
     import { readNoteContent, renameNote, updateNote } from "$lib/api/notes"
-    import { listNotes, NoteInfo } from "$lib/api/notes"
+    import { listNotes, searchNotes, NoteInfo } from "$lib/api/notes"
     import { formatRequestError } from "$lib/api/request"
     import { debounce } from "$lib/utils/debouncer"
     import { onCtrlPlusS } from "$lib/utils/onCtrlPlusS"
@@ -33,11 +33,20 @@
     let explorerToastError: string = ""
     let toolbarError: string = ""
 
-    async function updateNoteList() {
+    async function updateNotesList() {
         try {
             noteList = await listNotes()
         } catch (err) {
             explorerWatermarkError = formatRequestError(err, "listing notes")
+        }
+    }
+
+    async function updateFilteredNotesList(event: CustomEvent<{ query: string }>) {
+        try {
+            const query = event.detail.query
+            noteList = await searchNotes(query)
+        } catch (err) {
+            explorerWatermarkError = formatRequestError(err, "searching notes")
         }
     }
 
@@ -84,14 +93,14 @@
 
     function onNoteCreated(event: CustomEvent<{ id: string }>) {
         const newNoteID: string = event.detail.id
-        updateNoteList()
+        updateNotesList()
         selectNote(newNoteID)
         editorActive = true
         createModal.closeModal()
     }
 
     function onNoteDeleted() {
-        updateNoteList()
+        updateNotesList()
         if (currentNote?.id === noteToDelete.id) currentNote = undefined
         deleteModal.closeModal()
     }
@@ -103,7 +112,7 @@
     async function onRename(event: CustomEvent<{ newTitle: string }>) {
         try {
             await renameNote(currentNote.id, event.detail.newTitle)
-            updateNoteList()
+            updateNotesList()
             currentNote.title = event.detail.newTitle
         } catch (err) {
             explorerToastError = formatRequestError(err, "renaming note")
@@ -113,7 +122,7 @@
     onCtrlPlusS(syncCurrentNote)
 
     onMount(async () => {
-        await updateNoteList()
+        await updateNotesList()
     })
 </script>
 
@@ -179,6 +188,7 @@
                     selectNote(event.detail.noteID)
                 }}
                 on:deselectAllNotes={deselectAllNotes}
+                on:query={updateFilteredNotesList}
             />
         {/if}
 

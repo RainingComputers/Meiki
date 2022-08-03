@@ -7,6 +7,6 @@
 </script>
 
 <div class="flex flex-row px-4 py-3 gap-2">
-    <Searchbar />
+    <Searchbar on:query />
     <Button label="+" onClick={() => dispatchEvent("createNote")} />
 </div>

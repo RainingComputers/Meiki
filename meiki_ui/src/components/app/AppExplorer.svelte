@@ -35,7 +35,7 @@
 </script>
 
 <Panel widthPercentage={25} onClick={deselectAllNotes}>
-    <ExplorerToolbar on:createNote />
+    <ExplorerToolbar on:createNote on:query />
 
     {#if toastError}
         <ToastError message={toastError} />
