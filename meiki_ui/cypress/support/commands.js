@@ -62,8 +62,11 @@ Cypress.Commands.add("logout", () => {
     cy.testRequest("POST", "/auth/logout", testAuthCreds, false)
 })
 
-Cypress.Commands.add("createNote", (title) => {
-    cy.testRequest("POST", "/notes/create", { title })
+Cypress.Commands.add("createNote", (title, content) => {
+    cy.testRequest("POST", "/notes/create", { title }).then((response) => {
+        if (!content) return
+        cy.testRequest("PUT", `/notes/update/${response.body}`, { content })
+    })
 })
 
 Cypress.Commands.add("createUser", (username, password) => {

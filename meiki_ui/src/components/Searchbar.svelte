@@ -13,6 +13,7 @@
 >
     <input
         class=" bg-base-0 placeholder-placeholder outline-none border-0 flex-grow text-content"
+        data-cy="searchbar"
         placeholder="Search across notes"
         bind:value={queryValue}
         on:input={sendQuery}
