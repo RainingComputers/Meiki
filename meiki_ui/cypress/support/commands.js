@@ -82,3 +82,9 @@ Cypress.Commands.add("simulateServerDown", (endpoint) => {
         req.destroy()
     })
 })
+
+Cypress.Commands.add("simulateServerUp", (endpoint) => {
+    cy.intercept(endpoint, (req) => {
+        req.continue()
+    })
+})

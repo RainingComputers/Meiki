@@ -80,6 +80,7 @@
             currentNote = { id, title: noteContent.title }
             workbench.setText(noteContent.content)
             editorActive = true
+            explorerToastError = ""
         } catch (err) {
             explorerToastError = formatRequestError(err, "reading note")
             currentNote = undefined

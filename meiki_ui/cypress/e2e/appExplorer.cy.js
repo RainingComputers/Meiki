@@ -55,7 +55,9 @@ describe("App explorer", () => {
     })
 
     it("Error out with read error", () => {
-        cy.createNote("testNote1")
+        const testContent = "This is a test note"
+
+        cy.createNote("testNote1", testContent)
         cy.simulateServerDown("/notes/read/*")
 
         cy.visit("/")
@@ -66,6 +68,17 @@ describe("App explorer", () => {
             "contain",
             "An error has occurred while reading note, unable to connect to server"
         )
+
+        cy.simulateServerUp("/notes/read/*")
+
+        cy.get("[data-cy='explorer']").contains("testNote1").click()
+
+        cy.get("[data-cy='explorer']").should(
+            "not.contain",
+            "An error has occurred while reading note, unable to connect to server"
+        )
+
+        cy.get("[data-cy='renderer']").should("contain", testContent)
     })
 
     it("Should toggle in and out", () => {
