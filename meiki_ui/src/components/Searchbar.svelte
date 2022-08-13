@@ -1,9 +1,11 @@
 <script lang="ts">
     import SearchIcon from "$cmp/icons/SearchIcon.svelte"
     import { createEventDispatcher } from "svelte"
+
     const dispatchEvent = createEventDispatcher()
     let queryValue = ""
-    const sendQuery = () => {
+
+    function dispatchQuery() {
         dispatchEvent("query", { query: queryValue })
     }
 </script>
@@ -16,7 +18,7 @@
         data-cy="searchbar"
         placeholder="Search across notes"
         bind:value={queryValue}
-        on:input={sendQuery}
+        on:input={dispatchQuery}
     />
     <span class="stroke-placeholder w-6 h-6">
         <SearchIcon />
