@@ -195,7 +195,7 @@
 
         <Workbench
             bind:this={workbench}
-            showEditorAndRenderer={!!currentNote}
+            showWorkbench={!!currentNote}
             on:textChange={onTextChange}
             {rendererActive}
             {editorActive}

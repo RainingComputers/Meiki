@@ -8,7 +8,7 @@
 
     function getRendererClass(editorActive: boolean, rendererActive: boolean) {
         if (editorActive && rendererActive) return "flex-1 w-1/2"
-        if (rendererActive && !editorActive) return "w-3/4"
+        if (rendererActive && !editorActive) return "max-w-[800px]"
 
         return "hidden"
     }
@@ -22,7 +22,7 @@
     import Seperator from "$cmp/Seperator.svelte"
 
     export let fontSize = 16
-    export let showEditorAndRenderer: boolean
+    export let showWorkbench: boolean
     export let editorActive: boolean
     export let rendererActive: boolean
 
@@ -55,7 +55,7 @@
 
 <div class="flex flex-grow justify-center items-center bg-base-0">
     <div class="flex justify-center h-full w-full">
-        {#if showEditorAndRenderer}
+        {#if showWorkbench}
             <div class={getEditorClass(editorActive, rendererActive)}>
                 <Editor
                     bind:this={editor}
@@ -65,7 +65,9 @@
                     initialText={text}
                 />
             </div>
-            <Seperator />
+            {#if editorActive && rendererActive}
+                <Seperator />
+            {/if}
             <div class={getRendererClass(editorActive, rendererActive)}>
                 <Renderer {text} />
             </div>
