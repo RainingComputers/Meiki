@@ -14,8 +14,8 @@ describe("Search across notes", () => {
 
         cy.get("[data-cy='searchbar']").type("Note1")
 
-        cy.get("[data-cy='explorer']").contains("Note2").should("not.exist")
         cy.get("[data-cy='explorer']").contains("Note1").should("exist")
         cy.get("[data-cy='explorer']").contains("Note3").should("exist")
+        cy.get("[data-cy='explorer']").contains("Note2").should("not.exist")
     })
 })
