@@ -44,7 +44,7 @@ jobs:
         working-directory: meiki_server
         timeout-minutes: 1
         run: |
-          go run main.go &
+          go run main.go > server-logs.txt &
           while [ "`curl --silent $SERVER_URL/health/`" != '"Healthy"' ]; do
             sleep 1;
           done
@@ -58,3 +58,9 @@ jobs:
       - name: Run cypress
         working-directory: meiki_ui
         run: npx cypress run
+      - name: Upload Test artifact
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: server-logs
+          path: meiki_server/server-logs.txt
