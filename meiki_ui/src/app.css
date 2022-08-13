@@ -13,6 +13,7 @@
         --color-base-3: #d1d5db;
         --color-placeholder: #9ca3af;
         --color-content: #0f172a;
+        --color-link: blue;
 
         --color-toolbar: #1f2937;
         --color-toolbar-focus: #475569;
@@ -41,6 +42,7 @@
         --color-base-3: #6b7280;
         --color-placeholder: #6b7280;
         --color-content: #e5e7eb;
+        --color-link: pink; /* TODO: Fix link color */
 
         --color-toolbar: #1f2937;
         --color-toolbar-focus: #475569;
@@ -58,4 +60,24 @@
         --color-success-outline: #059669;
         --color-success-content: #34d399;
     }
+}
+
+.prose {
+    /* This is for the renderer theming */
+    --tw-prose-headings: var(--color-content);
+    --tw-prose-body: var(--color-content);
+    --tw-prose-bold: var(--color-content);
+    --tw-prose-headings: var(--color-content);
+    --tw-prose-links: var(--color-link);
+    --tw-prose-bullets: var(--color-content);
+    --tw-prose-hr: var(--color-content);
+    --tw-prose-counters: var(--color-content);
+    --tw-prose-quote-borders: var(--color-placeholder);
+    --tw-prose-quotes: var(--color-placeholder);
+    --tw-prose-code: var(--color-content);
+    --tw-prose-lead: green; /* TODO: What's this? */
+    --tw-prose-pre-code: var(--color-content);
+    --tw-prose-pre-bg: var(--color-base-2);
+    --tw-prose-th-borders: var(--color-content);
+    --tw-prose-td-borders: var(--color-content);
 }
