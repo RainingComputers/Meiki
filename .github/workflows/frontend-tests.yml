@@ -64,3 +64,9 @@ jobs:
         with:
           name: server-logs
           path: meiki_server/server-logs.txt
+      - name: Upload Failed Test screenshots if any
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: server-logs
+          path: meiki-ui/cypress/screenshots/
