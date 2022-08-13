@@ -1,6 +1,7 @@
 name: Backend code formatting, linting and tests
 on: push
 
+
 jobs:
   server-code-check:
     name: Server code formatting and tests
@@ -11,7 +12,7 @@ jobs:
       - name: Setup go
         uses: actions/setup-go@v2
         with:
-          go-version: '^1.17.5' 
+          go-version: '^1.17.5'
       - name: Run gofmt
         run: test -z $(gofmt -l .)
         working-directory: meiki_server
@@ -22,8 +23,8 @@ jobs:
         timeout-minutes: 5
         run: |
           for cid in $(docker ps -a -q); do
-            while [ "`docker inspect -f {{.State.Health.Status}} $cid`" != "healthy" ]; do 
-              sleep 2; 
+            while [ "`docker inspect -f {{.State.Health.Status}} $cid`" != "healthy" ]; do
+              sleep 2;
             done
           done
       - name: Run go test
@@ -33,4 +34,18 @@ jobs:
         run: docker-compose -f test_services.yml down
         working-directory: meiki_server
 
+  deploy:
+    name: Deploy backend
+    runs-on: ubuntu-latest
+    needs: server-code-check
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
 
+      - name: Setup Fly
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to Fly
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
