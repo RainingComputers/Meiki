@@ -68,5 +68,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: server-logs
-          path: meiki-ui/cypress/screenshots/
+          name: cypress-screenshots
+          path: meiki_ui/cypress/screenshots/
