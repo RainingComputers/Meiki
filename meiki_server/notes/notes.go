@@ -70,14 +70,7 @@ func (ns NotesStore) Create(ctx context.Context, note Note) (string, error) {
 	return result.InsertedID.(primitive.ObjectID).Hex(), nil
 }
 
-func (ns NotesStore) List(ctx context.Context, username string) ([]NoteResponse, error) {
-	cursor, err := ns.coll.Find(ctx, bson.M{"username": username})
-
-	if err != nil {
-		log.Error("unable to list notes", zap.Error(err))
-		return nil, err
-	}
-
+func noteListFromCursor(ctx context.Context, cursor *mongo.Cursor) ([]NoteResponse, error) {
 	noteInfoList := []NoteResponse{}
 
 	for cursor.Next(ctx) {
@@ -86,7 +79,7 @@ func (ns NotesStore) List(ctx context.Context, username string) ([]NoteResponse,
 		err := cursor.Decode(&note)
 
 		if err != nil {
-			log.Error("unable to retrive note", zap.Error(err))
+			log.Error("unable to retrieve note", zap.Error(err))
 			return nil, err
 		}
 
@@ -97,6 +90,17 @@ func (ns NotesStore) List(ctx context.Context, username string) ([]NoteResponse,
 	}
 
 	return noteInfoList, nil
+}
+
+func (ns NotesStore) List(ctx context.Context, username string) ([]NoteResponse, error) {
+	cursor, err := ns.coll.Find(ctx, bson.M{"username": username})
+
+	if err != nil {
+		log.Error("unable to list notes", zap.Error(err))
+		return nil, err
+	}
+
+	return noteListFromCursor(ctx, cursor)
 }
 
 func (ns NotesStore) Read(ctx context.Context, id string, username string) (NoteContentResponse, error) {
@@ -208,8 +212,6 @@ func (ns NotesStore) Delete(ctx context.Context, id string, username string) err
 }
 
 func (ns NotesStore) Search(ctx context.Context, query string, username string) ([]NoteResponse, error) {
-	// TODO has common code with List
-
 	cursor, err := ns.coll.Find(ctx,
 		bson.M{
 			"username": username,
@@ -225,23 +227,5 @@ func (ns NotesStore) Search(ctx context.Context, query string, username string) 
 		return nil, err
 	}
 
-	noteInfoList := []NoteResponse{}
-
-	for cursor.Next(ctx) {
-		var note Note
-
-		err := cursor.Decode(&note)
-
-		if err != nil {
-			log.Error("unable to search note", zap.Error(err))
-			return nil, err
-		}
-
-		noteInfoList = append(noteInfoList, NoteResponse{
-			ID:    note.ID.Hex(),
-			Title: note.Title,
-		})
-	}
-
-	return noteInfoList, nil
+	return noteListFromCursor(ctx, cursor)
 }
