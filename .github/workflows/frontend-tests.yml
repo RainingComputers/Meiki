@@ -57,8 +57,8 @@ jobs:
           done
       - name: Run cypress
         working-directory: meiki_ui
-        run: npx cypress run
-      - name: Upload Test artifact
+        run: ELECTRON_ENABLE_LOGGING=1 npx cypress run --spec cypress/e2e/search.cy.js
+      - name: Upload server log artifact
         if: always()
         uses: actions/upload-artifact@v3
         with:

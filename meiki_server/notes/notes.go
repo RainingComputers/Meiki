@@ -3,6 +3,7 @@ package notes
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/RainingComputers/Meiki/log"
 	"go.mongodb.org/mongo-driver/bson"
@@ -227,5 +228,9 @@ func (ns NotesStore) Search(ctx context.Context, query string, username string) 
 		return nil, err
 	}
 
-	return noteListFromCursor(ctx, cursor)
+	resp, err := noteListFromCursor(ctx, cursor)
+
+	fmt.Println(resp)
+
+	return resp, err
 }
