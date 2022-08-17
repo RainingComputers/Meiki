@@ -53,7 +53,7 @@
     afterUpdate(focus)
 </script>
 
-<div class="flex flex-grow justify-center items-center bg-base-0">
+<div class="flex flex-grow justify-center items-center bg-base-0 overflow-x-scroll ">
     <div class="flex justify-center h-full w-full">
         {#if showWorkbench}
             <div class={getEditorClass(editorActive, rendererActive)}>
