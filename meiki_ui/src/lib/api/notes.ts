@@ -15,10 +15,7 @@ export async function listNotes(): Promise<Array<NoteInfo>> {
 }
 
 export async function searchNotes(query: string): Promise<Array<NoteInfo>> {
-    const response = await makeRequest(`/notes/search?query=${query}`, "GET")
-    console.log(query)
-    console.log(JSON.stringify(response))
-    return response
+    return await makeRequest(`/notes/search?query=${query}`, "GET")
 }
 
 export async function createNote(title: string): Promise<string> {

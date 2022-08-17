@@ -8,6 +8,7 @@ jobs:
     env:
       SERVER_URL: "localhost:8080"
       FRONTEND_URL: "localhost:3000"
+      DEBUG_PREFIX: "" # "ELECTRON_ENABLE_LOGGING=1 " enable this to view console.log
 
     steps:
       - name: Checkout
@@ -57,7 +58,7 @@ jobs:
           done
       - name: Run cypress
         working-directory: meiki_ui
-        run: ELECTRON_ENABLE_LOGGING=1 npx cypress run --spec cypress/e2e/search.cy.js
+        run: $DEBUG_PREFIX npx cypress run
       - name: Upload server log artifact
         if: always()
         uses: actions/upload-artifact@v3
