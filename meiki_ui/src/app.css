@@ -13,7 +13,7 @@
         --color-base-3: #d1d5db;
         --color-placeholder: #9ca3af;
         --color-content: #0f172a;
-        --color-link: blue;
+        --color-link: #2563eb;
 
         --color-toolbar: #1f2937;
         --color-toolbar-focus: #475569;
@@ -42,7 +42,7 @@
         --color-base-3: #6b7280;
         --color-placeholder: #6b7280;
         --color-content: #e5e7eb;
-        --color-link: pink; /* TODO: Fix link color */
+        --color-link: #60a5fa;
 
         --color-toolbar: #1f2937;
         --color-toolbar-focus: #475569;
