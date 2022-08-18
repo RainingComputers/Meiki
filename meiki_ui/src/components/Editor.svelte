@@ -24,6 +24,7 @@
         aceEditor.setValue(initialText, 1)
         aceEditor.getSession().on("change", onChange)
         aceEditor.getSession().setUseWrapMode(true)
+        aceEditor.renderer.setScrollMargin(22, 300, 0, 0)
 
         const setTheme = (theme: string) => {
             const editorTheme = theme === "light" ? "textmate" : "twilight"
@@ -42,8 +43,10 @@
         // set timeout so the editor does not capture key events like the enter key
         // there is no other way to do this
         setTimeout(() => {
-            if (aceEditor) aceEditor.focus()
-        }, 1)
+            aceEditor.focus()
+            aceEditor.resize()
+            aceEditor.renderer.updateFull(false)
+        }, 10)
     }
 
     export function getValue(): string {

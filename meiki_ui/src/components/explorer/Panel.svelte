@@ -35,14 +35,13 @@
 
 <div class="flex flex-row h-full">
     <div
-        class=" bg-base-1 flex flex-col gap-1 h-full overflow-y-scroll py-1"
+        class=" bg-base-1 flex flex-col h-full"
         style="min-width: 350px; width: {width}px"
         data-cy="explorer"
         on:click={onClick}
         transition:fly|local={{ x: -400, duration: 200, opacity: 1 }}
     >
         <slot />
-        <span class="py-10" />
     </div>
 
     <div

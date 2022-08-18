@@ -18,7 +18,6 @@
     import { afterUpdate, createEventDispatcher } from "svelte"
     import Editor from "$cmp/Editor.svelte"
     import Renderer from "$cmp/Renderer.svelte"
-    import Logo from "$cmp/app/Logo.svelte"
     import Seperator from "$cmp/Seperator.svelte"
 
     export let fontSize = 16

@@ -42,16 +42,19 @@
     {/if}
 
     {#if !watermarkError}
-        {#each noteList as item (item.id)}
-            <Item
-                onClick={() => {
-                    selectNote(item.id)
-                }}
-                checked={item.id == selectedNoteID}
-            >
-                <NotesItem title={item.title} onTrashClick={() => deleteNote(item)} />
-            </Item>
-        {/each}
+        <div class="flex flex-col gap-1 overflow-y-scroll ">
+            {#each noteList as item (item.id)}
+                <Item
+                    onClick={() => {
+                        selectNote(item.id)
+                    }}
+                    checked={item.id == selectedNoteID}
+                >
+                    <NotesItem title={item.title} onTrashClick={() => deleteNote(item)} />
+                </Item>
+            {/each}
+            <span class=" py-8" />
+        </div>
 
         {#if !noteList.length}
             <Info message="Click the 'Create' button on the toolbar to create a new note" />
