@@ -53,7 +53,7 @@
                     <NotesItem title={item.title} onTrashClick={() => deleteNote(item)} />
                 </Item>
             {/each}
-            <span class=" py-8" />
+            <span class=" py-16" />
         </div>
 
         {#if !noteList.length}

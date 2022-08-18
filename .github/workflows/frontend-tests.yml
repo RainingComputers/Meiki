@@ -59,13 +59,13 @@ jobs:
       - name: Run cypress
         working-directory: meiki_ui
         run: $DEBUG_PREFIX npx cypress run
-      - name: Upload server log artifact
+      - name: Upload server logs
         if: always()
         uses: actions/upload-artifact@v3
         with:
           name: server-logs
           path: meiki_server/server-logs.txt
-      - name: Upload Failed Test screenshots if any
+      - name: Upload failed test screenshots if any
         if: always()
         uses: actions/upload-artifact@v3
         with:
