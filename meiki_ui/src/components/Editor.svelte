@@ -43,10 +43,12 @@
         // set timeout so the editor does not capture key events like the enter key
         // there is no other way to do this
         setTimeout(() => {
+            if (!aceEditor) return
+
             aceEditor.focus()
             aceEditor.resize()
             aceEditor.renderer.updateFull(false)
-        }, 10)
+        }, 1)
     }
 
     export function getValue(): string {
