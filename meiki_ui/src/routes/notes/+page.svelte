@@ -2,7 +2,7 @@
     import { onMount } from "svelte"
     import { goto } from "$app/navigation"
     import { readNoteContent, renameNote, updateNote } from "$lib/api/notes"
-    import { listNotes, searchNotes, NoteInfo } from "$lib/api/notes"
+    import { listNotes, searchNotes, type NoteInfo } from "$lib/api/notes"
     import { formatRequestError } from "$lib/api/request"
     import { debounce } from "$lib/utils/debouncer"
     import { onCtrlPlusS } from "$lib/utils/onCtrlPlusS"
