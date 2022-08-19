@@ -1,6 +1,6 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte"
-    import { deleteNote, NoteInfo } from "$lib/api/notes"
+    import { deleteNote, type NoteInfo } from "$lib/api/notes"
     import { formatRequestError } from "$lib/api/request"
     import ConfirmModal from "$cmp/modal/ConfirmModal.svelte"
 

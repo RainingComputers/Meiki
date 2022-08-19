@@ -2,10 +2,10 @@
     "name": "meiki-ui",
     "version": "0.0.1",
     "scripts": {
-        "dev": "svelte-kit dev",
-        "build": "svelte-kit build",
-        "package": "svelte-kit package",
-        "preview": "svelte-kit preview",
+        "dev": "vite dev --port 3000",
+        "build": "vite build",
+        "package": "vite package",
+        "preview": "vite preview",
         "check": "svelte-check --tsconfig ./tsconfig.json",
         "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
         "lint": "prettier --check --plugin-search-dir=. .",
@@ -14,22 +14,23 @@
     "devDependencies": {
         "@sveltejs/adapter-auto": "next",
         "@sveltejs/kit": "next",
-        "@tailwindcss/typography": "^0.5.2",
-        "autoprefixer": "^10.4.2",
-        "cypress": "^10.3.0",
-        "postcss": "^8.4.6",
-        "prettier": "^2.4.1",
-        "prettier-plugin-svelte": "^2.4.0",
-        "svelte": "^3.44.0",
-        "svelte-check": "^2.2.6",
-        "svelte-preprocess": "^4.9.4",
-        "tailwindcss": "^3.0.18",
-        "tslib": "^2.3.1",
-        "typescript": "^4.4.3"
+        "@tailwindcss/typography": "^0.5.4",
+        "autoprefixer": "^10.4.8",
+        "cypress": "^10.6.0",
+        "postcss": "^8.4.16",
+        "prettier": "^2.7.1",
+        "prettier-plugin-svelte": "^2.7.0",
+        "svelte": "^3.49.0",
+        "svelte-check": "^2.8.1",
+        "svelte-preprocess": "^4.10.7",
+        "tailwindcss": "^3.1.8",
+        "tslib": "^2.4.0",
+        "typescript": "^4.7.4"
     },
     "type": "module",
     "dependencies": {
-        "@markdoc/markdoc": "^0.1.2",
-        "brace": "^0.11.1"
+        "@markdoc/markdoc": "^0.1.6",
+        "brace": "^0.11.1",
+        "vite": "^3.0.9"
     }
 }
