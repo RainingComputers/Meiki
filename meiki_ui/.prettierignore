@@ -10,3 +10,5 @@ node_modules
 todo.txt
 cypress/fixtures
 static/ace/
+pnpm-lock.yaml
+npm-lock.yaml

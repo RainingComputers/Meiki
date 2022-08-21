@@ -10,6 +10,7 @@
     let value: string = label
 
     function edit() {
+        value = label
         editing = true
     }
 

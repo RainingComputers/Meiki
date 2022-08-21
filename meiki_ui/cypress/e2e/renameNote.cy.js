@@ -22,6 +22,20 @@ describe("Rename note", () => {
         cy.contains("[data-cy='explorer']", "renamedNote")
     })
 
+    it("Rename note after another is selected should rename correctly", () => {
+        cy.createNote("testNote1")
+        cy.createNote("testNote2")
+        cy.visit("/")
+
+        // Select the note
+        cy.contains("testNote1").click()
+        cy.contains("testNote2").click()
+
+        // Click on the toolbar title and rename the note
+        cy.get("nav").contains("testNote2").click()
+        cy.get("nav").find("input").should("have.value", "testNote2")
+    })
+
     it("Rename note if clicked outside label", () => {
         cy.createNote("testNote")
         cy.visit("/")

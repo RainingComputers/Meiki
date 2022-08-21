@@ -389,7 +389,7 @@ packages:
             }
         requiresBuild: true
         dependencies:
-            "@types/node": 14.18.24
+            "@types/node": 18.7.7
         dev: true
         optional: true
 
