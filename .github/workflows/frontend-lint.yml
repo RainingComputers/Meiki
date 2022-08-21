@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: ${{ steps.set_node_version.outputs.version }}
       - name: Setup pnpm
-        run: curl -fsSL https://get.pnpm.io/install.sh | sh -
+        run: npm install -g pnpm
       - name: Install dependencies
         run: pnpm i
         working-directory: meiki_ui
