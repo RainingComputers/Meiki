@@ -27,6 +27,9 @@ jobs:
       - name: Install dependencies
         working-directory: meiki_ui
         run: npm i
+      - name: Build UI
+        run: npm run build
+        working-directory: meiki_ui
       - name: Install dependencies for server
         working-directory: meiki_server
         run: go get
@@ -51,6 +54,7 @@ jobs:
           done
       - name: Start UI
         working-directory: meiki_ui
+        timeout-minutes: 10
         run: |
           npm run dev &
           while [[ ! "`curl --silent -I $FRONTEND_URL/ | grep 200`" =~ "200" ]]; do
