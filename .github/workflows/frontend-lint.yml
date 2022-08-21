@@ -15,15 +15,17 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ steps.set_node_version.outputs.version }}
+      - name: Setup pnpm
+        run: curl -fsSL https://get.pnpm.io/install.sh | sh -
       - name: Install dependencies
-        run: npm i
+        run: pnpm i
         working-directory: meiki_ui
       - name: Build UI
-        run: npm run build
+        run: pnpm run build
         working-directory: meiki_ui
       - name: Run svelte-check
-        run: npm run check
+        run: pnpm run check
         working-directory: meiki_ui
       - name: Run prettier
-        run: npm run lint
+        run: pnpm run lint
         working-directory: meiki_ui
