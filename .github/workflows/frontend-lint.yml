@@ -18,6 +18,9 @@ jobs:
       - name: Install dependencies
         run: npm i
         working-directory: meiki_ui
+      - name: Build UI
+        run: npm run build
+        working-directory: meiki_ui
       - name: Run svelte-check
         run: npm run check
         working-directory: meiki_ui
