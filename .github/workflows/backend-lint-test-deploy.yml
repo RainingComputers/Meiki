@@ -35,6 +35,7 @@ jobs:
         working-directory: meiki_server
 
   deploy:
+    if: github.ref == 'refs/heads/main'
     name: Deploy backend
     runs-on: ubuntu-latest
     needs: server-code-check
