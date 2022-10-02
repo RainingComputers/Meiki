@@ -12,7 +12,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
     healthcheck:
       test: |
-        echo 'db.runCommand({serverStatus:1}).ok' | mongo admin \
+        echo 'db.runCommand({serverStatus:1}).ok' | mongosh admin \
           --username $$MONGO_INITDB_ROOT_USERNAME \
           --password $$MONGO_INITDB_ROOT_PASSWORD \
           --quiet | grep 1

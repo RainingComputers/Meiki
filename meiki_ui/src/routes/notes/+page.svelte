@@ -79,7 +79,7 @@
             const noteContent = await readNoteContent(id)
             currentNote = { id, title: noteContent.title }
             workbench.setText(noteContent.content)
-            editorActive = true
+            if (!rendererActive) editorActive = true
             explorerToastError = ""
         } catch (err) {
             explorerToastError = formatRequestError(err, "reading note")
